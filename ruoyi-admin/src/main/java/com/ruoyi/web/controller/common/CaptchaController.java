@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.common;
 
+import cn.hutool.core.util.IdUtil;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,7 @@ public class CaptchaController {
         }
 
         // 保存验证码信息
-        String uuid = IdUtils.simpleUUID();
+        String uuid = IdUtil.simpleUUID();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
 
         String capStr = null, code = null;

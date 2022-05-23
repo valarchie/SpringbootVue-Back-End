@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 /**
  * 精确的浮点数运算
- * 
+ *
  * @author ruoyi
  */
 public class Arith
@@ -107,7 +107,7 @@ public class Arith
             throw new IllegalArgumentException(
                     "The scale must be a positive integer or zero");
         }
-        BigDecimal b = new BigDecimal(Double.toString(v));
+        BigDecimal b = new BigDecimal(String.valueOf(v));
         BigDecimal one = BigDecimal.ONE;
         return b.divide(one, scale, RoundingMode.HALF_UP).doubleValue();
     }
