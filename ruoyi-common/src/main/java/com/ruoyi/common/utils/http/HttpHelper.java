@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils.http;
 
+import cn.hutool.http.HttpUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 通用http工具封装
- * 
+ *
  * @author ruoyi
  */
 public class HttpHelper

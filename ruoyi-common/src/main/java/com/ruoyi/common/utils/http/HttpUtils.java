@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils.http;
 
+import cn.hutool.http.HttpUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,7 @@ import com.ruoyi.common.utils.StringUtils;
 
 /**
  * 通用http发送方法
- * 
+ *
  * @author ruoyi
  */
 public class HttpUtils

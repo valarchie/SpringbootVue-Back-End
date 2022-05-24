@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.annotation.DataPermissionScope;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -51,14 +51,14 @@ public class DataScopeAspect
      */
     public static final String DATA_SCOPE = "dataScope";
 
-    @Before("@annotation(controllerDataScope)")
-    public void doBefore(JoinPoint point, DataScope controllerDataScope) throws Throwable
+    @Before("@annotation(controllerDataPermissionScope)")
+    public void doBefore(JoinPoint point, DataPermissionScope controllerDataPermissionScope) throws Throwable
     {
         clearDataScope(point);
-        handleDataScope(point, controllerDataScope);
+        handleDataScope(point, controllerDataPermissionScope);
     }
 
-    protected void handleDataScope(final JoinPoint joinPoint, DataScope controllerDataScope)
+    protected void handleDataScope(final JoinPoint joinPoint, DataPermissionScope controllerDataPermissionScope)
     {
         // 获取当前的用户
         LoginUser loginUser = SecurityUtils.getLoginUser();
@@ -68,8 +68,8 @@ public class DataScopeAspect
             // 如果是超级管理员，则不过滤数据
             if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin())
             {
-                dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(),
-                        controllerDataScope.userAlias());
+                dataScopeFilter(joinPoint, currentUser, controllerDataPermissionScope.deptAlias(),
+                        controllerDataPermissionScope.userAlias());
             }
         }
     }

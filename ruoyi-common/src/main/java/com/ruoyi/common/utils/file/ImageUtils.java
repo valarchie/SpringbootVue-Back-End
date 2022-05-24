@@ -31,7 +31,7 @@ public class ImageUtils
         }
         catch (Exception e)
         {
-            log.error("图片加载异常 {}", e);
+            log.error("图片加载异常 {}", e.getMessage());
             return null;
         }
         finally
@@ -57,7 +57,7 @@ public class ImageUtils
 
     /**
      * 读取文件为字节数据
-     * 
+     *
      * @param url 地址
      * @return 字节数据
      */

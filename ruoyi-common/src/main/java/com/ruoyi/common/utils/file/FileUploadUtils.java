@@ -1,5 +1,7 @@
 package com.ruoyi.common.utils.file;
 
+import cn.hutool.core.util.SerializeUtil;
+import cn.hutool.http.HttpStatus;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;

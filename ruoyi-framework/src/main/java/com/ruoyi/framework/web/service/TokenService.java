@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.service;
 
+import cn.hutool.core.util.IdUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -107,7 +107,7 @@ public class TokenService
      */
     public String createToken(LoginUser loginUser)
     {
-        String token = IdUtils.fastUUID();
+        String token = IdUtil.fastUUID();
         loginUser.setToken(token);
         setUserAgent(loginUser);
         refreshToken(loginUser);
