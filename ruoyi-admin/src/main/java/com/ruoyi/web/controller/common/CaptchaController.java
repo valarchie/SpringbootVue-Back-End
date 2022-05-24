@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.common;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -16,13 +17,12 @@ import com.google.code.kaptcha.Producer;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.utils.sign.Base64;
 import com.ruoyi.system.service.ISysConfigService;
 
 /**
  * Verification Code Endpoint
  *
- * @author ruoyi
+ * @author ruoyi valarchie
  */
 @RestController
 public class CaptchaController {
