@@ -1,10 +1,10 @@
 package com.ruoyi.framework.web.domain;
 
+import cn.hutool.core.util.NumberUtil;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import com.ruoyi.common.utils.Arith;
 import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.web.domain.server.Cpu;
 import com.ruoyi.framework.web.domain.server.Jvm;
@@ -23,13 +23,13 @@ import oshi.util.Util;
 
 /**
  * 服务器相关信息
- * 
+ *
  * @author ruoyi
  */
 public class Server
 {
     private static final int OSHI_WAIT_SECOND = 1000;
-    
+
     /**
      * CPU相关信息
      */
@@ -202,14 +202,14 @@ public class Server
             sysFile.setTotal(convertFileSize(total));
             sysFile.setFree(convertFileSize(free));
             sysFile.setUsed(convertFileSize(used));
-            sysFile.setUsage(Arith.mul(Arith.div(used, total, 4), 100));
+            sysFile.setUsage(NumberUtil.div(used * 100, total, 4));
             sysFiles.add(sysFile);
         }
     }
 
     /**
      * 字节转换
-     * 
+     *
      * @param size 字节大小
      * @return 转换后值
      */
