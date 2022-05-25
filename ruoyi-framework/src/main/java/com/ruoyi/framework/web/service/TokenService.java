@@ -1,6 +1,7 @@
 package com.ruoyi.framework.web.service;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -155,7 +155,7 @@ public class TokenService
     public void setUserAgent(LoginUser loginUser)
     {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
-        String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        String ip = ServletUtil.getClientIP(ServletUtils.getRequest());
         loginUser.setIpaddr(ip);
         loginUser.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
         loginUser.setBrowser(userAgent.getBrowser().getName());

@@ -1,5 +1,6 @@
 package com.ruoyi.framework.aspectj;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,6 @@ import com.ruoyi.common.enums.LimitType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
 
 /**
  * 限流处理
@@ -80,7 +80,7 @@ public class RateLimiterAspect
         StringBuffer stringBuffer = new StringBuffer(rateLimiter.key());
         if (rateLimiter.limitType() == LimitType.IP)
         {
-            stringBuffer.append(IpUtils.getIpAddr(ServletUtils.getRequest())).append("-");
+            stringBuffer.append(ServletUtil.getClientIP(ServletUtils.getRequest())).append("-");
         }
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();

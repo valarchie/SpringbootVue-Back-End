@@ -1,5 +1,6 @@
 package com.ruoyi.common.xss;
 
+import cn.hutool.http.HtmlUtil;
 import com.ruoyi.common.utils.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -27,7 +28,6 @@ public class XssValidator implements ConstraintValidator<Xss, String>
 
     public static boolean containsHtml(String value)
     {
-
         Pattern pattern = Pattern.compile(HTML_PATTERN);
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();

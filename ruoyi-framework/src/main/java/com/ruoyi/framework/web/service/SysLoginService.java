@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.service;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +20,6 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.service.ISysConfigService;
@@ -128,7 +128,7 @@ public class SysLoginService
     {
         SysUser sysUser = new SysUser();
         sysUser.setUserId(userId);
-        sysUser.setLoginIp(IpUtils.getIpAddr(ServletUtils.getRequest()));
+        sysUser.setLoginIp(ServletUtil.getClientIP(ServletUtils.getRequest()));
         sysUser.setLoginDate(DateUtils.getNowDate());
         userService.updateUserProfile(sysUser);
     }

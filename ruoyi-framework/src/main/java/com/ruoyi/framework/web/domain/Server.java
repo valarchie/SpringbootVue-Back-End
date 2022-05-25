@@ -1,11 +1,11 @@
 package com.ruoyi.framework.web.domain;
 
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.NumberUtil;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.web.domain.server.Cpu;
 import com.ruoyi.framework.web.domain.server.Jvm;
 import com.ruoyi.framework.web.domain.server.Mem;
@@ -163,8 +163,9 @@ public class Server
     private void setSysInfo()
     {
         Properties props = System.getProperties();
-        sys.setComputerName(IpUtils.getHostName());
-        sys.setComputerIp(IpUtils.getHostIp());
+
+        sys.setComputerName(NetUtil.getLocalHostName());
+        sys.setComputerIp(NetUtil.getLocalhost().getHostAddress());
         sys.setOsName(props.getProperty("os.name"));
         sys.setOsArch(props.getProperty("os.arch"));
         sys.setUserDir(props.getProperty("user.dir"));

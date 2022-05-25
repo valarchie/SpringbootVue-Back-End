@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils.ip;
 
+import cn.hutool.core.net.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
@@ -24,8 +25,9 @@ public class AddressUtils {
     public static final String UNKNOWN = "XX XX";
 
     public static String getRealAddressByIP(String ip) {
+
         // 内网不查询
-        if (IpUtils.internalIp(ip)) {
+        if (NetUtil.isInnerIP(ip)) {
             return "内网IP";
         }
         if (RuoYiConfig.isAddressEnabled()) {
@@ -45,4 +47,14 @@ public class AddressUtils {
         }
         return UNKNOWN;
     }
+
+
+    public static void main(String[] args) {
+
+
+
+
+
+    }
+
 }
