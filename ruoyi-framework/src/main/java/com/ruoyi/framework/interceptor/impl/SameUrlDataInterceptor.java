@@ -1,5 +1,6 @@
 package com.ruoyi.framework.interceptor.impl;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -13,13 +14,12 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.filter.RepeatedlyRequestWrapper;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.http.HttpHelper;
 import com.ruoyi.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
  * 判断请求url和数据是否和上一次相同，
  * 如果和上次相同，则是重复提交表单。 有效时间为10秒内。
- * 
+ *
  * @author ruoyi
  */
 @Component
@@ -44,7 +44,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
         if (request instanceof RepeatedlyRequestWrapper)
         {
             RepeatedlyRequestWrapper repeatedlyRequest = (RepeatedlyRequestWrapper) request;
-            nowParams = HttpHelper.getBodyString(repeatedlyRequest);
+            nowParams = ServletUtil.getBody(repeatedlyRequest);
         }
 
         // body参数为空，获取Parameter的数据

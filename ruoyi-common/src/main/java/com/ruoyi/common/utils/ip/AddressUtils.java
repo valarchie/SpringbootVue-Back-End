@@ -11,9 +11,9 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 
 /**
- * 获取地址类
+ * query geography address from ip
  *
- * @author ruoyi
+ * @author valarchie
  */
 public class AddressUtils {
 
