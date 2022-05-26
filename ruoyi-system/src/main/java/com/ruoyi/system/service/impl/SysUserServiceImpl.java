@@ -20,7 +20,6 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
@@ -535,7 +534,11 @@ public class SysUserServiceImpl implements ISysUserService
                 }
                 else if (isUpdateSupport)
                 {
-                    BeanValidators.validateWithException(validator, user);
+                    Set<ConstraintViolation<Object>> constraintViolations = validator.validate(user);
+                    if (!constraintViolations.isEmpty())
+                    {
+                        throw new ConstraintViolationException(constraintViolations);
+                    }
                     user.setUpdateBy(operName);
                     this.updateUser(user);
                     successNum++;

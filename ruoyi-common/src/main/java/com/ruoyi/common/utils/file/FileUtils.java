@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils.file;
 
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.IdUtil;
 import java.io.File;
 import java.io.FileInputStream;
@@ -148,7 +149,7 @@ public class FileUtils
         }
 
         // 检查允许下载的文件规则
-        if (ArrayUtils.contains(MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, FileTypeUtils.getFileType(resource)))
+        if (ArrayUtils.contains(MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, FileTypeUtil.getType(resource)))
         {
             return true;
         }

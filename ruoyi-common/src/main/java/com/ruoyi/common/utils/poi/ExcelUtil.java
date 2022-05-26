@@ -1,5 +1,7 @@
 package com.ruoyi.common.utils.poi;
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.FileUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -75,9 +78,7 @@ import com.ruoyi.common.exception.UtilException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileTypeUtils;
 import com.ruoyi.common.utils.file.FileUtils;
-import com.ruoyi.common.utils.file.ImageUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
 
 /**
@@ -761,9 +762,9 @@ public class ExcelUtil<T>
             String imagePath = Convert.toStr(value);
             if (StringUtils.isNotEmpty(imagePath))
             {
-                byte[] data = ImageUtils.getImage(imagePath);
+                byte[] data = FileUtil.readBytes(imagePath);
                 getDrawingPatriarch(cell.getSheet()).createPicture(anchor,
-                        cell.getSheet().getWorkbook().addPicture(data, getImageType(data)));
+                        cell.getSheet().getWorkbook().addPicture(data, getImageType(imagePath)));
             }
         }
     }
@@ -783,9 +784,9 @@ public class ExcelUtil<T>
     /**
      * 获取图片类型,设置图片插入类型
      */
-    public int getImageType(byte[] value)
+    public int getImageType(String filePath)
     {
-        String type = FileTypeUtils.getFileExtendName(value);
+        String type = FileTypeUtil.getTypeByPath(filePath);
         if ("JPG".equalsIgnoreCase(type))
         {
             return Workbook.PICTURE_TYPE_JPEG;
