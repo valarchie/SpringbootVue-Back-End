@@ -1,12 +1,19 @@
 package com.ruoyi.common.utils.file;
 
-import cn.hutool.core.util.SerializeUtil;
-import cn.hutool.http.HttpStatus;
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.net.URLEncodeUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.IdUtil;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Objects;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
@@ -104,6 +111,7 @@ public class FileUploadUtils
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
+
         int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
         {
@@ -131,7 +139,6 @@ public class FileUploadUtils
     public static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException
     {
         File desc = new File(uploadDir + File.separator + fileName);
-
         if (!desc.exists())
         {
             if (!desc.getParentFile().exists())
@@ -232,4 +239,79 @@ public class FileUploadUtils
         }
         return extension;
     }
+
+    /**
+     * 写数据到文件中
+     *
+     * @param baInputStream 数据
+     * @return 目标文件
+     * @throws IOException IO异常
+     */
+    public static String storeFileToImportDir(ByteArrayInputStream baInputStream) throws IOException {
+        String extension = FileTypeUtil.getType(baInputStream);
+        String pathName = DateUtils.datePath() + "/" + IdUtil.fastUUID() + "." + extension;
+        File file = FileUploadUtils.getAbsoluteFile(RuoYiConfig.getImportPath(), pathName);
+        FileUtil.writeFromStream(baInputStream, file);
+        return FileUploadUtils.getPathFileName(RuoYiConfig.getImportPath(), pathName);
+    }
+
+
+    /**
+     * 检查文件是否可下载
+     *
+     * @param resource 需要下载的文件
+     * @return true 正常 false 非法
+     */
+    public static boolean checkAllowDownload(String resource)
+    {
+        // 禁止目录上跳级别
+        return !StringUtils.contains(resource, "..") &&
+            // 检查允许下载的文件规则
+            ArrayUtils.contains(MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, FileTypeUtil.getType(resource));
+    }
+
+
+    /**
+     * 下载文件名重新编码
+     *
+     * @param response 响应对象
+     * @param realFileName 真实文件名
+     */
+    public static void setAttachmentResponseHeader(
+        HttpServletResponse response, String realFileName) throws UnsupportedEncodingException
+    {
+        String fileNameUrlEncoded = URLEncodeUtil.encode(realFileName, CharsetUtil.CHARSET_UTF_8);
+
+        StringBuilder contentDispositionValue = new StringBuilder();
+        contentDispositionValue.append("attachment; filename=")
+            .append(fileNameUrlEncoded)
+            .append(";")
+            .append("filename*=")
+            .append("utf-8''")
+            .append(fileNameUrlEncoded);
+
+        response.addHeader("Access-Control-Expose-Headers", "Content-Disposition,download-filename");
+        response.setHeader("Content-disposition", contentDispositionValue.toString());
+        response.setHeader("download-filename", fileNameUrlEncoded);
+    }
+
+
+    /**
+     * 获取文件名称 /profile/upload/2022/04/16/ruoyi.png -- ruoyi.png
+     *
+     * @param fileName 路径名称
+     * @return 没有文件路径的名称
+     */
+    public static String getFileNameFromDirPath(String fileName)
+    {
+        if (fileName == null)
+        {
+            return null;
+        }
+        int lastUnixPos = fileName.lastIndexOf('/');
+        int lastWindowsPos = fileName.lastIndexOf('\\');
+        int index = Math.max(lastUnixPos, lastWindowsPos);
+        return fileName.substring(index + 1);
+    }
+
 }

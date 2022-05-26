@@ -2,6 +2,9 @@ package com.ruoyi.common.utils.poi;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -78,7 +80,6 @@ import com.ruoyi.common.exception.UtilException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
 
 /**
@@ -391,8 +392,9 @@ public class ExcelUtil<T>
                             }
                             else
                             {
-                                byte[] data = image.getData();
-                                val = FileUtils.writeImportBytes(data);
+                                ByteArrayInputStream byteArrayInputStream = IoUtil.toStream(image.getData());
+
+                                val = FileUploadUtils.storeFileToImportDir(byteArrayInputStream);
                             }
                         }
                         ReflectUtils.invokeSetter(entity, propertyName, val);

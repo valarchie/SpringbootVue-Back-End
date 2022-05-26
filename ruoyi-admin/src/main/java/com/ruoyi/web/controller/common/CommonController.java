@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.common;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +20,11 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
-import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.framework.config.ServerConfig;
 
 /**
  * 通用请求处理
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -39,7 +40,7 @@ public class CommonController
 
     /**
      * 通用下载请求
-     * 
+     *
      * @param fileName 文件名称
      * @param delete 是否删除
      */
@@ -48,7 +49,7 @@ public class CommonController
     {
         try
         {
-            if (!FileUtils.checkAllowDownload(fileName))
+            if (!FileUploadUtils.checkAllowDownload(fileName))
             {
                 throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
             }
@@ -56,11 +57,12 @@ public class CommonController
             String filePath = RuoYiConfig.getDownloadPath() + fileName;
 
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-            FileUtils.setAttachmentResponseHeader(response, realFileName);
-            FileUtils.writeBytes(filePath, response.getOutputStream());
+            FileUploadUtils.setAttachmentResponseHeader(response, realFileName);
+
+            IoUtil.copy(FileUtil.getInputStream(filePath), response.getOutputStream());
             if (delete)
             {
-                FileUtils.deleteFile(filePath);
+                FileUtil.del(filePath);
             }
         }
         catch (Exception e)
@@ -85,7 +87,7 @@ public class CommonController
             AjaxResult ajax = AjaxResult.success();
             ajax.put("url", url);
             ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileUtils.getName(fileName));
+            ajax.put("newFileName", FileUploadUtils.getFileNameFromDirPath(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
         }
@@ -116,7 +118,7 @@ public class CommonController
                 String url = serverConfig.getUrl() + fileName;
                 urls.add(url);
                 fileNames.add(fileName);
-                newFileNames.add(FileUtils.getName(fileName));
+                newFileNames.add(FileUploadUtils.getFileNameFromDirPath(fileName));
                 originalFilenames.add(file.getOriginalFilename());
             }
             AjaxResult ajax = AjaxResult.success();
@@ -141,7 +143,7 @@ public class CommonController
     {
         try
         {
-            if (!FileUtils.checkAllowDownload(resource))
+            if (!FileUploadUtils.checkAllowDownload(resource))
             {
                 throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
             }
@@ -152,8 +154,8 @@ public class CommonController
             // 下载名称
             String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-            FileUtils.setAttachmentResponseHeader(response, downloadName);
-            FileUtils.writeBytes(downloadPath, response.getOutputStream());
+            FileUploadUtils.setAttachmentResponseHeader(response, downloadName);
+            IoUtil.copy(FileUtil.getInputStream(downloadPath), response.getOutputStream());
         }
         catch (Exception e)
         {
