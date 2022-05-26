@@ -18,7 +18,7 @@ import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
@@ -235,7 +235,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public void checkUserDataScope(Long userId)
     {
-        if (!SysUser.isAdmin(SecurityUtils.getUserId()))
+        if (!SysUser.isAdmin(AuthenticationUtils.getUserId()))
         {
             SysUser user = new SysUser();
             user.setUserId(userId);
@@ -526,7 +526,7 @@ public class SysUserServiceImpl implements ISysUserService
                     {
                         throw new ConstraintViolationException(constraintViolations);
                     }
-                    user.setPassword(SecurityUtils.encryptPassword(password));
+                    user.setPassword(AuthenticationUtils.encryptPassword(password));
                     user.setCreateBy(operName);
                     this.insertUser(user);
                     successNum++;

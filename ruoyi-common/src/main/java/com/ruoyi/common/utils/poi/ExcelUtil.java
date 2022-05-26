@@ -3,6 +3,8 @@ package com.ruoyi.common.utils.poi;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -80,7 +82,6 @@ import com.ruoyi.common.exception.UtilException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.reflect.ReflectUtils;
 
 /**
  * Excel相关处理
@@ -397,7 +398,7 @@ public class ExcelUtil<T>
                                 val = FileUploadUtils.storeFileToImportDir(byteArrayInputStream);
                             }
                         }
-                        ReflectUtils.invokeSetter(entity, propertyName, val);
+                        invokeSetter(entity, propertyName, val);
                     }
                 }
                 list.add(entity);
@@ -1431,5 +1432,31 @@ public class ExcelUtil<T>
             str = val.toString();
         }
         return str;
+    }
+
+    /**
+     * 调用Setter方法, 仅匹配方法名。
+     * 支持多级，如：对象名.对象名.方法
+     */
+    public static <E> void invokeSetter(Object obj, String propertyName, E value)
+    {
+        String SETTER_PREFIX = "set";
+        String GETTER_PREFIX = "get";
+        Object object = obj;
+        String[] names = org.apache.commons.lang3.StringUtils.split(propertyName, ".");
+        for (int i = 0; i < names.length; i++)
+        {
+            if (i < names.length - 1)
+            {
+
+                String getterMethodName = GETTER_PREFIX + StrUtil.toCamelCase(names[i]);
+                object = ReflectUtil.invoke(object,getterMethodName);
+            }
+            else
+            {
+                String setterMethodName = SETTER_PREFIX + org.apache.commons.lang3.StringUtils.capitalize(names[i]);
+                ReflectUtil.invoke(object, setterMethodName, value);
+            }
+        }
     }
 }

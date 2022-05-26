@@ -3,12 +3,11 @@ package com.ruoyi.framework.manager;
 import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import com.ruoyi.common.utils.Threads;
 import com.ruoyi.common.utils.spring.SpringUtils;
 
 /**
  * 异步任务管理器
- * 
+ *
  * @author ruoyi
  */
 public class AsyncManager
@@ -37,7 +36,7 @@ public class AsyncManager
 
     /**
      * 执行任务
-     * 
+     *
      * @param task 任务
      */
     public void execute(TimerTask task)
@@ -50,6 +49,6 @@ public class AsyncManager
      */
     public void shutdown()
     {
-        Threads.shutdownAndAwaitTermination(executor);
+        executor.shutdown();
     }
 }

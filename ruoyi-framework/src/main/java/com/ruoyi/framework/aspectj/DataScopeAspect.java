@@ -10,7 +10,7 @@ import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.AuthenticationUtils;
 
 /**
  * 数据过滤处理
@@ -61,7 +61,7 @@ public class DataScopeAspect
     protected void handleDataScope(final JoinPoint joinPoint, DataPermissionScope controllerDataPermissionScope)
     {
         // 获取当前的用户
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser))
         {
             SysUser currentUser = loginUser.getUser();

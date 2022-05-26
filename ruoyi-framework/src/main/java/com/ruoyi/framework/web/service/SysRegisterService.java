@@ -11,7 +11,7 @@ import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
 import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
@@ -76,7 +76,7 @@ public class SysRegisterService
             SysUser sysUser = new SysUser();
             sysUser.setUserName(username);
             sysUser.setNickName(username);
-            sysUser.setPassword(SecurityUtils.encryptPassword(registerBody.getPassword()));
+            sysUser.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
             boolean regFlag = userService.registerUser(sysUser);
             if (!regFlag)
             {

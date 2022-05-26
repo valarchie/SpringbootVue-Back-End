@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.StringUtils;
 
 /**
@@ -38,7 +38,7 @@ public class PermissionService
         {
             return false;
         }
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         if (StringUtils.isNull(loginUser) || CollectionUtils.isEmpty(loginUser.getPermissions()))
         {
             return false;
@@ -69,7 +69,7 @@ public class PermissionService
         {
             return false;
         }
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         if (StringUtils.isNull(loginUser) || CollectionUtils.isEmpty(loginUser.getPermissions()))
         {
             return false;
@@ -97,7 +97,7 @@ public class PermissionService
         {
             return false;
         }
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         if (StringUtils.isNull(loginUser) || CollectionUtils.isEmpty(loginUser.getUser().getRoles()))
         {
             return false;
@@ -136,7 +136,7 @@ public class PermissionService
         {
             return false;
         }
-        LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         if (StringUtils.isNull(loginUser) || CollectionUtils.isEmpty(loginUser.getUser().getRoles()))
         {
             return false;
