@@ -2,7 +2,10 @@ package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -519,7 +522,11 @@ public class SysUserServiceImpl implements ISysUserService
                 SysUser u = userMapper.selectUserByUserName(user.getUserName());
                 if (StringUtils.isNull(u))
                 {
-                    BeanValidators.validateWithException(validator, user);
+                    Set<ConstraintViolation<Object>> constraintViolations = validator.validate(user);
+                    if (!constraintViolations.isEmpty())
+                    {
+                        throw new ConstraintViolationException(constraintViolations);
+                    }
                     user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateBy(operName);
                     this.insertUser(user);

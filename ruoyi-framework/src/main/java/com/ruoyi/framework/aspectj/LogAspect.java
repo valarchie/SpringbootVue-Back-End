@@ -1,7 +1,7 @@
 package com.ruoyi.framework.aspectj;
 
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.http.Method;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,6 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.common.enums.HttpMethod;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -143,8 +142,9 @@ public class LogAspect
      */
     private void setRequestValue(JoinPoint joinPoint, SysOperLog operLog) throws Exception
     {
+
         String requestMethod = operLog.getRequestMethod();
-        if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod))
+        if (Method.PUT.name().equalsIgnoreCase(requestMethod) || Method.POST.name().equalsIgnoreCase(requestMethod))
         {
             String params = argsArrayToString(joinPoint.getArgs());
             operLog.setOperParam(StringUtils.substring(params, 0, 2000));
