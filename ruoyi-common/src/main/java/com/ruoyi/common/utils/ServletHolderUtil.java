@@ -13,44 +13,24 @@ import com.ruoyi.common.core.text.Convert;
  *
  * @author ruoyi
  */
-public class ServletUtils
-{
-    /**
-     * 获取String参数
-     */
-    public static String getParameter(String name)
-    {
-        return getRequest().getParameter(name);
-    }
-
-    /**
-     * 获取Boolean参数
-     */
-    public static Boolean getParameterToBool(String name)
-    {
-        return Convert.toBool(getRequest().getParameter(name));
-    }
-
+public class ServletHolderUtil {
 
     /**
      * 获取request
      */
-    public static HttpServletRequest getRequest()
-    {
+    public static HttpServletRequest getRequest() {
         return getRequestAttributes().getRequest();
     }
 
     /**
      * 获取response
      */
-    public static HttpServletResponse getResponse()
-    {
+    public static HttpServletResponse getResponse() {
         return getRequestAttributes().getResponse();
     }
 
 
-    public static ServletRequestAttributes getRequestAttributes()
-    {
+    public static ServletRequestAttributes getRequestAttributes() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         return (ServletRequestAttributes) attributes;
     }
@@ -61,17 +41,13 @@ public class ServletUtils
      * @param response 渲染对象
      * @param string 待渲染的字符串
      */
-    public static void renderString(HttpServletResponse response, String string)
-    {
-        try
-        {
+    public static void renderString(HttpServletResponse response, String string) {
+        try {
             response.setStatus(200);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             response.getWriter().print(string);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

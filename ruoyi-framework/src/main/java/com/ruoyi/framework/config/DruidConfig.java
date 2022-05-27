@@ -1,5 +1,6 @@
 package com.ruoyi.framework.config;
 
+import cn.hutool.extra.spring.SpringUtil;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +21,12 @@ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
 import com.alibaba.druid.util.Utils;
 import com.ruoyi.common.enums.DataSourceType;
-import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.framework.config.properties.DruidProperties;
 import com.ruoyi.framework.datasource.DynamicDataSource;
 
 /**
  * druid 配置多数据源
- * 
+ *
  * @author ruoyi
  */
 @Configuration
@@ -58,10 +58,10 @@ public class DruidConfig
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
-    
+
     /**
      * 设置数据源
-     * 
+     *
      * @param targetDataSources 备选数据源集合
      * @param sourceName 数据源名称
      * @param beanName bean名称
@@ -70,7 +70,7 @@ public class DruidConfig
     {
         try
         {
-            DataSource dataSource = SpringUtils.getBean(beanName);
+            DataSource dataSource = SpringUtil.getBean(beanName);
             targetDataSources.put(sourceName, dataSource);
         }
         catch (Exception e)

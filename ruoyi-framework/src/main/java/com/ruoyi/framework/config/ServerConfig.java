@@ -1,8 +1,10 @@
 package com.ruoyi.framework.config;
 
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpUtil;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
 
 /**
  * 服务相关配置
@@ -19,7 +21,7 @@ public class ServerConfig
      */
     public String getUrl()
     {
-        HttpServletRequest request = ServletUtils.getRequest();
+        HttpServletRequest request = ServletHolderUtil.getRequest();
         return getDomain(request);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -154,8 +154,8 @@ public class TokenService
      */
     public void setUserAgent(LoginUser loginUser)
     {
-        UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
-        String ip = ServletUtil.getClientIP(ServletUtils.getRequest());
+        UserAgent userAgent = UserAgent.parseUserAgentString(ServletHolderUtil.getRequest().getHeader("User-Agent"));
+        String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
         loginUser.setIpaddr(ip);
         loginUser.setLoginLocation(AddressUtils.getRealAddressByIp(ip));
         loginUser.setBrowser(userAgent.getBrowser().getName());

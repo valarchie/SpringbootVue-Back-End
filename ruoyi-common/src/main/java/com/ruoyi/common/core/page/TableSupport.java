@@ -1,7 +1,10 @@
 package com.ruoyi.common.core.page;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 表格数据处理
@@ -41,12 +44,15 @@ public class TableSupport
     public static PageDomain getPageDomain()
     {
 
+        HttpServletRequest request = ServletHolderUtil.getRequest();
+        Map<String, String> paramMap = ServletUtil.getParamMap(request);
+
         PageDomain pageDomain = new PageDomain();
-        pageDomain.setPageNum(Convert.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
-        pageDomain.setPageSize(Convert.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
-        pageDomain.setOrderByColumn(ServletUtils.getParameter(ORDER_BY_COLUMN));
-        pageDomain.setIsAsc(ServletUtils.getParameter(IS_ASC));
-        pageDomain.setReasonable(ServletUtils.getParameterToBool(REASONABLE));
+        pageDomain.setPageNum(Convert.toInt(paramMap.get(PAGE_NUM), 1));
+        pageDomain.setPageSize(Convert.toInt(paramMap.get(PAGE_SIZE), 10));
+        pageDomain.setOrderByColumn(paramMap.get(ORDER_BY_COLUMN));
+        pageDomain.setIsAsc(paramMap.get(IS_ASC));
+        pageDomain.setReasonable(Convert.toBool(paramMap.get(REASONABLE)));
         return pageDomain;
     }
 

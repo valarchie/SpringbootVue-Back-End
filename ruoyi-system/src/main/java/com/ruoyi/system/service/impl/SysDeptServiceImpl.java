@@ -1,9 +1,11 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.annotation.DataPermissionScope;
@@ -16,7 +18,6 @@ import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.service.ISysDeptService;
@@ -185,7 +186,7 @@ public class SysDeptServiceImpl implements ISysDeptService
         {
             SysDept dept = new SysDept();
             dept.setDeptId(deptId);
-            List<SysDept> depts = SpringUtils.getAopProxy(this).selectDeptList(dept);
+            List<SysDept> depts = ((SysDeptServiceImpl) AopContext.currentProxy()).selectDeptList(dept);
             if (StringUtils.isEmpty(depts))
             {
                 throw new ServiceException("没有权限访问部门数据！");

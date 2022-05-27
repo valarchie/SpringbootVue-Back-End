@@ -1,9 +1,9 @@
 package com.ruoyi.framework.manager;
 
+import cn.hutool.extra.spring.SpringUtil;
 import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import com.ruoyi.common.utils.spring.SpringUtils;
 
 /**
  * 异步任务管理器
@@ -20,7 +20,7 @@ public class AsyncManager
     /**
      * 异步操作任务调度线程池
      */
-    private ScheduledExecutorService executor = SpringUtils.getBean("scheduledExecutorService");
+    private ScheduledExecutorService executor = SpringUtil.getBean("scheduledExecutorService");
 
     /**
      * 单例模式

@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.framework.manager.AsyncManager;
@@ -73,9 +73,9 @@ public class LogAspect
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
             // 请求的地址
 
-            String ip = ServletUtil.getClientIP(ServletUtils.getRequest());
+            String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
             operLog.setOperIp(ip);
-            operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
+            operLog.setOperUrl(ServletHolderUtil.getRequest().getRequestURI());
             if (loginUser != null)
             {
                 operLog.setOperName(loginUser.getUsername());
@@ -91,7 +91,7 @@ public class LogAspect
             String methodName = joinPoint.getSignature().getName();
             operLog.setMethod(className + "." + methodName + "()");
             // 设置请求方式
-            operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
+            operLog.setRequestMethod(ServletHolderUtil.getRequest().getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
             // 保存数据库
@@ -151,7 +151,7 @@ public class LogAspect
         }
         else
         {
-            Map<?, ?> paramsMap = (Map<?, ?>) ServletUtils.getRequest().getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            Map<?, ?> paramsMap = (Map<?, ?>) ServletHolderUtil.getRequest().getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             operLog.setOperParam(StringUtils.substring(paramsMap.toString(), 0, 2000));
         }
     }

@@ -2,6 +2,7 @@ package com.ruoyi.quartz.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import java.util.Date;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -10,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.ScheduleConstants;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.quartz.domain.SysJob;
 import com.ruoyi.quartz.domain.SysJobLog;
 import com.ruoyi.quartz.service.ISysJobLogService;
@@ -93,7 +92,7 @@ public abstract class AbstractQuartzJob implements Job
         }
 
         // 写入数据库当中
-        SpringUtils.getBean(ISysJobLogService.class).addJobLog(sysJobLog);
+        SpringUtil.getBean(ISysJobLogService.class).addJobLog(sysJobLog);
     }
 
     /**
