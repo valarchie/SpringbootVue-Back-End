@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.config.ServerConfig;
 
@@ -51,7 +51,7 @@ public class CommonController
         {
             if (!FileUploadUtils.checkAllowDownload(fileName))
             {
-                throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
+                throw new Exception(StrUtil.format("文件名称({})非法，不允许下载。 ", fileName));
             }
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = RuoYiConfig.getDownloadPath() + fileName;
@@ -122,10 +122,10 @@ public class CommonController
                 originalFilenames.add(file.getOriginalFilename());
             }
             AjaxResult ajax = AjaxResult.success();
-            ajax.put("urls", StringUtils.join(urls, FILE_DELIMETER));
-            ajax.put("fileNames", StringUtils.join(fileNames, FILE_DELIMETER));
-            ajax.put("newFileNames", StringUtils.join(newFileNames, FILE_DELIMETER));
-            ajax.put("originalFilenames", StringUtils.join(originalFilenames, FILE_DELIMETER));
+            ajax.put("urls", StrUtil.join(FILE_DELIMETER,urls));
+            ajax.put("fileNames", StrUtil.join(FILE_DELIMETER,fileNames));
+            ajax.put("newFileNames", StrUtil.join(FILE_DELIMETER,newFileNames));
+            ajax.put("originalFilenames", StrUtil.join(FILE_DELIMETER, originalFilenames));
             return ajax;
         }
         catch (Exception e)
@@ -145,14 +145,14 @@ public class CommonController
         {
             if (!FileUploadUtils.checkAllowDownload(resource))
             {
-                throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
+                throw new Exception(StrUtil.format("资源文件({})非法，不允许下载。 ", resource));
             }
             // 本地资源路径
             String localPath = RuoYiConfig.getProfile();
             // 数据库资源地址
-            String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
+            String downloadPath = localPath + StrUtil.subAfter(resource, Constants.RESOURCE_PREFIX, false);
             // 下载名称
-            String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
+            String downloadName = StrUtil.subAfter(downloadPath, "/", false);
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUploadUtils.setAttachmentResponseHeader(response, downloadName);
             IoUtil.copy(FileUtil.getInputStream(downloadPath), response.getOutputStream());

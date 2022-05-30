@@ -2,13 +2,13 @@ package com.ruoyi.system.service.impl;
 
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.ISysUserOnlineService;
 
 /**
  * 在线用户 服务层处理
- * 
+ *
  * @author ruoyi
  */
 @Service
@@ -16,7 +16,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
 {
     /**
      * 通过登录地址查询信息
-     * 
+     *
      * @param ipaddr 登录地址
      * @param user 用户信息
      * @return 在线用户信息
@@ -24,7 +24,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
     @Override
     public SysUserOnline selectOnlineByIpaddr(String ipaddr, LoginUser user)
     {
-        if (StringUtils.equals(ipaddr, user.getIpaddr()))
+        if (StrUtil.equals(ipaddr, user.getIpaddr()))
         {
             return loginUserToUserOnline(user);
         }
@@ -33,7 +33,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
 
     /**
      * 通过用户名称查询信息
-     * 
+     *
      * @param userName 用户名称
      * @param user 用户信息
      * @return 在线用户信息
@@ -41,7 +41,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
     @Override
     public SysUserOnline selectOnlineByUserName(String userName, LoginUser user)
     {
-        if (StringUtils.equals(userName, user.getUsername()))
+        if (StrUtil.equals(userName, user.getUsername()))
         {
             return loginUserToUserOnline(user);
         }
@@ -50,7 +50,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
 
     /**
      * 通过登录地址/用户名称查询信息
-     * 
+     *
      * @param ipaddr 登录地址
      * @param userName 用户名称
      * @param user 用户信息
@@ -59,7 +59,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
     @Override
     public SysUserOnline selectOnlineByInfo(String ipaddr, String userName, LoginUser user)
     {
-        if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername()))
+        if (StrUtil.equals(ipaddr, user.getIpaddr()) && StrUtil.equals(userName, user.getUsername()))
         {
             return loginUserToUserOnline(user);
         }
@@ -68,14 +68,14 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
 
     /**
      * 设置在线用户信息
-     * 
+     *
      * @param user 用户信息
      * @return 在线用户
      */
     @Override
     public SysUserOnline loginUserToUserOnline(LoginUser user)
     {
-        if (StringUtils.isNull(user) || StringUtils.isNull(user.getUser()))
+        if (user == null || user.getUser() == null)
         {
             return null;
         }
@@ -87,7 +87,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
         sysUserOnline.setBrowser(user.getBrowser());
         sysUserOnline.setOs(user.getOs());
         sysUserOnline.setLoginTime(user.getLoginTime());
-        if (StringUtils.isNotNull(user.getUser().getDept()))
+        if (user.getUser().getDept()!=null)
         {
             sysUserOnline.setDeptName(user.getUser().getDept().getDeptName());
         }

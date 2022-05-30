@@ -19,13 +19,13 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.ISysUserOnlineService;
 
 /**
  * 在线用户监控
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -47,23 +47,23 @@ public class SysUserOnlineController extends BaseController
         for (String key : keys)
         {
             LoginUser user = redisCache.getCacheObject(key);
-            if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName))
+            if (StrUtil.isNotEmpty(ipaddr) && StrUtil.isNotEmpty(userName))
             {
-                if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername()))
+                if (StrUtil.equals(ipaddr, user.getIpaddr()) && StrUtil.equals(userName, user.getUsername()))
                 {
                     userOnlineList.add(userOnlineService.selectOnlineByInfo(ipaddr, userName, user));
                 }
             }
-            else if (StringUtils.isNotEmpty(ipaddr))
+            else if (StrUtil.isNotEmpty(ipaddr))
             {
-                if (StringUtils.equals(ipaddr, user.getIpaddr()))
+                if (StrUtil.equals(ipaddr, user.getIpaddr()))
                 {
                     userOnlineList.add(userOnlineService.selectOnlineByIpaddr(ipaddr, user));
                 }
             }
-            else if (StringUtils.isNotEmpty(userName) && StringUtils.isNotNull(user.getUser()))
+            else if (StrUtil.isNotEmpty(userName) && user.getUser() != null)
             {
-                if (StringUtils.equals(userName, user.getUsername()))
+                if (StrUtil.equals(userName, user.getUsername()))
                 {
                     userOnlineList.add(userOnlineService.selectOnlineByUserName(userName, user));
                 }

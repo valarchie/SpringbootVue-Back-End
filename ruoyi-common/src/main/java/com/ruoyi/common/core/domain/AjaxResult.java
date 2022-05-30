@@ -2,7 +2,7 @@ package com.ruoyi.common.core.domain;
 
 import cn.hutool.http.HttpStatus;
 import java.util.HashMap;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 操作消息提醒
@@ -52,7 +52,7 @@ public class AjaxResult extends HashMap<String, Object>
     {
         super.put(CODE_TAG, code);
         super.put(MSG_TAG, msg);
-        if (StringUtils.isNotNull(data))
+        if (data != null)
         {
             super.put(DATA_TAG, data);
         }

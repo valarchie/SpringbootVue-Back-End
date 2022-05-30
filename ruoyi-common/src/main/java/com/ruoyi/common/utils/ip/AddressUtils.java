@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * query geography address from ip
@@ -40,7 +40,7 @@ public class AddressUtils {
 
                 String rspStr = HttpUtil.get(ADDRESS_QUERY_SITE + "ip=" + ip + "&json=true",
                     Charset.forName(Constants.GBK));
-                if (StringUtils.isEmpty(rspStr)) {
+                if (StrUtil.isEmpty(rspStr)) {
                     log.error("获取地理位置异常 {}", ip);
                     geographyAddress = UNKNOWN_ADDRESS;
                 }

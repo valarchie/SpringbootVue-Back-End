@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +22,7 @@ import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AuthenticationUtils;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
@@ -138,7 +140,7 @@ public class SysUserServiceImpl implements ISysUserService
         List<SysRole> list = roleMapper.selectRolesByUserName(userName);
         if (CollectionUtils.isEmpty(list))
         {
-            return StringUtils.EMPTY;
+            return StrUtil.EMPTY;
         }
         return list.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
     }
@@ -155,7 +157,7 @@ public class SysUserServiceImpl implements ISysUserService
         List<SysPost> list = postMapper.selectPostsByUserName(userName);
         if (CollectionUtils.isEmpty(list))
         {
-            return StringUtils.EMPTY;
+            return StrUtil.EMPTY;
         }
         return list.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
     }
@@ -186,9 +188,9 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public String checkPhoneUnique(SysUser user)
     {
-        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        Long userId = user.getUserId() == null ? -1L : user.getUserId();
         SysUser info = userMapper.checkPhoneUnique(user.getPhonenumber());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
+        if (info!=null && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
         }
@@ -204,9 +206,9 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public String checkEmailUnique(SysUser user)
     {
-        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        Long userId = user.getUserId() == null ? -1L : user.getUserId();
         SysUser info = userMapper.checkEmailUnique(user.getEmail());
-        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue())
+        if (info!=null && info.getUserId().longValue() != userId.longValue())
         {
             return UserConstants.NOT_UNIQUE;
         }
@@ -221,7 +223,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public void checkUserAllowed(SysUser user)
     {
-        if (StringUtils.isNotNull(user.getUserId()) && user.isAdmin())
+        if (user.getUserId()!=null && user.isAdmin())
         {
             throw new ServiceException("不允许操作超级管理员用户");
         }
@@ -240,7 +242,7 @@ public class SysUserServiceImpl implements ISysUserService
             SysUser user = new SysUser();
             user.setUserId(userId);
             List<SysUser> users = ((SysUserServiceImpl) AopContext.currentProxy()).selectUserList(user);
-            if (StringUtils.isEmpty(users))
+            if (CollUtil.isEmpty(users))
             {
                 throw new ServiceException("没有权限访问用户数据！");
             }
@@ -384,7 +386,7 @@ public class SysUserServiceImpl implements ISysUserService
     public void insertUserRole(SysUser user)
     {
         Long[] roles = user.getRoleIds();
-        if (StringUtils.isNotNull(roles))
+        if (roles!=null)
         {
             // 新增用户与角色管理
             List<SysUserRole> list = new ArrayList<SysUserRole>();
@@ -410,7 +412,7 @@ public class SysUserServiceImpl implements ISysUserService
     public void insertUserPost(SysUser user)
     {
         Long[] posts = user.getPostIds();
-        if (StringUtils.isNotNull(posts))
+        if (posts != null)
         {
             // 新增用户与岗位管理
             List<SysUserPost> list = new ArrayList<SysUserPost>();
@@ -436,7 +438,7 @@ public class SysUserServiceImpl implements ISysUserService
      */
     public void insertUserRole(Long userId, Long[] roleIds)
     {
-        if (StringUtils.isNotNull(roleIds))
+        if (roleIds != null)
         {
             // 新增用户与角色管理
             List<SysUserRole> list = new ArrayList<SysUserRole>();
@@ -504,7 +506,7 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName)
     {
-        if (StringUtils.isNull(userList) || userList.size() == 0)
+        if (userList == null || userList.size() == 0)
         {
             throw new ServiceException("导入用户数据不能为空！");
         }
@@ -519,7 +521,7 @@ public class SysUserServiceImpl implements ISysUserService
             {
                 // 验证是否存在这个用户
                 SysUser u = userMapper.selectUserByUserName(user.getUserName());
-                if (StringUtils.isNull(u))
+                if (u == null)
                 {
                     Set<ConstraintViolation<Object>> constraintViolations = validator.validate(user);
                     if (!constraintViolations.isEmpty())

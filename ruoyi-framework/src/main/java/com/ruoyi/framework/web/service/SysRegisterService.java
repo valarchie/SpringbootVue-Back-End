@@ -12,7 +12,7 @@ import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.AuthenticationUtils;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.service.ISysConfigService;
@@ -49,11 +49,11 @@ public class SysRegisterService
             validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
         }
 
-        if (StringUtils.isEmpty(username))
+        if (StrUtil.isEmpty(username))
         {
             msg = "用户名不能为空";
         }
-        else if (StringUtils.isEmpty(password))
+        else if (StrUtil.isEmpty(password))
         {
             msg = "用户密码不能为空";
         }

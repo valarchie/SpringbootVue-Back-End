@@ -1,10 +1,13 @@
 package com.ruoyi.common.utils.file;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.constant.DatePatterns;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +23,7 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.ruoyi.common.exception.file.FileSizeLimitExceededException;
 import com.ruoyi.common.exception.file.InvalidExtensionException;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.uuid.Seq;
 
 /**
@@ -132,7 +134,7 @@ public class FileUploadUtils
      */
     public static final String extractFilename(MultipartFile file)
     {
-        return StringUtils.format("{}/{}_{}.{}", DateUtils.datePath(),
+        return StrUtil.format("{}/{}_{}.{}", DateUtil.format(DateUtil.date(), DatePatterns.YYYYMMDD_SLASH),
                 FilenameUtils.getBaseName(file.getOriginalFilename()), Seq.getId(Seq.uploadSeqType), getExtension(file));
     }
 
@@ -151,8 +153,7 @@ public class FileUploadUtils
 
     public static final String getPathFileName(String uploadDir, String fileName) throws IOException
     {
-        int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
-        String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
+        String currentDir = StrUtil.subAfter(uploadDir, RuoYiConfig.getProfile(), false);
         return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
     }
 
@@ -233,7 +234,7 @@ public class FileUploadUtils
     public static final String getExtension(MultipartFile file)
     {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (StringUtils.isEmpty(extension))
+        if (StrUtil.isEmpty(extension))
         {
             extension = MimeTypeUtils.getExtension(Objects.requireNonNull(file.getContentType()));
         }
@@ -249,7 +250,7 @@ public class FileUploadUtils
      */
     public static String storeFileToImportDir(ByteArrayInputStream baInputStream) throws IOException {
         String extension = FileTypeUtil.getType(baInputStream);
-        String pathName = DateUtils.datePath() + "/" + IdUtil.fastUUID() + "." + extension;
+        String pathName = DateUtil.format(DateUtil.date(), DatePatterns.YYYYMMDD_SLASH) + "/" + IdUtil.fastUUID() + "." + extension;
         File file = FileUploadUtils.getAbsoluteFile(RuoYiConfig.getImportPath(), pathName);
         FileUtil.writeFromStream(baInputStream, file);
         return FileUploadUtils.getPathFileName(RuoYiConfig.getImportPath(), pathName);
@@ -265,7 +266,7 @@ public class FileUploadUtils
     public static boolean checkAllowDownload(String resource)
     {
         // 禁止目录上跳级别
-        return !StringUtils.contains(resource, "..") &&
+        return !StrUtil.contains(resource, "..") &&
             // 检查允许下载的文件规则
             ArrayUtils.contains(MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, FileTypeUtil.getType(resource));
     }

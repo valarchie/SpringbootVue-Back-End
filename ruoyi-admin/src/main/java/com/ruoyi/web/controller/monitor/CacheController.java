@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 缓存监控
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -43,8 +43,9 @@ public class CacheController
         commandStats.stringPropertyNames().forEach(key -> {
             Map<String, String> data = new HashMap<>(2);
             String property = commandStats.getProperty(key);
-            data.put("name", StringUtils.removeStart(key, "cmdstat_"));
-            data.put("value", StringUtils.substringBetween(property, "calls=", ",usec"));
+
+            data.put("name", StrUtil.removePrefix(key, "cmdstat_"));
+            data.put("value", StrUtil.subBetween(property, "calls=", ",usec"));
             pieList.add(data);
         });
         result.put("commandStats", pieList);

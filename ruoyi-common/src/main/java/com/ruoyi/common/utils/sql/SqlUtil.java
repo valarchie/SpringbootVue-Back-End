@@ -1,7 +1,8 @@
 package com.ruoyi.common.utils.sql;
 
 import com.ruoyi.common.exception.UtilException;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
+import java.util.List;
 
 /**
  * sql操作工具类
@@ -26,7 +27,7 @@ public class SqlUtil
      */
     public static String escapeOrderBySql(String value)
     {
-        if (StringUtils.isNotEmpty(value) && !isValidOrderBySql(value))
+        if (StrUtil.isNotEmpty(value) && !isValidOrderBySql(value))
         {
             throw new UtilException("参数不符合规范，不能进行查询");
         }
@@ -46,14 +47,14 @@ public class SqlUtil
      */
     public static void filterKeyword(String value)
     {
-        if (StringUtils.isEmpty(value))
+        if (StrUtil.isEmpty(value))
         {
             return;
         }
-        String[] sqlKeywords = StringUtils.split(SQL_REGEX, "\\|");
+        List<String> sqlKeywords = StrUtil.split(SQL_REGEX, "\\|");
         for (String sqlKeyword : sqlKeywords)
         {
-            if (StringUtils.indexOfIgnoreCase(value, sqlKeyword) > -1)
+            if (StrUtil.indexOfIgnoreCase(value, sqlKeyword) > -1)
             {
                 throw new UtilException("参数存在SQL注入风险");
             }

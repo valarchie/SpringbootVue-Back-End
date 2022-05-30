@@ -1,5 +1,7 @@
 package com.ruoyi.framework.web.service;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,8 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
 import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
@@ -104,7 +105,7 @@ public class SysLoginService
     public void validateCaptcha(String username, String code, String uuid)
     {
 
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + StringUtils.nvl(uuid, "");
+        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid != null ? uuid : StrUtil.EMPTY;
         String captcha = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (captcha == null)
@@ -129,7 +130,7 @@ public class SysLoginService
         SysUser sysUser = new SysUser();
         sysUser.setUserId(userId);
         sysUser.setLoginIp(ServletUtil.getClientIP(ServletHolderUtil.getRequest()));
-        sysUser.setLoginDate(DateUtils.getNowDate());
+        sysUser.setLoginDate(DateUtil.date());
         userService.updateUserProfile(sysUser);
     }
 }

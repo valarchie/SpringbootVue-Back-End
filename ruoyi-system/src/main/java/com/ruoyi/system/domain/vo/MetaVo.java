@@ -1,10 +1,11 @@
 package com.ruoyi.system.domain.vo;
 
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 路由显示信息
- * 
+ *
  * @author ruoyi
  */
 public class MetaVo
@@ -58,7 +59,7 @@ public class MetaVo
         this.title = title;
         this.icon = icon;
         this.noCache = noCache;
-        if (StringUtils.ishttp(link))
+        if (HttpUtil.isHttps(link) || HttpUtil.isHttp(link))
         {
             this.link = link;
         }

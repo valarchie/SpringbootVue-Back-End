@@ -18,7 +18,7 @@ import com.ruoyi.common.annotation.RateLimiter;
 import com.ruoyi.common.enums.LimitType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.ServletHolderUtil;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 限流处理
@@ -59,7 +59,7 @@ public class RateLimiterAspect
         try
         {
             Long number = redisTemplate.execute(limitScript, keys, count, time);
-            if (StringUtils.isNull(number) || number.intValue() > count)
+            if (number == null || number.intValue() > count)
             {
                 throw new ServiceException("访问过于频繁，请稍候再试");
             }

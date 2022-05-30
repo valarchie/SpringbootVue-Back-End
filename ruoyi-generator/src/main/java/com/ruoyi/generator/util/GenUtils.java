@@ -1,16 +1,18 @@
 package com.ruoyi.generator.util;
 
+import cn.hutool.core.util.StrUtil;
 import java.util.Arrays;
 import org.apache.commons.lang3.RegExUtils;
 import com.ruoyi.common.constant.GenConstants;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.generator.config.GenConfig;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 代码生成器 工具类
- * 
+ *
  * @author ruoyi
  */
 public class GenUtils
@@ -39,7 +41,7 @@ public class GenUtils
         column.setTableId(table.getTableId());
         column.setCreateBy(table.getCreateBy());
         // 设置java字段名
-        column.setJavaField(StringUtils.toCamelCase(columnName));
+        column.setJavaField(StrUtil.toCamelCase(columnName));
         // 设置默认类型
         column.setJavaType(GenConstants.TYPE_STRING);
         column.setQueryType(GenConstants.QUERY_EQ);
@@ -132,7 +134,7 @@ public class GenUtils
 
     /**
      * 校验数组是否包含指定值
-     * 
+     *
      * @param arr 数组
      * @param targetValue 值
      * @return 是否包含
@@ -144,7 +146,7 @@ public class GenUtils
 
     /**
      * 获取模块名
-     * 
+     *
      * @param packageName 包名
      * @return 模块名
      */
@@ -152,12 +154,12 @@ public class GenUtils
     {
         int lastIndex = packageName.lastIndexOf(".");
         int nameLength = packageName.length();
-        return StringUtils.substring(packageName, lastIndex + 1, nameLength);
+        return StrUtil.sub(packageName, lastIndex + 1, nameLength);
     }
 
     /**
      * 获取业务名
-     * 
+     *
      * @param tableName 表名
      * @return 业务名
      */
@@ -165,12 +167,12 @@ public class GenUtils
     {
         int lastIndex = tableName.lastIndexOf("_");
         int nameLength = tableName.length();
-        return StringUtils.substring(tableName, lastIndex + 1, nameLength);
+        return StrUtil.sub(tableName, lastIndex + 1, nameLength);
     }
 
     /**
      * 表名转换成Java类名
-     * 
+     *
      * @param tableName 表名称
      * @return 类名
      */
@@ -178,17 +180,17 @@ public class GenUtils
     {
         boolean autoRemovePre = GenConfig.getAutoRemovePre();
         String tablePrefix = GenConfig.getTablePrefix();
-        if (autoRemovePre && StringUtils.isNotEmpty(tablePrefix))
+        if (autoRemovePre && StrUtil.isNotEmpty(tablePrefix))
         {
             String[] searchList = StringUtils.split(tablePrefix, ",");
             tableName = replaceFirst(tableName, searchList);
         }
-        return StringUtils.convertToCamelCase(tableName);
+        return StrUtil.toCamelCase(tableName);
     }
 
     /**
      * 批量替换前缀
-     * 
+     *
      * @param replacementm 替换值
      * @param searchList 替换列表
      * @return
@@ -209,7 +211,7 @@ public class GenUtils
 
     /**
      * 关键字替换
-     * 
+     *
      * @param text 需要被替换的名字
      * @return 替换后的名字
      */
@@ -220,7 +222,7 @@ public class GenUtils
 
     /**
      * 获取数据库类型字段
-     * 
+     *
      * @param columnType 列类型
      * @return 截取后的列类型
      */
@@ -238,7 +240,7 @@ public class GenUtils
 
     /**
      * 获取字段长度
-     * 
+     *
      * @param columnType 列类型
      * @return 截取后的列类型
      */

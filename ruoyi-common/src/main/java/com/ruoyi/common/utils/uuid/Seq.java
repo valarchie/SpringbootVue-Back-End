@@ -1,9 +1,10 @@
 package com.ruoyi.common.utils.uuid;
 
-import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.constant.DatePatterns;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @author ruoyi 序列生成类
@@ -59,7 +60,7 @@ public class Seq
      */
     public static String getId(AtomicInteger atomicInt, int length)
     {
-        String result = DateUtils.dateTimeNow();
+        String result = DateUtil.format(DateUtil.date(), DatePatterns.YYYYMMDDHHMMSS);
         result += machineCode;
         result += getSeq(atomicInt, length);
         return result;
@@ -81,7 +82,8 @@ public class Seq
         {
             atomicInt.set(1);
         }
+
         // 转字符串，用0左补齐
-        return StringUtils.padl(value, length);
+        return StrUtil.padAfter(value + "", 10, '0');
     }
 }

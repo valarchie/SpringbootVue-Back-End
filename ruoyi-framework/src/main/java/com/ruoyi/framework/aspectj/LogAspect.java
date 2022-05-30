@@ -1,5 +1,6 @@
 package com.ruoyi.framework.aspectj;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.Method;
 import java.util.Collection;
@@ -21,7 +22,7 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.BusinessStatus;
 import com.ruoyi.common.utils.ServletHolderUtil;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
@@ -84,7 +85,8 @@ public class LogAspect
             if (e != null)
             {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
+
+                operLog.setErrorMsg(StrUtil.sub(e.getMessage(),0, 2000));
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
@@ -128,9 +130,9 @@ public class LogAspect
             setRequestValue(joinPoint, operLog);
         }
         // 是否需要保存response，参数和值
-        if (log.isSaveResponseData() && StringUtils.isNotNull(jsonResult))
+        if (log.isSaveResponseData() && jsonResult!=null)
         {
-            operLog.setJsonResult(StringUtils.substring(JSON.toJSONString(jsonResult), 0, 2000));
+            operLog.setJsonResult(StrUtil.sub(JSON.toJSONString(jsonResult), 0, 2000));
         }
     }
 
@@ -147,12 +149,12 @@ public class LogAspect
         if (Method.PUT.name().equalsIgnoreCase(requestMethod) || Method.POST.name().equalsIgnoreCase(requestMethod))
         {
             String params = argsArrayToString(joinPoint.getArgs());
-            operLog.setOperParam(StringUtils.substring(params, 0, 2000));
+            operLog.setOperParam(StrUtil.sub(params, 0, 2000));
         }
         else
         {
             Map<?, ?> paramsMap = (Map<?, ?>) ServletHolderUtil.getRequest().getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-            operLog.setOperParam(StringUtils.substring(paramsMap.toString(), 0, 2000));
+            operLog.setOperParam(StrUtil.sub(paramsMap.toString(), 0, 2000));
         }
     }
 
@@ -166,7 +168,7 @@ public class LogAspect
         {
             for (Object o : paramsArray)
             {
-                if (StringUtils.isNotNull(o) && !isFilterObject(o))
+                if (o!=null && !isFilterObject(o))
                 {
                     try
                     {

@@ -2,11 +2,11 @@ package com.ruoyi.common.core.text;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 字符集工具类
- * 
+ *
  * @author ruoyi
  */
 public class CharsetKit
@@ -27,18 +27,18 @@ public class CharsetKit
 
     /**
      * 转换为Charset对象
-     * 
+     *
      * @param charset 字符集，为空则返回默认字符集
      * @return Charset
      */
     public static Charset charset(String charset)
     {
-        return StringUtils.isEmpty(charset) ? Charset.defaultCharset() : Charset.forName(charset);
+        return StrUtil.isEmpty(charset) ? Charset.defaultCharset() : Charset.forName(charset);
     }
 
     /**
      * 转换字符串的字符集编码
-     * 
+     *
      * @param source 字符串
      * @param srcCharset 源字符集，默认ISO-8859-1
      * @param destCharset 目标字符集，默认UTF-8
@@ -51,7 +51,7 @@ public class CharsetKit
 
     /**
      * 转换字符串的字符集编码
-     * 
+     *
      * @param source 字符串
      * @param srcCharset 源字符集，默认ISO-8859-1
      * @param destCharset 目标字符集，默认UTF-8
@@ -69,7 +69,7 @@ public class CharsetKit
             destCharset = StandardCharsets.UTF_8;
         }
 
-        if (StringUtils.isEmpty(source) || srcCharset.equals(destCharset))
+        if (StrUtil.isEmpty(source) || srcCharset.equals(destCharset))
         {
             return source;
         }

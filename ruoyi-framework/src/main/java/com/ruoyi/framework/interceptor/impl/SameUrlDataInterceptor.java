@@ -13,7 +13,7 @@ import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.filter.RepeatedlyRequestWrapper;
-import com.ruoyi.common.utils.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
@@ -48,7 +48,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
         }
 
         // body参数为空，获取Parameter的数据
-        if (StringUtils.isEmpty(nowParams))
+        if (StrUtil.isEmpty(nowParams))
         {
             nowParams = JSONObject.toJSONString(request.getParameterMap());
         }
@@ -60,7 +60,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
         String url = request.getRequestURI();
 
         // 唯一值（没有消息头则使用请求地址）
-        String submitKey = StringUtils.trimToEmpty(request.getHeader(header));
+        String submitKey = StrUtil.trimToEmpty(request.getHeader(header));
 
         // 唯一标识（指定key + url + 消息头）
         String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;

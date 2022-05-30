@@ -1,11 +1,10 @@
 package com.ruoyi.framework.web.domain.server;
 
-import static com.ruoyi.common.constant.Constants.KB;
-
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.ruoyi.common.constant.Constants;
 import java.lang.management.ManagementFactory;
-import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.constant.DatePatterns;
 
 /**
  * JVM相关信息
@@ -98,14 +97,14 @@ public class Jvm {
      * JDK启动时间
      */
     public String getStartTime() {
-        return DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getServerStartDate());
+        return DateUtil.format(DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()), DatePatterns.YYYY_MM_DD_HH_MM_SS);
     }
 
     /**
      * JDK运行时间
      */
     public String getRunTime() {
-        return DateUtils.getDatePoor(DateUtils.getNowDate(), DateUtils.getServerStartDate());
+        return DateUtil.formatBetween( DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()), DateUtil.date());
     }
 
     /**
