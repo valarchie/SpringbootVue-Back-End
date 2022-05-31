@@ -1,7 +1,7 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import java.util.List;
 
 /**
  * 用户 业务层
@@ -181,7 +181,7 @@ public interface ISysUserService {
     /**
      * 通过用户ID删除用户
      *
-     * @param userId 用户ID
+     * @param userId  用户ID
      * @return 结果
      */
     int deleteUserById(Long userId);
