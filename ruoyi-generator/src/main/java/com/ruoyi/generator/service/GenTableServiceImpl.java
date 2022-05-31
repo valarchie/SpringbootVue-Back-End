@@ -1,6 +1,21 @@
 package com.ruoyi.generator.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.constant.GenConstants;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.generator.domain.GenTable;
+import com.ruoyi.generator.domain.GenTableColumn;
+import com.ruoyi.generator.mapper.GenTableColumnMapper;
+import com.ruoyi.generator.mapper.GenTableMapper;
+import com.ruoyi.generator.util.GenUtils;
+import com.ruoyi.generator.util.VelocityInitializer;
+import com.ruoyi.generator.util.VelocityUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -22,21 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.GenConstants;
-import com.ruoyi.common.core.text.CharsetKit;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.AuthenticationUtils;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.generator.domain.GenTable;
-import com.ruoyi.generator.domain.GenTableColumn;
-import com.ruoyi.generator.mapper.GenTableColumnMapper;
-import com.ruoyi.generator.mapper.GenTableMapper;
-import com.ruoyi.generator.util.GenUtils;
-import com.ruoyi.generator.util.VelocityInitializer;
-import com.ruoyi.generator.util.VelocityUtils;
 
 /**
  * 业务 服务层实现
@@ -244,7 +244,7 @@ public class GenTableServiceImpl implements IGenTableService {
                 tpl.merge(context, sw);
                 try {
                     String path = getGenPath(table, template);
-                    FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8);
+                    FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetUtil.CHARSET_UTF_8);
                 } catch (IOException e) {
                     throw new ServiceException("渲染模板失败，表名：" + table.getTableName());
                 }
