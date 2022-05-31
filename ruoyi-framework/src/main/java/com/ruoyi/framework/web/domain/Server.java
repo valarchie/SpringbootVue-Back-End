@@ -2,15 +2,16 @@ package com.ruoyi.framework.web.domain;
 
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.NumberUtil;
-import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
 import com.ruoyi.framework.web.domain.server.Cpu;
 import com.ruoyi.framework.web.domain.server.Jvm;
 import com.ruoyi.framework.web.domain.server.Mem;
 import com.ruoyi.framework.web.domain.server.Sys;
 import com.ruoyi.framework.web.domain.server.SysFile;
+import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import lombok.Data;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.CentralProcessor.TickType;
@@ -26,6 +27,7 @@ import oshi.util.Util;
  *
  * @author ruoyi
  */
+@Data
 public class Server {
 
     private static final int OSHI_WAIT_SECOND = 1000;
@@ -54,46 +56,6 @@ public class Server {
      * 磁盘相关信息
      */
     private List<SysFile> sysFiles = new LinkedList<SysFile>();
-
-    public Cpu getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(Cpu cpu) {
-        this.cpu = cpu;
-    }
-
-    public Mem getMem() {
-        return mem;
-    }
-
-    public void setMem(Mem mem) {
-        this.mem = mem;
-    }
-
-    public Jvm getJvm() {
-        return jvm;
-    }
-
-    public void setJvm(Jvm jvm) {
-        this.jvm = jvm;
-    }
-
-    public Sys getSys() {
-        return sys;
-    }
-
-    public void setSys(Sys sys) {
-        this.sys = sys;
-    }
-
-    public List<SysFile> getSysFiles() {
-        return sysFiles;
-    }
-
-    public void setSysFiles(List<SysFile> sysFiles) {
-        this.sysFiles = sysFiles;
-    }
 
     public void copyTo() throws Exception {
         SystemInfo si = new SystemInfo();

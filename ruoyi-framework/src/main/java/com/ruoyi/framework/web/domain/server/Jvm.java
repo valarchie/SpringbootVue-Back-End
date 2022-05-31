@@ -3,14 +3,16 @@ package com.ruoyi.framework.web.domain.server;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.ruoyi.common.constant.Constants;
-import java.lang.management.ManagementFactory;
 import com.ruoyi.common.constant.DatePatterns;
+import java.lang.management.ManagementFactory;
+import lombok.Data;
 
 /**
  * JVM相关信息
  *
  * @author ruoyi
  */
+@Data
 public class Jvm {
 
     /**
@@ -42,24 +44,12 @@ public class Jvm {
         return NumberUtil.div(total, Constants.MB, 2);
     }
 
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
     public double getMax() {
         return NumberUtil.div(max, Constants.MB, 2);
     }
 
-    public void setMax(double max) {
-        this.max = max;
-    }
-
     public double getFree() {
         return NumberUtil.div(free, Constants.MB, 2);
-    }
-
-    public void setFree(double free) {
-        this.free = free;
     }
 
     public double getUsed() {
@@ -75,22 +65,6 @@ public class Jvm {
      */
     public String getName() {
         return ManagementFactory.getRuntimeMXBean().getVmName();
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getHome() {
-        return home;
-    }
-
-    public void setHome(String home) {
-        this.home = home;
     }
 
     /**

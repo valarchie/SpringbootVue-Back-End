@@ -1,13 +1,14 @@
 package com.ruoyi.common.core.page;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.StrUtil;
+import lombok.Data;
 
 /**
  * 分页数据
  *
  * @author ruoyi
  */
+@Data
 public class PageDomain {
 
     /**
@@ -42,32 +43,8 @@ public class PageDomain {
         return StrUtil.toUnderlineCase(orderByColumn) + " " + isAsc;
     }
 
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getOrderByColumn() {
-        return orderByColumn;
-    }
-
     public void setOrderByColumn(String orderByColumn) {
         this.orderByColumn = orderByColumn;
-    }
-
-    public String getIsAsc() {
-        return isAsc;
     }
 
     public void setIsAsc(String isAsc) {

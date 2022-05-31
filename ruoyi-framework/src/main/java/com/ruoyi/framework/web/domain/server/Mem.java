@@ -2,12 +2,14 @@ package com.ruoyi.framework.web.domain.server;
 
 import cn.hutool.core.util.NumberUtil;
 import com.ruoyi.common.constant.Constants;
+import lombok.Data;
 
 /**
  * 內存相关信息
  *
  * @author valarchie
  */
+@Data
 public class Mem {
 
     /**
@@ -29,24 +31,12 @@ public class Mem {
         return NumberUtil.div(total, Constants.GB, 2);
     }
 
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
     public double getUsed() {
         return NumberUtil.div(used, Constants.GB, 2);
     }
 
-    public void setUsed(long used) {
-        this.used = used;
-    }
-
     public double getFree() {
         return NumberUtil.div(free, Constants.GB, 2);
-    }
-
-    public void setFree(long free) {
-        this.free = free;
     }
 
     public double getUsage() {

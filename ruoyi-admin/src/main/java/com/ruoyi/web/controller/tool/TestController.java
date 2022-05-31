@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,6 +103,9 @@ public class TestController extends BaseController {
 }
 
 @ApiModel(value = "UserEntity", description = "用户实体")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 class UserEntity {
 
     @ApiModelProperty("用户ID")
@@ -113,47 +119,4 @@ class UserEntity {
 
     @ApiModelProperty("用户手机")
     private String mobile;
-
-    public UserEntity() {
-
-    }
-
-    public UserEntity(Integer userId, String username, String password, String mobile) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.mobile = mobile;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
 }
