@@ -8,8 +8,8 @@ import com.ruoyi.common.constant.Constants;
  *
  * @author valarchie
  */
-public class Mem
-{
+public class Mem {
+
     /**
      * 内存总量
      */
@@ -25,38 +25,31 @@ public class Mem
      */
     private double free;
 
-    public double getTotal()
-    {
+    public double getTotal() {
         return NumberUtil.div(total, Constants.GB, 2);
     }
 
-    public void setTotal(long total)
-    {
+    public void setTotal(long total) {
         this.total = total;
     }
 
-    public double getUsed()
-    {
+    public double getUsed() {
         return NumberUtil.div(used, Constants.GB, 2);
     }
 
-    public void setUsed(long used)
-    {
+    public void setUsed(long used) {
         this.used = used;
     }
 
-    public double getFree()
-    {
+    public double getFree() {
         return NumberUtil.div(free, Constants.GB, 2);
     }
 
-    public void setFree(long free)
-    {
+    public void setFree(long free) {
         this.free = free;
     }
 
-    public double getUsage()
-    {
+    public double getUsage() {
         return NumberUtil.div(used * 100, total, 2);
     }
 }

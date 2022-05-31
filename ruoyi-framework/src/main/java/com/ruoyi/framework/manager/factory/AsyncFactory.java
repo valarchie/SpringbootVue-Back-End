@@ -20,8 +20,8 @@ import eu.bitwalker.useragentutils.UserAgent;
  *
  * @author ruoyi
  */
-public class AsyncFactory
-{
+public class AsyncFactory {
+
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
 
     /**
@@ -34,15 +34,13 @@ public class AsyncFactory
      * @return 任务task
      */
     public static TimerTask recordLogininfor(final String username, final String status, final String message,
-            final Object... args)
-    {
-        final UserAgent userAgent = UserAgent.parseUserAgentString(ServletHolderUtil.getRequest().getHeader("User-Agent"));
+        final Object... args) {
+        final UserAgent userAgent = UserAgent.parseUserAgentString(
+            ServletHolderUtil.getRequest().getHeader("User-Agent"));
         final String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
-        return new TimerTask()
-        {
+        return new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 String address = AddressUtils.getRealAddressByIp(ip);
                 StringBuilder s = new StringBuilder();
                 s.append(getBlock(ip));
@@ -65,12 +63,9 @@ public class AsyncFactory
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
                 // 日志状态
-                if (StrUtil.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER))
-                {
+                if (StrUtil.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
                     logininfor.setStatus(Constants.SUCCESS);
-                }
-                else if (Constants.LOGIN_FAIL.equals(status))
-                {
+                } else if (Constants.LOGIN_FAIL.equals(status)) {
                     logininfor.setStatus(Constants.FAIL);
                 }
                 // 插入数据
@@ -85,13 +80,10 @@ public class AsyncFactory
      * @param operLog 操作日志信息
      * @return 任务task
      */
-    public static TimerTask recordOper(final SysOperLog operLog)
-    {
-        return new TimerTask()
-        {
+    public static TimerTask recordOper(final SysOperLog operLog) {
+        return new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 // 远程查询操作地点
                 operLog.setOperLocation(AddressUtils.getRealAddressByIp(operLog.getOperIp()));
                 SpringUtil.getBean(ISysOperLogService.class).insertOperlog(operLog);
@@ -99,10 +91,8 @@ public class AsyncFactory
         };
     }
 
-    private static String getBlock(Object msg)
-    {
-        if (msg == null)
-        {
+    private static String getBlock(Object msg) {
+        if (msg == null) {
             msg = "";
         }
         return "[" + msg.toString() + "]";

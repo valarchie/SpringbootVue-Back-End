@@ -22,22 +22,19 @@ import org.springframework.util.AntPathMatcher;
  *
  * @author ruoyi
  */
-public class XssFilter implements Filter
-{
+public class XssFilter implements Filter {
+
     /**
      * 排除链接
      */
     public List<String> excludes = new ArrayList<>();
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException
-    {
+    public void init(FilterConfig filterConfig) throws ServletException {
         String tempExcludes = filterConfig.getInitParameter("excludes");
-        if (StrUtil.isNotEmpty(tempExcludes))
-        {
+        if (StrUtil.isNotEmpty(tempExcludes)) {
             String[] url = tempExcludes.split(",");
-            for (int i = 0; url != null && i < url.length; i++)
-            {
+            for (int i = 0; url != null && i < url.length; i++) {
                 excludes.add(url[i]);
             }
         }
@@ -45,12 +42,10 @@ public class XssFilter implements Filter
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException
-    {
+        throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        if (handleExcludeURL(req, resp))
-        {
+        if (handleExcludeURL(req, resp)) {
             chain.doFilter(request, response);
             return;
         }
@@ -58,13 +53,11 @@ public class XssFilter implements Filter
         chain.doFilter(xssRequest, response);
     }
 
-    private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response)
-    {
+    private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
         String url = request.getServletPath();
         String method = request.getMethod();
         // GET DELETE 不过滤
-        if (method == null || method.matches("GET") || method.matches("DELETE"))
-        {
+        if (method == null || method.matches("GET") || method.matches("DELETE")) {
             return true;
         }
 
@@ -78,17 +71,13 @@ public class XssFilter implements Filter
      * @param strs 需要检查的字符串数组
      * @return 是否匹配
      */
-    public static boolean matches(String str, List<String> strs)
-    {
+    public static boolean matches(String str, List<String> strs) {
 
-        if (StrUtil.isEmpty(str) || CollUtil.isEmpty(strs))
-        {
+        if (StrUtil.isEmpty(str) || CollUtil.isEmpty(strs)) {
             return false;
         }
-        for (String pattern : strs)
-        {
-            if (isMatch(pattern, str))
-            {
+        for (String pattern : strs) {
+            if (isMatch(pattern, str)) {
                 return true;
             }
         }
@@ -96,25 +85,19 @@ public class XssFilter implements Filter
     }
 
     /**
-     * 判断url是否与规则配置:
-     * ? 表示单个字符;
-     * * 表示一层路径内的任意字符串，不可跨层级;
-     * ** 表示任意层路径;
+     * 判断url是否与规则配置: ? 表示单个字符; * 表示一层路径内的任意字符串，不可跨层级; ** 表示任意层路径;
      *
      * @param pattern 匹配规则
      * @param url 需要匹配的url
-     * @return
      */
-    public static boolean isMatch(String pattern, String url)
-    {
+    public static boolean isMatch(String pattern, String url) {
         AntPathMatcher matcher = new AntPathMatcher();
         return matcher.match(pattern, url);
     }
 
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
 
     }
 }

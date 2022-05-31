@@ -1,6 +1,7 @@
 package com.ruoyi.common.utils;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import java.util.Collection;
 import java.util.List;
@@ -38,8 +39,8 @@ public class DictUtils {
      */
     public static List<SysDictData> getDictCache(String key) {
         Object cacheObj = SpringUtil.getBean(RedisCache.class).getCacheObject(getCacheKey(key));
-        if (cacheObj!=null) {
-            return (List<SysDictData>)cacheObj;
+        if (cacheObj != null) {
+            return (List<SysDictData>) cacheObj;
         }
         return null;
     }
@@ -78,7 +79,7 @@ public class DictUtils {
         StringBuilder propertyString = new StringBuilder();
         List<SysDictData> datas = getDictCache(dictType);
 
-        if (StringUtils.containsAny(separator, dictValue) && CollUtil.isNotEmpty(datas)) {
+        if (StrUtil.containsAny(separator, dictValue) && CollUtil.isNotEmpty(datas)) {
             for (SysDictData dict : datas) {
                 for (String value : dictValue.split(separator)) {
                     if (value.equals(dict.getDictValue())) {
@@ -94,7 +95,7 @@ public class DictUtils {
                 }
             }
         }
-        return StringUtils.stripEnd(propertyString.toString(), separator);
+        return StrUtil.strip(propertyString.toString(), "", separator);
     }
 
     /**
@@ -109,7 +110,7 @@ public class DictUtils {
         StringBuilder propertyString = new StringBuilder();
         List<SysDictData> datas = getDictCache(dictType);
 
-        if (StringUtils.containsAny(separator, dictLabel) && CollUtil.isNotEmpty(datas)) {
+        if (StrUtil.containsAny(separator, dictLabel) && CollUtil.isNotEmpty(datas)) {
             for (SysDictData dict : datas) {
                 for (String label : dictLabel.split(separator)) {
                     if (label.equals(dict.getDictLabel())) {
@@ -125,7 +126,7 @@ public class DictUtils {
                 }
             }
         }
-        return StringUtils.stripEnd(propertyString.toString(), separator);
+        return StrUtil.strip(propertyString.toString(), "", separator);
     }
 
     /**

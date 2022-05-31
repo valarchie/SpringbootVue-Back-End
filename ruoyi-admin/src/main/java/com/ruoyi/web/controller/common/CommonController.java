@@ -29,8 +29,8 @@ import com.ruoyi.framework.config.ServerConfig;
  */
 @RestController
 @RequestMapping("/common")
-public class CommonController
-{
+public class CommonController {
+
     private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
     @Autowired
@@ -45,12 +45,10 @@ public class CommonController
      * @param delete 是否删除
      */
     @GetMapping("/download")
-    public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
-    {
-        try
-        {
-            if (!FileUploadUtils.checkAllowDownload(fileName))
-            {
+    public void fileDownload(String fileName, Boolean delete, HttpServletResponse response,
+        HttpServletRequest request) {
+        try {
+            if (!FileUploadUtils.checkAllowDownload(fileName)) {
                 throw new Exception(StrUtil.format("文件名称({})非法，不允许下载。 ", fileName));
             }
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
@@ -60,13 +58,10 @@ public class CommonController
             FileUploadUtils.setAttachmentResponseHeader(response, realFileName);
 
             IoUtil.copy(FileUtil.getInputStream(filePath), response.getOutputStream());
-            if (delete)
-            {
+            if (delete) {
                 FileUtil.del(filePath);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("下载文件失败", e);
         }
     }
@@ -75,10 +70,8 @@ public class CommonController
      * 通用上传请求（单个）
      */
     @PostMapping("/upload")
-    public AjaxResult uploadFile(MultipartFile file) throws Exception
-    {
-        try
-        {
+    public AjaxResult uploadFile(MultipartFile file) throws Exception {
+        try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
             // 上传并返回新文件名称
@@ -90,9 +83,7 @@ public class CommonController
             ajax.put("newFileName", FileUploadUtils.getFileNameFromDirPath(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }
     }
@@ -101,18 +92,15 @@ public class CommonController
      * 通用上传请求（多个）
      */
     @PostMapping("/uploads")
-    public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception
-    {
-        try
-        {
+    public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception {
+        try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
             List<String> urls = new ArrayList<String>();
             List<String> fileNames = new ArrayList<String>();
             List<String> newFileNames = new ArrayList<String>();
             List<String> originalFilenames = new ArrayList<String>();
-            for (MultipartFile file : files)
-            {
+            for (MultipartFile file : files) {
                 // 上传并返回新文件名称
                 String fileName = FileUploadUtils.upload(filePath, file);
                 String url = serverConfig.getUrl() + fileName;
@@ -122,14 +110,12 @@ public class CommonController
                 originalFilenames.add(file.getOriginalFilename());
             }
             AjaxResult ajax = AjaxResult.success();
-            ajax.put("urls", StrUtil.join(FILE_DELIMETER,urls));
-            ajax.put("fileNames", StrUtil.join(FILE_DELIMETER,fileNames));
-            ajax.put("newFileNames", StrUtil.join(FILE_DELIMETER,newFileNames));
+            ajax.put("urls", StrUtil.join(FILE_DELIMETER, urls));
+            ajax.put("fileNames", StrUtil.join(FILE_DELIMETER, fileNames));
+            ajax.put("newFileNames", StrUtil.join(FILE_DELIMETER, newFileNames));
             ajax.put("originalFilenames", StrUtil.join(FILE_DELIMETER, originalFilenames));
             return ajax;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }
     }
@@ -139,12 +125,9 @@ public class CommonController
      */
     @GetMapping("/download/resource")
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
-            throws Exception
-    {
-        try
-        {
-            if (!FileUploadUtils.checkAllowDownload(resource))
-            {
+        throws Exception {
+        try {
+            if (!FileUploadUtils.checkAllowDownload(resource)) {
                 throw new Exception(StrUtil.format("资源文件({})非法，不允许下载。 ", resource));
             }
             // 本地资源路径
@@ -156,9 +139,7 @@ public class CommonController
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUploadUtils.setAttachmentResponseHeader(response, downloadName);
             IoUtil.copy(FileUtil.getInputStream(downloadPath), response.getOutputStream());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("下载文件失败", e);
         }
     }

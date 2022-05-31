@@ -97,14 +97,16 @@ public class Jvm {
      * JDK启动时间
      */
     public String getStartTime() {
-        return DateUtil.format(DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()), DatePatterns.YYYY_MM_DD_HH_MM_SS);
+        return DateUtil.format(DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()),
+            DatePatterns.YYYY_MM_DD_HH_MM_SS);
     }
 
     /**
      * JDK运行时间
      */
     public String getRunTime() {
-        return DateUtil.formatBetween( DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()), DateUtil.date());
+        return DateUtil.formatBetween(DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()),
+            DateUtil.date());
     }
 
     /**

@@ -19,14 +19,13 @@ import cn.hutool.core.util.StrUtil;
  * @author ruoyi
  */
 @Component
-public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, Serializable
-{
+public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, Serializable {
+
     private static final long serialVersionUID = -8970718410437077606L;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
-            throws IOException
-    {
+        throws IOException {
         int code = HttpStatus.HTTP_UNAUTHORIZED;
         String msg = StrUtil.format("请求访问：{}，认证失败，无法访问系统资源", request.getRequestURI());
         ServletHolderUtil.renderString(response, JSON.toJSONString(AjaxResult.error(code, msg)));
