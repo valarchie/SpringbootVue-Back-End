@@ -1,7 +1,7 @@
 package com.ruoyi.common.core.page;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;

@@ -32,10 +32,8 @@ public abstract class AbstractRepeatSubmitInterceptor implements HandlerIntercep
                     return false;
                 }
             }
-            return true;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
