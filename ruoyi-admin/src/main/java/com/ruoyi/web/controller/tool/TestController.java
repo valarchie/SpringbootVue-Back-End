@@ -1,5 +1,13 @@
 package com.ruoyi.web.controller.tool;
 
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,15 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.R;
-import cn.hutool.core.util.StrUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 
 /**
  * swagger 用户测试方法
@@ -32,17 +31,17 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/test/user")
 public class TestController extends BaseController {
 
-    private final static Map<Integer, UserEntity> users = new LinkedHashMap<Integer, UserEntity>();
+    private final static Map<Integer, UserEntity> USER_ENTITY_MAP = new LinkedHashMap<>();
 
-    {
-        users.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
-        users.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
+    static {
+        USER_ENTITY_MAP.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
+        USER_ENTITY_MAP.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
     }
 
     @ApiOperation("获取用户列表")
     @GetMapping("/list")
     public R<List<UserEntity>> userList() {
-        List<UserEntity> userList = new ArrayList<UserEntity>(users.values());
+        List<UserEntity> userList = new ArrayList<>(USER_ENTITY_MAP.values());
         return R.ok(userList);
     }
 
@@ -50,8 +49,8 @@ public class TestController extends BaseController {
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @GetMapping("/{userId}")
     public R<UserEntity> getUser(@PathVariable Integer userId) {
-        if (!users.isEmpty() && users.containsKey(userId)) {
-            return R.ok(users.get(userId));
+        if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
+            return R.ok(USER_ENTITY_MAP.get(userId));
         } else {
             return R.fail("用户不存在");
         }
@@ -69,7 +68,7 @@ public class TestController extends BaseController {
         if (user == null || user.getUserId() == null) {
             return R.fail("用户ID不能为空");
         }
-        users.put(user.getUserId(), user);
+        USER_ENTITY_MAP.put(user.getUserId(), user);
         return R.ok();
     }
 
@@ -79,11 +78,11 @@ public class TestController extends BaseController {
         if (user == null || user.getUserId() == null) {
             return R.fail("用户ID不能为空");
         }
-        if (users.isEmpty() || !users.containsKey(user.getUserId())) {
+        if (USER_ENTITY_MAP.isEmpty() || !USER_ENTITY_MAP.containsKey(user.getUserId())) {
             return R.fail("用户不存在");
         }
-        users.remove(user.getUserId());
-        users.put(user.getUserId(), user);
+        USER_ENTITY_MAP.remove(user.getUserId());
+        USER_ENTITY_MAP.put(user.getUserId(), user);
         return R.ok();
     }
 
@@ -91,8 +90,8 @@ public class TestController extends BaseController {
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @DeleteMapping("/{userId}")
     public R<String> delete(@PathVariable Integer userId) {
-        if (!users.isEmpty() && users.containsKey(userId)) {
-            users.remove(userId);
+        if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
+            USER_ENTITY_MAP.remove(userId);
             return R.ok();
         } else {
             return R.fail("用户不存在");

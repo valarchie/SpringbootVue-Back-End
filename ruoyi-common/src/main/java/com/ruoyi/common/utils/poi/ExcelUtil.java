@@ -8,7 +8,15 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelReader;
+import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.annotation.Excel.ColumnType;
+import com.ruoyi.common.annotation.Excel.Type;
+import com.ruoyi.common.annotation.Excels;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.text.Convert;
+import com.ruoyi.common.exception.UtilException;
+import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -76,16 +84,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.annotation.Excel.ColumnType;
-import com.ruoyi.common.annotation.Excel.Type;
-import com.ruoyi.common.annotation.Excels;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.common.exception.UtilException;
-import com.ruoyi.common.utils.DictUtils;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * Excel相关处理
@@ -158,7 +156,7 @@ public class ExcelUtil<T> {
     /**
      * 统计列表
      */
-    private Map<Integer, Double> statistics = new HashMap<Integer, Double>();
+    private Map<Integer, Double> statistics = new HashMap<>();
 
     /**
      * 数字格式
@@ -266,7 +264,7 @@ public class ExcelUtil<T> {
             }
             // 有数据时才处理 得到类的所有field.
             List<Object[]> fields = this.getFields();
-            Map<Integer, Object[]> fieldsMap = new HashMap<Integer, Object[]>();
+            Map<Integer, Object[]> fieldsMap = new HashMap<>();
             for (Object[] objects : fields) {
                 Excel attr = (Excel) objects[1];
                 Integer column = cellMap.get(attr.name());
@@ -544,7 +542,7 @@ public class ExcelUtil<T> {
      */
     private Map<String, CellStyle> createStyles(Workbook wb) {
         // 写入各条记录,每条记录对应excel表中的一行
-        Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
+        Map<String, CellStyle> styles = new HashMap<>();
         CellStyle style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -607,7 +605,7 @@ public class ExcelUtil<T> {
      * @return 自定义样式列表
      */
     private Map<String, CellStyle> annotationStyles(Workbook wb) {
-        Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
+        Map<String, CellStyle> styles = new HashMap<>();
         for (Object[] os : fields) {
             Excel excel = (Excel) os[1];
             String key = "data_" + excel.align() + "_" + excel.color();
@@ -1138,7 +1136,7 @@ public class ExcelUtil<T> {
      * @return Map key:图片单元格索引（1_1）String，value:图片流PictureData
      */
     public static Map<String, PictureData> getSheetPictures03(HSSFSheet sheet, HSSFWorkbook workbook) {
-        Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();
+        Map<String, PictureData> sheetIndexPicMap = new HashMap<>();
         List<HSSFPictureData> pictures = workbook.getAllPictures();
         if (!pictures.isEmpty()) {
             for (HSSFShape shape : sheet.getDrawingPatriarch().getChildren()) {
@@ -1165,7 +1163,7 @@ public class ExcelUtil<T> {
      * @return Map key:图片单元格索引（1_1）String，value:图片流PictureData
      */
     public static Map<String, PictureData> getSheetPictures07(XSSFSheet sheet, XSSFWorkbook workbook) {
-        Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();
+        Map<String, PictureData> sheetIndexPicMap = new HashMap<>();
         for (POIXMLDocumentPart dr : sheet.getRelations()) {
             if (dr instanceof XSSFDrawing) {
                 XSSFDrawing drawing = (XSSFDrawing) dr;
@@ -1212,8 +1210,8 @@ public class ExcelUtil<T> {
      * 调用Setter方法, 仅匹配方法名。 支持多级，如：对象名.对象名.方法
      */
     public static <E> void invokeSetter(Object obj, String propertyName, E value) {
-        String SETTER_PREFIX = "set";
-        String GETTER_PREFIX = "get";
+        final String SETTER_PREFIX = "set";
+        final String GETTER_PREFIX = "get";
         Object object = obj;
         String[] names = org.apache.commons.lang3.StringUtils.split(propertyName, ".");
         for (int i = 0; i < names.length; i++) {
