@@ -59,6 +59,10 @@ spring:
     restart:
       # 热部署开关
       enabled: true
+  # compatible with swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 
 
 # token配置

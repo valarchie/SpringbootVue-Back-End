@@ -7,17 +7,15 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.JacksonUtil;
 import java.nio.charset.Charset;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * query geography address from ip
  *
  * @author valarchie
  */
+@Slf4j
 public class AddressUtils {
-
-    private static final Logger log = LoggerFactory.getLogger(AddressUtils.class);
 
     /**
      * website for query geography address from ip

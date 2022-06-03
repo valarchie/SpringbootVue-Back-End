@@ -1,8 +1,6 @@
 package com.ruoyi.framework.web.service;
 
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -10,13 +8,14 @@ import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.AuthenticationUtils;
-import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 注册校验方法
@@ -68,7 +67,7 @@ public class SysRegisterService {
             if (!regFlag) {
                 msg = "注册失败,请联系系统管理人员";
             } else {
-                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.REGISTER,
+                AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.REGISTER,
                     MessageUtils.message("user.register.success")));
             }
         }

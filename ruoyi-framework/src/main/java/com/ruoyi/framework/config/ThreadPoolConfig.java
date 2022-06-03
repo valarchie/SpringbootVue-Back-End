@@ -3,15 +3,14 @@ package com.ruoyi.framework.config;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * 线程池配置
@@ -19,9 +18,9 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author ruoyi
  **/
 @Configuration
+@Slf4j
 public class ThreadPoolConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(ThreadPoolConfig.class);
     // 核心线程池大小
     private int corePoolSize = 50;
 
@@ -81,7 +80,7 @@ public class ThreadPoolConfig {
             }
         }
         if (t != null) {
-            logger.error(t.getMessage(), t);
+            log.error(t.getMessage(), t);
         }
     }
 }

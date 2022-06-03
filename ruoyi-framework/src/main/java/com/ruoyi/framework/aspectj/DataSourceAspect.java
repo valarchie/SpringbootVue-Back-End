@@ -1,19 +1,17 @@
 package com.ruoyi.framework.aspectj;
 
+import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.DataSource;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
 
 /**
  * 多数据源处理
@@ -23,9 +21,8 @@ import com.ruoyi.framework.datasource.DynamicDataSourceContextHolder;
 @Aspect
 @Order(1)
 @Component
+@Slf4j
 public class DataSourceAspect {
-
-    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Pointcut("@annotation(com.ruoyi.common.annotation.DataSource)"
         + "|| @within(com.ruoyi.common.annotation.DataSource)")

@@ -1,12 +1,25 @@
 package com.ruoyi.framework.config;
 
+import static com.google.code.kaptcha.Constants.KAPTCHA_BORDER;
+import static com.google.code.kaptcha.Constants.KAPTCHA_BORDER_COLOR;
+import static com.google.code.kaptcha.Constants.KAPTCHA_IMAGE_HEIGHT;
+import static com.google.code.kaptcha.Constants.KAPTCHA_IMAGE_WIDTH;
+import static com.google.code.kaptcha.Constants.KAPTCHA_NOISE_COLOR;
+import static com.google.code.kaptcha.Constants.KAPTCHA_NOISE_IMPL;
+import static com.google.code.kaptcha.Constants.KAPTCHA_OBSCURIFICATOR_IMPL;
+import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_CONFIG_KEY;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_CHAR_LENGTH;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_CHAR_SPACE;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_FONT_COLOR;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_FONT_NAMES;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_FONT_SIZE;
+import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_IMPL;
+
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
 import java.util.Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
-
-import static com.google.code.kaptcha.Constants.*;
 
 /**
  * 验证码配置
@@ -62,7 +75,7 @@ public class CaptchaConfig {
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
         // 验证码文本生成器
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL, "com.ruoyi.framework.config.KaptchaTextCreator");
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL, "com.ruoyi.framework.config.CaptchaMathTextCreator");
         // 验证码文本字符间距 默认为2
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
         // 验证码文本字符长度 默认为5

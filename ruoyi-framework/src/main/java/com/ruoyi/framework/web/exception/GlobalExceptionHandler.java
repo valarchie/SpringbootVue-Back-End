@@ -1,19 +1,17 @@
 package com.ruoyi.framework.web.exception;
 
 import cn.hutool.http.HttpStatus;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.exception.DemoModeException;
+import com.ruoyi.common.exception.ServiceException;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.exception.DemoModeException;
-import com.ruoyi.common.exception.ServiceException;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * 全局异常处理器
@@ -21,9 +19,8 @@ import cn.hutool.core.util.StrUtil;
  * @author ruoyi
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
      * 权限校验异常

@@ -2,12 +2,17 @@ package com.ruoyi.web.controller.common;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.framework.config.ServerConfig;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.common.utils.file.FileUploadUtils;
-import com.ruoyi.framework.config.ServerConfig;
 
 /**
  * 通用请求处理
@@ -29,9 +28,8 @@ import com.ruoyi.framework.config.ServerConfig;
  */
 @RestController
 @RequestMapping("/common")
+@Slf4j
 public class CommonController {
-
-    private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
     @Autowired
     private ServerConfig serverConfig;

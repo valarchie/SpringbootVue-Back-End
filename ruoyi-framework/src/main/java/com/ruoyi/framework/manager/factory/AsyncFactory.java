@@ -1,19 +1,19 @@
 package com.ruoyi.framework.manager.factory;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import java.util.TimerTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.ServletHolderUtil;
-import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.system.domain.SysLogininfor;
 import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.service.ISysLogininforService;
 import com.ruoyi.system.service.ISysOperLogService;
 import eu.bitwalker.useragentutils.UserAgent;
+import java.util.TimerTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 异步工厂（产生任务用）
@@ -22,7 +22,7 @@ import eu.bitwalker.useragentutils.UserAgent;
  */
 public class AsyncFactory {
 
-    private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
+    private static final Logger log = LoggerFactory.getLogger("sys-user");
 
     /**
      * 记录登录信息
@@ -33,7 +33,7 @@ public class AsyncFactory {
      * @param args 列表
      * @return 任务task
      */
-    public static TimerTask recordLogininfor(final String username, final String status, final String message,
+    public static TimerTask recordLoginInfo(final String username, final String status, final String message,
         final Object... args) {
         final UserAgent userAgent = UserAgent.parseUserAgentString(
             ServletHolderUtil.getRequest().getHeader("User-Agent"));
@@ -49,7 +49,7 @@ public class AsyncFactory {
                 s.append(getBlock(status));
                 s.append(getBlock(message));
                 // 打印信息到日志
-                sys_user_logger.info(s.toString(), args);
+                log.info(s.toString(), args);
                 // 获取客户端操作系统
                 String os = userAgent.getOperatingSystem().getName();
                 // 获取客户端浏览器
@@ -95,6 +95,6 @@ public class AsyncFactory {
         if (msg == null) {
             msg = "";
         }
-        return "[" + msg.toString() + "]";
+        return "[" + msg + "]";
     }
 }

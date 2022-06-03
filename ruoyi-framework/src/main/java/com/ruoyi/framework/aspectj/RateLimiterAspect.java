@@ -1,24 +1,22 @@
 package com.ruoyi.framework.aspectj;
 
 import cn.hutool.extra.servlet.ServletUtil;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.annotation.RateLimiter;
 import com.ruoyi.common.enums.LimitType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.ServletHolderUtil;
-import cn.hutool.core.util.StrUtil;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.stereotype.Component;
 
 /**
  * 限流处理
@@ -27,9 +25,8 @@ import cn.hutool.core.util.StrUtil;
  */
 @Aspect
 @Component
+@Slf4j
 public class RateLimiterAspect {
-
-    private static final Logger log = LoggerFactory.getLogger(RateLimiterAspect.class);
 
     private RedisTemplate<Object, Object> redisTemplate;
 

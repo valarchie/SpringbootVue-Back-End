@@ -27,13 +27,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruoyi
  */
 @Service
+@Slf4j
 public class GenTableServiceImpl implements IGenTableService {
-
-    private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);
 
     @Autowired
     private GenTableMapper genTableMapper;

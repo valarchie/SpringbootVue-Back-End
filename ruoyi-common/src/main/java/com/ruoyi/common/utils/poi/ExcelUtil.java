@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -82,17 +83,14 @@ import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Excel相关处理
  *
  * @author ruoyi
  */
+@Slf4j
 public class ExcelUtil<T> {
-
-    private static final Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     public static final String FORMULA_REGEX_STR = "=|-|\\+|@";
 
