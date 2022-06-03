@@ -1,5 +1,14 @@
 package com.ruoyi.web.controller.system;
 
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.ResponseDTO;
+import com.ruoyi.common.core.domain.entity.SysDictData;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.service.ISysDictDataService;
+import com.ruoyi.system.service.ISysDictTypeService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -14,16 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.entity.SysDictData;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.enums.BusinessType;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDictDataService;
-import com.ruoyi.system.service.ISysDictTypeService;
 
 /**
  * 数据字典信息
@@ -62,20 +61,20 @@ public class SysDictDataController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:dict:query')")
     @GetMapping(value = "/{dictCode}")
-    public AjaxResult getInfo(@PathVariable Long dictCode) {
-        return AjaxResult.success(dictDataService.selectDictDataById(dictCode));
+    public ResponseDTO getInfo(@PathVariable Long dictCode) {
+        return ResponseDTO.success(dictDataService.selectDictDataById(dictCode));
     }
 
     /**
      * 根据字典类型查询字典数据信息
      */
     @GetMapping(value = "/type/{dictType}")
-    public AjaxResult dictType(@PathVariable String dictType) {
+    public ResponseDTO dictType(@PathVariable String dictType) {
         List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
         if (data == null) {
             data = new ArrayList<SysDictData>();
         }
-        return AjaxResult.success(data);
+        return ResponseDTO.success(data);
     }
 
     /**
@@ -84,7 +83,7 @@ public class SysDictDataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
     @Log(title = "字典数据", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysDictData dict) {
+    public ResponseDTO add(@Validated @RequestBody SysDictData dict) {
         dict.setCreateBy(getUsername());
         return toAjax(dictDataService.insertDictData(dict));
     }
@@ -95,7 +94,7 @@ public class SysDictDataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @Log(title = "字典数据", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysDictData dict) {
+    public ResponseDTO edit(@Validated @RequestBody SysDictData dict) {
         dict.setUpdateBy(getUsername());
         return toAjax(dictDataService.updateDictData(dict));
     }
@@ -106,7 +105,7 @@ public class SysDictDataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
     @Log(title = "字典类型", businessType = BusinessType.DELETE)
     @DeleteMapping("/{dictCodes}")
-    public AjaxResult remove(@PathVariable Long[] dictCodes) {
+    public ResponseDTO remove(@PathVariable Long[] dictCodes) {
         dictDataService.deleteDictDataByIds(dictCodes);
         return success();
     }

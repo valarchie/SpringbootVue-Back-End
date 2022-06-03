@@ -1,14 +1,7 @@
 package com.ruoyi.web.controller.system;
 
-import java.util.List;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginBody;
@@ -16,6 +9,13 @@ import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.framework.web.service.SysLoginService;
 import com.ruoyi.framework.web.service.SysPermissionService;
 import com.ruoyi.system.service.ISysMenuService;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 登录验证
@@ -41,8 +41,8 @@ public class SysLoginController {
      * @return 结果
      */
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginBody loginBody) {
-        AjaxResult ajax = AjaxResult.success();
+    public ResponseDTO login(@RequestBody LoginBody loginBody) {
+        ResponseDTO ajax = ResponseDTO.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
             loginBody.getUuid());
@@ -56,13 +56,13 @@ public class SysLoginController {
      * @return 用户信息
      */
     @GetMapping("getInfo")
-    public AjaxResult getInfo() {
+    public ResponseDTO getInfo() {
         SysUser user = AuthenticationUtils.getLoginUser().getUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(user);
-        AjaxResult ajax = AjaxResult.success();
+        ResponseDTO ajax = ResponseDTO.success();
         ajax.put("user", user);
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
@@ -75,9 +75,9 @@ public class SysLoginController {
      * @return 路由信息
      */
     @GetMapping("getRouters")
-    public AjaxResult getRouters() {
+    public ResponseDTO getRouters() {
         Long userId = AuthenticationUtils.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
-        return AjaxResult.success(menuService.buildMenus(menus));
+        return ResponseDTO.success(menuService.buildMenus(menus));
     }
 }

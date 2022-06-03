@@ -2,22 +2,22 @@ package com.ruoyi.web.controller.common;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.google.code.kaptcha.Producer;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.ResponseDTO;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.system.service.ISysConfigService;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import com.ruoyi.common.config.RuoYiConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.code.kaptcha.Producer;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.system.service.ISysConfigService;
 
 /**
  * Verification Code Endpoint
@@ -43,8 +43,8 @@ public class CaptchaController {
      * 生成验证码
      */
     @GetMapping("/captchaImage")
-    public AjaxResult getCode(HttpServletResponse response) {
-        AjaxResult ajax = AjaxResult.success();
+    public ResponseDTO getCode(HttpServletResponse response) {
+        ResponseDTO ajax = ResponseDTO.success();
         boolean captchaOnOff = configService.selectCaptchaOnOff();
         ajax.put("captchaOnOff", captchaOnOff);
         if (!captchaOnOff) {
@@ -76,7 +76,7 @@ public class CaptchaController {
         try {
             ImageIO.write(image, "jpg", os);
         } catch (IOException e) {
-            return AjaxResult.error(e.getMessage());
+            return ResponseDTO.error(e.getMessage());
         }
 
         ajax.put("uuid", uuid);

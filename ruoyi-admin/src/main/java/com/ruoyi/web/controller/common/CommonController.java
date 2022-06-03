@@ -5,7 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.config.ServerConfig;
 import java.util.ArrayList;
@@ -68,21 +68,21 @@ public class CommonController {
      * 通用上传请求（单个）
      */
     @PostMapping("/upload")
-    public AjaxResult uploadFile(MultipartFile file) throws Exception {
+    public ResponseDTO uploadFile(MultipartFile file) throws Exception {
         try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
-            AjaxResult ajax = AjaxResult.success();
+            ResponseDTO ajax = ResponseDTO.success();
             ajax.put("url", url);
             ajax.put("fileName", fileName);
             ajax.put("newFileName", FileUploadUtils.getFileNameFromDirPath(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
         } catch (Exception e) {
-            return AjaxResult.error(e.getMessage());
+            return ResponseDTO.error(e.getMessage());
         }
     }
 
@@ -90,7 +90,7 @@ public class CommonController {
      * 通用上传请求（多个）
      */
     @PostMapping("/uploads")
-    public AjaxResult uploadFiles(List<MultipartFile> files) throws Exception {
+    public ResponseDTO uploadFiles(List<MultipartFile> files) throws Exception {
         try {
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
@@ -107,14 +107,14 @@ public class CommonController {
                 newFileNames.add(FileUploadUtils.getFileNameFromDirPath(fileName));
                 originalFilenames.add(file.getOriginalFilename());
             }
-            AjaxResult ajax = AjaxResult.success();
+            ResponseDTO ajax = ResponseDTO.success();
             ajax.put("urls", StrUtil.join(FILE_DELIMETER, urls));
             ajax.put("fileNames", StrUtil.join(FILE_DELIMETER, fileNames));
             ajax.put("newFileNames", StrUtil.join(FILE_DELIMETER, newFileNames));
             ajax.put("originalFilenames", StrUtil.join(FILE_DELIMETER, originalFilenames));
             return ajax;
         } catch (Exception e) {
-            return AjaxResult.error(e.getMessage());
+            return ResponseDTO.error(e.getMessage());
         }
     }
 

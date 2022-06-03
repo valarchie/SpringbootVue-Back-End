@@ -2,7 +2,7 @@ package com.ruoyi.framework.interceptor;
 
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.annotation.RepeatSubmit;
-import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +27,8 @@ public abstract class AbstractRepeatSubmitInterceptor implements HandlerIntercep
             RepeatSubmit annotation = method.getAnnotation(RepeatSubmit.class);
             if (annotation != null) {
                 if (this.isRepeatSubmit(request, annotation)) {
-                    AjaxResult ajaxResult = AjaxResult.error(annotation.message());
-                    ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(ajaxResult));
+                    ResponseDTO responseDTO = ResponseDTO.error(annotation.message());
+                    ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(responseDTO));
                     return false;
                 }
             }

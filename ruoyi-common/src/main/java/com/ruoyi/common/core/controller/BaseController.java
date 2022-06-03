@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.PageDomain;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -87,29 +87,29 @@ public class BaseController {
     /**
      * 返回成功
      */
-    public AjaxResult success() {
-        return AjaxResult.success();
+    public ResponseDTO success() {
+        return ResponseDTO.success();
     }
 
     /**
      * 返回失败消息
      */
-    public AjaxResult error() {
-        return AjaxResult.error();
+    public ResponseDTO error() {
+        return ResponseDTO.error();
     }
 
     /**
      * 返回成功消息
      */
-    public AjaxResult success(String message) {
-        return AjaxResult.success(message);
+    public ResponseDTO success(String message) {
+        return ResponseDTO.success(message);
     }
 
     /**
      * 返回失败消息
      */
-    public AjaxResult error(String message) {
-        return AjaxResult.error(message);
+    public ResponseDTO error(String message) {
+        return ResponseDTO.error(message);
     }
 
     /**
@@ -118,8 +118,8 @@ public class BaseController {
      * @param rows 影响行数
      * @return 操作结果
      */
-    protected AjaxResult toAjax(int rows) {
-        return rows > 0 ? AjaxResult.success() : AjaxResult.error();
+    protected ResponseDTO toAjax(int rows) {
+        return rows > 0 ? ResponseDTO.success() : ResponseDTO.error();
     }
 
     /**
@@ -128,7 +128,7 @@ public class BaseController {
      * @param result 结果
      * @return 操作结果
      */
-    protected AjaxResult toAjax(boolean result) {
+    protected ResponseDTO toAjax(boolean result) {
         return result ? success() : error();
     }
 

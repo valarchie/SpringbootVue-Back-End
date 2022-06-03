@@ -1,5 +1,16 @@
 package com.ruoyi.web.controller.monitor;
 
+import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.ResponseDTO;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.system.domain.SysUserOnline;
+import com.ruoyi.system.service.ISysUserOnlineService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,17 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.enums.BusinessType;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.system.domain.SysUserOnline;
-import com.ruoyi.system.service.ISysUserOnlineService;
 
 /**
  * 在线用户监控
@@ -72,8 +72,8 @@ public class SysUserOnlineController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:online:forceLogout')")
     @Log(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/{tokenId}")
-    public AjaxResult forceLogout(@PathVariable String tokenId) {
+    public ResponseDTO forceLogout(@PathVariable String tokenId) {
         redisCache.deleteObject(Constants.LOGIN_TOKEN_KEY + tokenId);
-        return AjaxResult.success();
+        return ResponseDTO.success();
     }
 }

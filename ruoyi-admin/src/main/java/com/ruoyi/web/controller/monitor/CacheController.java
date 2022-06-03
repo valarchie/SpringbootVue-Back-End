@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.monitor;
 
+import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.core.domain.ResponseDTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * 缓存监控
@@ -29,7 +29,7 @@ public class CacheController {
 
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @GetMapping()
-    public AjaxResult getInfo() throws Exception {
+    public ResponseDTO getInfo() throws Exception {
         Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) connection -> connection.info());
         Properties commandStats = (Properties) redisTemplate.execute(
             (RedisCallback<Object>) connection -> connection.info("commandstats"));
@@ -49,6 +49,6 @@ public class CacheController {
             pieList.add(data);
         });
         result.put("commandStats", pieList);
-        return AjaxResult.success(result);
+        return ResponseDTO.success(result);
     }
 }

@@ -1,6 +1,20 @@
 package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.ruoyi.common.annotation.DataPermissionScope;
+import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.system.domain.SysRoleDept;
+import com.ruoyi.system.domain.SysRoleMenu;
+import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.mapper.SysRoleDeptMapper;
+import com.ruoyi.system.mapper.SysRoleMapper;
+import com.ruoyi.system.mapper.SysRoleMenuMapper;
+import com.ruoyi.system.mapper.SysUserRoleMapper;
+import com.ruoyi.system.service.ISysRoleService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,21 +24,6 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruoyi.common.annotation.DataPermissionScope;
-import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.common.core.domain.entity.SysRole;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.AuthenticationUtils;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.system.domain.SysRoleDept;
-import com.ruoyi.system.domain.SysRoleMenu;
-import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysRoleDeptMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysRoleMenuMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
-import com.ruoyi.system.service.ISysRoleService;
 
 /**
  * 角色 业务层处理
@@ -104,6 +103,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public List<SysRole> selectRoleAll() {
+        // TODO remove AopContext.currentProxy, use more reasonable solution.
         return ((SysRoleServiceImpl) AopContext.currentProxy()).selectRoleList(new SysRole());
     }
 
