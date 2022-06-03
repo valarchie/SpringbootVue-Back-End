@@ -1,23 +1,20 @@
 package com.ruoyi.framework.security.handle;
 
 import cn.hutool.http.HttpStatus;
-import java.io.IOException;
-import javax.servlet.ServletException;
+import cn.hutool.json.JSONUtil;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.utils.ServletHolderUtil;
+import com.ruoyi.framework.manager.AsyncManager;
+import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.framework.web.service.TokenService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.ServletHolderUtil;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.framework.web.service.TokenService;
 
 /**
  * 自定义退出处理类 返回成功
@@ -34,8 +31,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
      * 退出处理
      */
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-        throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         LoginUser loginUser = tokenService.getLoginUser(request);
         if (loginUser != null) {
             String userName = loginUser.getUsername();
@@ -44,6 +40,6 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
             // 记录用户退出日志
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGOUT, "退出成功"));
         }
-        ServletHolderUtil.renderString(response, JSON.toJSONString(AjaxResult.error(HttpStatus.HTTP_OK, "退出成功")));
+        ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(AjaxResult.error(HttpStatus.HTTP_OK, "退出成功")));
     }
 }

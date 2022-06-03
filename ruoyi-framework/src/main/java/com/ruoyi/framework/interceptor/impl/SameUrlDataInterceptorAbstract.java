@@ -2,11 +2,11 @@ package com.ruoyi.framework.interceptor.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.filter.RepeatedlyRequestWrapper;
+import com.ruoyi.common.utils.JacksonUtil;
 import com.ruoyi.framework.interceptor.AbstractRepeatSubmitInterceptor;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,8 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
 
         // body参数为空，获取Parameter的数据
         if (StrUtil.isEmpty(nowParams)) {
-            nowParams = JSONObject.toJSONString(request.getParameterMap());
+            // use jackson util to parse is more safe
+            nowParams = JacksonUtil.to(request.getParameterMap());
         }
         Map<String, Object> nowDataMap = new HashMap<>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);

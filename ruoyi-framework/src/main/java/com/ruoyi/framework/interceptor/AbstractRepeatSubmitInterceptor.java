@@ -1,6 +1,6 @@
 package com.ruoyi.framework.interceptor;
 
-import com.alibaba.fastjson.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.ServletHolderUtil;
@@ -28,7 +28,7 @@ public abstract class AbstractRepeatSubmitInterceptor implements HandlerIntercep
             if (annotation != null) {
                 if (this.isRepeatSubmit(request, annotation)) {
                     AjaxResult ajaxResult = AjaxResult.error(annotation.message());
-                    ServletHolderUtil.renderString(response, JSONObject.toJSONString(ajaxResult));
+                    ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(ajaxResult));
                     return false;
                 }
             }

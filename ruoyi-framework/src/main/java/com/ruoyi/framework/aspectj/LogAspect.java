@@ -3,6 +3,15 @@ package com.ruoyi.framework.aspectj;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.Method;
+import cn.hutool.json.JSONUtil;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.enums.BusinessStatus;
+import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
+import com.ruoyi.framework.manager.AsyncManager;
+import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.system.domain.SysOperLog;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -17,16 +26,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
-import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.enums.BusinessStatus;
-import com.ruoyi.common.utils.ServletHolderUtil;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.common.utils.AuthenticationUtils;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.system.domain.SysOperLog;
 
 /**
  * 操作日志记录处理
@@ -121,7 +120,7 @@ public class LogAspect {
         }
         // 是否需要保存response，参数和值
         if (log.isSaveResponseData() && jsonResult != null) {
-            operLog.setJsonResult(StrUtil.sub(JSON.toJSONString(jsonResult), 0, 2000));
+            operLog.setJsonResult(StrUtil.sub(JSONUtil.toJsonStr(jsonResult), 0, 2000));
         }
     }
 
@@ -148,19 +147,19 @@ public class LogAspect {
      * 参数拼装
      */
     private String argsArrayToString(Object[] paramsArray) {
-        String params = "";
+        StringBuilder params = new StringBuilder();
         if (paramsArray != null && paramsArray.length > 0) {
             for (Object o : paramsArray) {
                 if (o != null && !isFilterObject(o)) {
                     try {
-                        Object jsonObj = JSON.toJSON(o);
-                        params += jsonObj.toString() + " ";
+                        Object jsonObj = JSONUtil.parseObj(o);
+                        params.append(jsonObj).append(" ");
                     } catch (Exception e) {
                     }
                 }
             }
         }
-        return params.trim();
+        return params.toString().trim();
     }
 
     /**

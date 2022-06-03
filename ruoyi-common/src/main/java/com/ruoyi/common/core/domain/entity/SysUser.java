@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -19,11 +20,16 @@ import lombok.NoArgsConstructor;
  *
  * @author ruoyi
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class SysUser extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
+
+    public SysUser(Long userId) {
+        this.userId = userId;
+    }
 
     /**
      * 用户ID
