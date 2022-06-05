@@ -13,7 +13,8 @@ import lombok.Data;
  * @author ruoyi
  */
 @Data
-public class BaseEntity implements Serializable {
+public class BaseEntity<T> implements Serializable {
+    // TODO 我们真的需要 searchValue  params 这些奇怪的字段吗？
 
     private static final long serialVersionUID = 1L;
 

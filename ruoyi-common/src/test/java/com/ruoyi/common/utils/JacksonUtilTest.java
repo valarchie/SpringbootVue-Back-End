@@ -56,11 +56,4 @@ public class JacksonUtilTest {
         Assert.assertEquals(new String(Objects.requireNonNull(JacksonUtil.getAsBytes(json, "isSuccess1"))), JacksonUtil.getAsString(json, "isSuccess1"));
     }
 
-    @Test
-    public void testWrite() {
-        Person person = Person.newPerson();
-        //写到target/test-classes/目录下
-        JacksonUtil.toFile(this.getClass().getClassLoader().getResource("testwrite.json").getPath(), person);
-    }
-
 }
