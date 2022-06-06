@@ -545,8 +545,8 @@ insert into sys_config values(5, '账号自助-是否开启用户注册功能', 
 -- ----------------------------
 -- 14、系统访问记录
 -- ----------------------------
-drop table if exists sys_logininfor;
-create table sys_logininfor (
+drop table if exists sys_login_info;
+create table sys_login_info (
   info_id        bigint(20)     not null auto_increment   comment '访问ID',
   user_name      varchar(50)    default ''                comment '用户账号',
   ipaddr         varchar(128)   default ''                comment '登录IP地址',
@@ -611,7 +611,7 @@ create table sys_notice (
   notice_id         int(4)          not null auto_increment    comment '公告ID',
   notice_title      varchar(50)     not null                   comment '公告标题',
   notice_type       char(1)         not null                   comment '公告类型（1通知 2公告）',
-  notice_content    longblob        default null               comment '公告内容',
+  notice_content    text        default null               comment '公告内容',
   status            char(1)         default '0'                comment '公告状态（0正常 1关闭）',
   create_by         varchar(64)     default ''                 comment '创建者',
   create_time       datetime                                   comment '创建时间',

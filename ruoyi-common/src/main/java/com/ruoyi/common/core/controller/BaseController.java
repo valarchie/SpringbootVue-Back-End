@@ -2,7 +2,10 @@ package com.ruoyi.common.core.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.HttpStatus;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.ResponseDTO;
@@ -11,10 +14,13 @@ import com.ruoyi.common.core.page.PageDomain;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.page.TableSupport;
 import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.common.utils.sql.SqlUtil;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -26,6 +32,17 @@ import org.springframework.web.bind.annotation.InitBinder;
  */
 @Slf4j
 public class BaseController {
+
+    /**
+     * 排序列
+     */
+    public static final String ORDER_BY_COLUMN = "orderByColumn";
+
+    /**
+     * 排序的方向 "desc" 或者 "asc".
+     */
+    public static final String IS_ASC = "isAsc";
+
 
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
@@ -52,6 +69,15 @@ public class BaseController {
         Boolean reasonable = pageDomain.getReasonable();
         PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
     }
+
+    @SuppressWarnings("rawtypes")
+    protected Page getPage() {
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        return new Page<>(pageNum, pageSize);
+    }
+
 
     /**
      * 设置请求排序数据
@@ -83,6 +109,43 @@ public class BaseController {
         rspData.setTotal(new PageInfo(list).getTotal());
         return rspData;
     }
+
+    protected TableDataInfo getDataTable(Page page) {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.HTTP_OK);
+        rspData.setMsg("查询成功");
+        rspData.setRows(page.getRecords());
+        rspData.setTotal(page.getTotal());
+        return rspData;
+    }
+
+    public void fillOrderBy(QueryWrapper queryWrapper) {
+
+        HttpServletRequest request = ServletHolderUtil.getRequest();
+        Map<String, String> paramMap = ServletUtil.getParamMap(request);
+
+        String orderColumn = paramMap.get(ORDER_BY_COLUMN);
+        String orderDirection = paramMap.get(IS_ASC);
+
+        queryWrapper.orderBy(StrUtil.isNotBlank(orderColumn), getSortDirection(orderDirection),
+            StrUtil.toUnderlineCase(orderColumn));
+    }
+
+
+    public boolean getSortDirection(String isAsc) {
+        boolean orderDirection = true;
+        if (StrUtil.isNotEmpty(isAsc)) {
+            // 兼容前端排序类型
+            if ("ascending".equals(isAsc)) {
+                orderDirection = true;
+            } else if ("descending".equals(isAsc)) {
+                orderDirection = false;
+            }
+        }
+        return orderDirection;
+    }
+
+
 
     /**
      * 返回成功

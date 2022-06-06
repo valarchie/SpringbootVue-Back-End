@@ -1,13 +1,16 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.SysNotice;
-import com.ruoyi.system.service.ISysNoticeService;
-import java.util.List;
+import com.ruoyi.system.domain.test.sys.po.SysNoticeXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysNoticeXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysNoticeController extends BaseController {
 
     @Autowired
-    private ISysNoticeService noticeService;
+    private ISysNoticeXService noticeService;
 
     /**
      * 获取通知公告列表
@@ -38,9 +41,13 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysNotice notice) {
-        startPage();
-        List<SysNotice> list = noticeService.selectNoticeList(notice);
-        return getDataTable(list);
+        Page<SysNoticeXEntity> page = getPage();
+        QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
+        sysNoticeWrapper.like(StrUtil.isNotEmpty(notice.getNoticeTitle()), "notice_title", notice.getNoticeTitle())
+                .eq(notice.getNoticeType()!=null, "notice_type" , notice.getNoticeType())
+                    .like(notice.getCreateBy()!=null, "create_by", notice.getCreateBy());
+        noticeService.page(page, sysNoticeWrapper);
+        return getDataTable(page);
     }
 
     /**
@@ -49,7 +56,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
     public ResponseDTO getInfo(@PathVariable Long noticeId) {
-        return ResponseDTO.success(noticeService.selectNoticeById(noticeId));
+        return ResponseDTO.success(noticeService.getById(noticeId));
     }
 
     /**
@@ -60,7 +67,11 @@ public class SysNoticeController extends BaseController {
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
         notice.setCreateBy(getUsername());
-        return toAjax(noticeService.insertNotice(notice));
+        SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
+        sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
+        sysNoticeXEntity.setNoticeType(notice.getNoticeType());
+        sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
+        return toAjax(sysNoticeXEntity.insert());
     }
 
     /**
@@ -70,8 +81,13 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
-        notice.setUpdateBy(getUsername());
-        return toAjax(noticeService.updateNotice(notice));
+        SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
+        sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
+        sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
+        sysNoticeXEntity.setNoticeType(notice.getNoticeType());
+        sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
+        sysNoticeXEntity.setUpdateBy(getUsername());
+        return toAjax(sysNoticeXEntity.updateById());
     }
 
     /**
@@ -81,6 +97,8 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
     public ResponseDTO remove(@PathVariable Long[] noticeIds) {
-        return toAjax(noticeService.deleteNoticeByIds(noticeIds));
+        QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
+        sysNoticeWrapper.in("notice_id", noticeIds);
+        return toAjax(noticeService.remove(sysNoticeWrapper));
     }
 }

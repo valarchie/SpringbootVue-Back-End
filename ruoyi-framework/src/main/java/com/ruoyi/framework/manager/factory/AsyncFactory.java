@@ -1,14 +1,15 @@
 package com.ruoyi.framework.manager.factory;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.common.utils.ip.AddressUtils;
-import com.ruoyi.system.domain.SysLogininfor;
 import com.ruoyi.system.domain.SysOperLog;
-import com.ruoyi.system.service.ISysLogininforService;
+import com.ruoyi.system.domain.test.sys.po.SysLoginInfoXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysLoginInfoXService;
 import com.ruoyi.system.service.ISysOperLogService;
 import eu.bitwalker.useragentutils.UserAgent;
 import java.util.TimerTask;
@@ -35,6 +36,7 @@ public class AsyncFactory {
      */
     public static TimerTask recordLoginInfo(final String username, final String status, final String message,
         final Object... args) {
+        // 优化一下这个类
         final UserAgent userAgent = UserAgent.parseUserAgentString(
             ServletHolderUtil.getRequest().getHeader("User-Agent"));
         final String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
@@ -55,13 +57,14 @@ public class AsyncFactory {
                 // 获取客户端浏览器
                 String browser = userAgent.getBrowser().getName();
                 // 封装对象
-                SysLogininfor logininfor = new SysLogininfor();
+                SysLoginInfoXEntity logininfor = new SysLoginInfoXEntity();
                 logininfor.setUserName(username);
                 logininfor.setIpaddr(ip);
                 logininfor.setLoginLocation(address);
                 logininfor.setBrowser(browser);
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
+                logininfor.setLoginTime(DateUtil.date());
                 // 日志状态
                 if (StrUtil.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
                     logininfor.setStatus(Constants.SUCCESS);
@@ -69,7 +72,7 @@ public class AsyncFactory {
                     logininfor.setStatus(Constants.FAIL);
                 }
                 // 插入数据
-                SpringUtil.getBean(ISysLogininforService.class).insertLogininfor(logininfor);
+                SpringUtil.getBean(ISysLoginInfoXService.class).save(logininfor);
             }
         };
     }

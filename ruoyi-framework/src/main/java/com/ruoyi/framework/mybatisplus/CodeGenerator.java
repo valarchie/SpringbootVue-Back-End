@@ -23,11 +23,11 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
 
-        generateCode("/ruoyi-system");
+        generateCode("/ruoyi-system", "sys_login_info");
 
     }
 
-    public static void generateCode(String module) {
+    public static void generateCode(String module, String tableName) {
 
         FastAutoGenerator.create(
                 new DataSourceConfig.Builder("jdbc:mysql://localhost:33066/ry-vue","root","Wds123123#")
@@ -105,7 +105,7 @@ public class CodeGenerator {
 //                    .addInclude("t_simple")
 //                    .addTablePrefix("t_", "c_")
 //                    .addFieldSuffix("_flag")
-                    .addInclude("sys_menu")
+                    .addInclude(tableName)
 
                     // Entity Configuration
                     .entityBuilder()
@@ -126,11 +126,12 @@ public class CodeGenerator {
                     .columnNaming(NamingStrategy.underline_to_camel)
 //                    .addSuperEntityColumns("id", "created_by", "created_time", "updated_by", "updated_time")
 //                    .addIgnoreColumns("age")
+                    // 两种配置方式
                     .addTableFills(new Column("create_time", FieldFill.INSERT))
                     .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
                     // ID strategy AUTO, NONE, INPUT, ASSIGN_ID, ASSIGN_UUID;
                     .idType(IdType.AUTO)
-                    .formatFileName("%sEntity")
+                    .formatFileName("%sXEntity")
                     .build()
 
                     // Controller settings
@@ -138,7 +139,15 @@ public class CodeGenerator {
                     .superClass(BaseController.class)
                     .enableHyphenStyle()
                     .enableRestStyle()
-                    .formatFileName("%sController")
+                    .formatFileName("%sXController")
+                    .build()
+
+                    // Service configuration
+                    .serviceBuilder()
+//                    .superServiceClass(BaseService.class)
+//                    .superServiceImplClass(BaseServiceImpl.class)
+                    .formatServiceFileName("I%sXService")
+                    .formatServiceImplFileName("%sXServiceImp")
                     .build()
 
                     // Mapper configuration
@@ -148,8 +157,8 @@ public class CodeGenerator {
 //                    .enableBaseResultMap()
 //                    .enableBaseColumnList()
 //                    .cache(MyMapperCache.class)
-                    .formatMapperFileName("%sDao")
-                    .formatXmlFileName("%sXml")
+                    .formatMapperFileName("%sXMapper")
+                    .formatXmlFileName("%sXMapper")
                     .build();
             })
             // 使用Freemarker引擎模板，默认的是Velocity引擎模板
