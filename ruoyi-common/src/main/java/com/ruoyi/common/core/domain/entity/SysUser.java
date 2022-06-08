@@ -5,7 +5,6 @@ import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.xss.Xss;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.Email;
@@ -47,7 +46,7 @@ public class SysUser extends BaseEntity {
      * 用户账号
      */
     @Excel(name = "登录名称")
-    @Xss(message = "用户账号不能包含脚本字符")
+//    @Xss(message = "用户账号不能包含脚本字符")
     @NotBlank(message = "用户账号不能为空")
     @Size(min = 0, max = 30, message = "用户账号长度不能超过30个字符")
     private String userName;
@@ -56,7 +55,7 @@ public class SysUser extends BaseEntity {
      * 用户昵称
      */
     @Excel(name = "用户名称")
-    @Xss(message = "用户昵称不能包含脚本字符")
+//    @Xss(message = "用户昵称不能包含脚本字符")
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过30个字符")
     private String nickName;
 

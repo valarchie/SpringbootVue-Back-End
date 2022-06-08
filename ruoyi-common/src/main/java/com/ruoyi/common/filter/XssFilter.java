@@ -1,7 +1,6 @@
 package com.ruoyi.common.filter;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import cn.hutool.core.util.StrUtil;
 import org.springframework.util.AntPathMatcher;
 
 /**
@@ -25,7 +23,8 @@ import org.springframework.util.AntPathMatcher;
 public class XssFilter implements Filter {
 
     /**
-     * 排除链接
+     * TODO 到时候看怎么优化
+     * 排除链接  应该通过自定义的注解  来拦截
      */
     public List<String> excludes = new ArrayList<>();
 

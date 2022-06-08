@@ -411,7 +411,7 @@ insert into sys_user_post values ('2', '2');
 -- ----------------------------
 -- 10、操作日志记录
 -- ----------------------------
-drop table if exists sys_oper_log;
+drop table if exists sys_operation_log;
 create table sys_oper_log (
   oper_id           bigint(20)      not null auto_increment    comment '日志主键',
   title             varchar(50)     default ''                 comment '模块标题',
@@ -546,17 +546,19 @@ insert into sys_config values(5, '账号自助-是否开启用户注册功能', 
 -- 14、系统访问记录
 -- ----------------------------
 drop table if exists sys_login_info;
-create table sys_login_info (
-  info_id        bigint(20)     not null auto_increment   comment '访问ID',
-  user_name      varchar(50)    default ''                comment '用户账号',
-  ipaddr         varchar(128)   default ''                comment '登录IP地址',
-  login_location varchar(255)   default ''                comment '登录地点',
-  browser        varchar(50)    default ''                comment '浏览器类型',
-  os             varchar(50)    default ''                comment '操作系统',
-  status         char(1)        default '0'               comment '登录状态（0成功 1失败）',
-  msg            varchar(255)   default ''                comment '提示消息',
-  login_time     datetime                                 comment '访问时间',
-  primary key (info_id)
+create table sys_login_info
+(
+    `info_id`        bigint       NOT NULL AUTO_INCREMENT COMMENT '访问ID',
+    `user_name`      varchar(50)  NOT NULL DEFAULT '' COMMENT '用户账号',
+    `ip_address`     varchar(128) NOT NULL DEFAULT '' COMMENT '登录IP地址',
+    `login_location` varchar(255) NOT NULL DEFAULT '' COMMENT '登录地点',
+    `browser`        varchar(50)  NOT NULL DEFAULT '' COMMENT '浏览器类型',
+    `os`             varchar(50)  NOT NULL DEFAULT '' COMMENT '操作系统',
+    `status`         smallint     NOT NULL DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+    `msg`            varchar(255) NOT NULL DEFAULT '' COMMENT '提示消息',
+    `login_time`     datetime              DEFAULT NULL COMMENT '访问时间',
+    `deleted`        tinyint unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+    PRIMARY KEY (`info_id`)
 ) engine=innodb auto_increment=100 comment = '系统访问记录';
 
 
@@ -607,18 +609,22 @@ create table sys_job_log (
 -- 17、通知公告表
 -- ----------------------------
 drop table if exists sys_notice;
-create table sys_notice (
-  notice_id         int(4)          not null auto_increment    comment '公告ID',
-  notice_title      varchar(50)     not null                   comment '公告标题',
-  notice_type       char(1)         not null                   comment '公告类型（1通知 2公告）',
-  notice_content    text        default null               comment '公告内容',
-  status            char(1)         default '0'                comment '公告状态（0正常 1关闭）',
-  create_by         varchar(64)     default ''                 comment '创建者',
-  create_time       datetime                                   comment '创建时间',
-  update_by         varchar(64)     default ''                 comment '更新者',
-  update_time       datetime                                   comment '更新时间',
-  remark            varchar(255)    default null               comment '备注',
-  primary key (notice_id)
+create table sys_notice
+(
+    `notice_id`      int          NOT NULL AUTO_INCREMENT COMMENT '公告ID',
+    `notice_title`   varchar(50)  NOT NULL COMMENT '公告标题',
+    `notice_type`    smallint     NOT NULL COMMENT '公告类型（1通知 2公告）',
+    `notice_content` text COMMENT '公告内容',
+    `status`         smallint     NOT NULL DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+    `creator_id`     bigint       NOT NULL COMMENT '创建者ID',
+    `creator_name`   varchar(64)  NOT NULL COMMENT '创建者',
+    `create_time`    datetime              DEFAULT NULL COMMENT '创建时间',
+    `updater_id`     bigint                DEFAULT NULL COMMENT '更新者ID',
+    `updater_name`   varchar(64)           DEFAULT NULL COMMENT '更新者',
+    `update_time`    datetime              DEFAULT NULL COMMENT '更新时间',
+    `remark`         varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+    `deleted`        tinyint unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+    PRIMARY KEY (`notice_id`)
 ) engine=innodb auto_increment=10 comment = '通知公告表';
 
 -- ----------------------------

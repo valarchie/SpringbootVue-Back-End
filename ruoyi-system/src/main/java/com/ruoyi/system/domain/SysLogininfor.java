@@ -25,11 +25,11 @@ public class SysLogininfor extends BaseEntity {
         if(loginInfoX!=null) {
             this.infoId = loginInfoX.getInfoId();
             this.userName = loginInfoX.getUserName();
-            this.ipaddr = loginInfoX.getIpaddr();
+            this.ipaddr = loginInfoX.getIpAddress();
             this.loginLocation = loginInfoX.getLoginLocation();
             this.browser = loginInfoX.getBrowser();
             this.os = loginInfoX.getOs();
-            this.status = loginInfoX.getStatus();
+            this.status = loginInfoX.getStatus()+"";
             this.msg = loginInfoX.getMsg();
             this.loginTime = loginInfoX.getLoginTime();
         }

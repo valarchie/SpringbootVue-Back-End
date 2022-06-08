@@ -46,7 +46,7 @@ public class SysLogininforController extends BaseController {
         Page<SysLoginInfoXEntity> page = getPage();
         QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ipaddr", logininfor.getIpaddr())
+        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ip_address", logininfor.getIpaddr())
             .eq(StrUtil.isNotEmpty(logininfor.getStatus()), "status", logininfor.getStatus())
             .like(StrUtil.isNotEmpty(logininfor.getUserName()), "user_name", logininfor.getUserName())
             .ge(logininfor.getParams().get("beginTime") != null, "login_time",
@@ -67,7 +67,7 @@ public class SysLogininforController extends BaseController {
         Page<SysLoginInfoXEntity> page = getPage();
         QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ipaddr", logininfor.getIpaddr())
+        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ip_address", logininfor.getIpaddr())
             .eq(StrUtil.isNotEmpty(logininfor.getStatus()), "status", logininfor.getStatus())
             .like(StrUtil.isNotEmpty(logininfor.getUserName()), "user_name", logininfor.getUserName())
             .ge(logininfor.getParams().get("beginTime") != null, "login_time",

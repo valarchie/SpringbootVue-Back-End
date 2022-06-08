@@ -119,6 +119,15 @@ public class BaseController {
         return rspData;
     }
 
+    protected TableDataInfo getDataTable(List<?> list, Long count) {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.HTTP_OK);
+        rspData.setMsg("查询成功");
+        rspData.setRows(list);
+        rspData.setTotal(count);
+        return rspData;
+    }
+
     public void fillOrderBy(QueryWrapper queryWrapper) {
 
         HttpServletRequest request = ServletHolderUtil.getRequest();
@@ -229,4 +238,5 @@ public class BaseController {
     public String getUsername() {
         return getLoginUser().getUsername();
     }
+
 }

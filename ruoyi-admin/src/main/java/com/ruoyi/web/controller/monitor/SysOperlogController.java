@@ -1,14 +1,20 @@
 package com.ruoyi.web.controller.monitor;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.time.DatePicker;
 import com.ruoyi.system.domain.SysOperLog;
-import com.ruoyi.system.service.ISysOperLogService;
+import com.ruoyi.system.domain.test.sys.po.SysOperationLogXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysOperationLogXService;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,37 +35,61 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysOperlogController extends BaseController {
 
     @Autowired
-    private ISysOperLogService operLogService;
+    private ISysOperationLogXService operationLogService;
 
     @PreAuthorize("@ss.hasPermi('monitor:operlog:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysOperLog operLog) {
-        startPage();
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
-        return getDataTable(list);
+
+        Page<SysOperationLogXEntity> page = getPage();
+        QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.like(operLog.getBusinessType()!=null, "business_type", operLog.getBusinessType())
+            .eq(operLog.getStatus() != null, "status", operLog.getStatus())
+            .like(StrUtil.isNotEmpty(operLog.getOperName()), "user_name", operLog.getOperName())
+            .like(StrUtil.isNotEmpty(operLog.getTitle()), "request_module", operLog.getTitle())
+            .ge(operLog.getParams().get("beginTime") != null, "operation_time",
+                DatePicker.getBeginOfTheDay(operLog.getParams().get("beginTime")))
+            .le(operLog.getParams().get("endTime") != null, "operation_time",
+                DatePicker.getEndOfTheDay(operLog.getParams().get("endTime")));
+        fillOrderBy(queryWrapper);
+
+        operationLogService.page(page, queryWrapper);
+        List<SysOperLog> excelModels = page.getRecords().stream().map(SysOperLog::new)
+            .collect(Collectors.toList());
+
+        return getDataTable(excelModels, page.getTotal());
     }
 
     @Log(title = "操作日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysOperLog operLog) {
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
+
+        QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
+
+        fillOrderBy(queryWrapper);
+
+        List<SysOperationLogXEntity> list = operationLogService.list(queryWrapper);
+
+        List<SysOperLog> excelModels = list.stream().map(SysOperLog::new).collect(Collectors.toList());
         ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
-        util.exportExcel(response, list, "操作日志");
+        util.exportExcel(response, excelModels, "操作日志");
     }
 
     @Log(title = "操作日志", businessType = BusinessType.DELETE)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/{operIds}")
     public ResponseDTO remove(@PathVariable Long[] operIds) {
-        return toAjax(operLogService.deleteOperLogByIds(operIds));
+        QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("operation_id", operIds);
+        return toAjax(operationLogService.remove(queryWrapper));
     }
 
     @Log(title = "操作日志", businessType = BusinessType.CLEAN)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/clean")
     public ResponseDTO clean() {
-        operLogService.cleanOperLog();
-        return ResponseDTO.success();
+        return ResponseDTO.error("不支持全表清空");
     }
 }

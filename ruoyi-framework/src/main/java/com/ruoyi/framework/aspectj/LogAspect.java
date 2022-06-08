@@ -2,7 +2,6 @@ package com.ruoyi.framework.aspectj;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.http.Method;
 import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -11,7 +10,7 @@ import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.system.domain.SysOperLog;
+import com.ruoyi.system.domain.test.sys.po.SysOperationLogXEntity;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,9 @@ import org.springframework.web.servlet.HandlerMapping;
 @Slf4j
 public class LogAspect {
 
+
     /**
+     * TODO 优化这个类 乱七八糟的
      * 处理完请求后执行
      *
      * @param joinPoint 切点
@@ -63,32 +64,33 @@ public class LogAspect {
             LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
             // *========数据库日志=========*//
-            SysOperLog operLog = new SysOperLog();
+            SysOperationLogXEntity operLog = new SysOperationLogXEntity();
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
             // 请求的地址
 
             String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
-            operLog.setOperIp(ip);
-            operLog.setOperUrl(ServletHolderUtil.getRequest().getRequestURI());
+            operLog.setOperatorIp(ip);
+            operLog.setRequestUrl(ServletHolderUtil.getRequest().getRequestURI());
             if (loginUser != null) {
-                operLog.setOperName(loginUser.getUsername());
+                operLog.setUserName(loginUser.getUsername());
             }
 
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
 
-                operLog.setErrorMsg(StrUtil.sub(e.getMessage(), 0, 2000));
+                operLog.setErrorStack(StrUtil.sub(e.getMessage(), 0, 2000));
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
-            operLog.setMethod(className + "." + methodName + "()");
+            operLog.setCalledMethod(className + "." + methodName + "()");
             // 设置请求方式
-            operLog.setRequestMethod(ServletHolderUtil.getRequest().getMethod());
+            //
+            operLog.setRequestMethod(getHttpMethodIntValue(ServletHolderUtil.getRequest().getMethod()));
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
             // 保存数据库
-            AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
+            AsyncManager.me().execute(AsyncFactory.recordOperationLog(operLog));
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("==前置通知异常==");
@@ -103,12 +105,12 @@ public class LogAspect {
      * @param log 日志
      * @param operLog 操作日志
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, SysOperLog operLog, Object jsonResult)
+    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, SysOperationLogXEntity operLog, Object jsonResult)
         throws Exception {
         // 设置action动作
         operLog.setBusinessType(log.businessType().ordinal());
         // 设置标题
-        operLog.setTitle(log.title());
+        operLog.setRequestModule(log.title());
         // 设置操作人类别
         operLog.setOperatorType(log.operatorType().ordinal());
         // 是否需要保存request，参数和值
@@ -118,7 +120,7 @@ public class LogAspect {
         }
         // 是否需要保存response，参数和值
         if (log.isSaveResponseData() && jsonResult != null) {
-            operLog.setJsonResult(StrUtil.sub(JSONUtil.toJsonStr(jsonResult), 0, 2000));
+            operLog.setOperationResult(StrUtil.sub(JSONUtil.toJsonStr(jsonResult), 0, 2000));
         }
     }
 
@@ -128,16 +130,16 @@ public class LogAspect {
      * @param operLog 操作日志
      * @throws Exception 异常
      */
-    private void setRequestValue(JoinPoint joinPoint, SysOperLog operLog) throws Exception {
+    private void setRequestValue(JoinPoint joinPoint, SysOperationLogXEntity operLog) throws Exception {
 
-        String requestMethod = operLog.getRequestMethod();
-        if (Method.PUT.name().equalsIgnoreCase(requestMethod) || Method.POST.name().equalsIgnoreCase(requestMethod)) {
+        int requestMethod = operLog.getRequestMethod();
+        if (1 == requestMethod || 2 == requestMethod) {
             String params = argsArrayToString(joinPoint.getArgs());
-            operLog.setOperParam(StrUtil.sub(params, 0, 2000));
+            operLog.setOperationParam(StrUtil.sub(params, 0, 2000));
         } else {
             Map<?, ?> paramsMap = (Map<?, ?>) ServletHolderUtil.getRequest()
                 .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-            operLog.setOperParam(StrUtil.sub(paramsMap.toString(), 0, 2000));
+            operLog.setOperationParam(StrUtil.sub(paramsMap.toString(), 0, 2000));
         }
     }
 
@@ -186,4 +188,22 @@ public class LogAspect {
         return o instanceof MultipartFile || o instanceof HttpServletRequest || o instanceof HttpServletResponse
             || o instanceof BindingResult;
     }
+
+
+    private int getHttpMethodIntValue(String httpMethod) {
+
+        int intValue = 0;
+
+        switch (httpMethod) {
+
+            case "GET" : intValue = 1; break;
+            case "POST": intValue = 2; break;
+            case "PUT":  intValue = 3; break;
+            default: intValue = -1;
+            break;
+
+        }
+        return intValue;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -45,7 +46,7 @@ public class SysNoticeController extends BaseController {
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.like(StrUtil.isNotEmpty(notice.getNoticeTitle()), "notice_title", notice.getNoticeTitle())
                 .eq(notice.getNoticeType()!=null, "notice_type" , notice.getNoticeType())
-                    .like(notice.getCreateBy()!=null, "create_by", notice.getCreateBy());
+                    .like(notice.getCreateBy()!=null, "creator_name", notice.getCreateBy());
         noticeService.page(page, sysNoticeWrapper);
         return getDataTable(page);
     }
@@ -66,11 +67,12 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
-        notice.setCreateBy(getUsername());
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
-        sysNoticeXEntity.setNoticeType(notice.getNoticeType());
+        sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
+        sysNoticeXEntity.setCreatorId(getUserId());
+        sysNoticeXEntity.setCreatorName(getUsername());
         return toAjax(sysNoticeXEntity.insert());
     }
 
@@ -84,9 +86,10 @@ public class SysNoticeController extends BaseController {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
-        sysNoticeXEntity.setNoticeType(notice.getNoticeType());
+        sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
-        sysNoticeXEntity.setUpdateBy(getUsername());
+        sysNoticeXEntity.setUpdaterId(getUserId());
+        sysNoticeXEntity.setUpdaterName(getUsername());
         return toAjax(sysNoticeXEntity.updateById());
     }
 

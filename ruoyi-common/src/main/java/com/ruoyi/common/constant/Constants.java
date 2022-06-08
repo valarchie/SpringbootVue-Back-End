@@ -38,11 +38,13 @@ public class Constants {
     /**
      * 通用成功标识
      */
+    @Deprecated
     public static final String SUCCESS = "0";
 
     /**
      * 通用失败标识
      */
+    @Deprecated
     public static final String FAIL = "1";
 
     /**

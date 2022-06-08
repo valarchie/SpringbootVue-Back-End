@@ -1,12 +1,15 @@
 package com.ruoyi.system.domain;
 
+import cn.hutool.core.convert.Convert;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.domain.test.sys.po.SysOperationLogXEntity;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 操作日志记录表 oper_log
@@ -15,7 +18,29 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class SysOperLog extends BaseEntity {
+
+    public SysOperLog(SysOperationLogXEntity entity) {
+        this.operId = entity.getOperationId();
+        this.businessType = entity.getBusinessType();
+        this.deptName = entity.getDeptName();
+        this.errorMsg = entity.getErrorStack();
+        this.jsonResult = entity.getOperationResult();
+        this.method = entity.getCalledMethod();
+        this.operatorType = entity.getOperatorType();
+        this.operIp = entity.getOperatorIp();
+        this.operLocation = entity.getOperatorLocation();
+        this.operName = entity.getUserName();
+        this.operParam = entity.getOperationParam();
+        this.operTime = entity.getOperationTime();
+        this.operUrl = entity.getRequestUrl();
+        this.requestMethod = Convert.toStr(entity.getRequestMethod());
+        this.status = entity.getStatus();
+        this.title = entity.getRequestModule();
+    }
+
+
 
     private static final long serialVersionUID = 1L;
 

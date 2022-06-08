@@ -7,10 +7,10 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.common.utils.ip.AddressUtils;
-import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.domain.test.sys.po.SysLoginInfoXEntity;
+import com.ruoyi.system.domain.test.sys.po.SysOperationLogXEntity;
 import com.ruoyi.system.domain.test.sys.service.ISysLoginInfoXService;
-import com.ruoyi.system.service.ISysOperLogService;
+import com.ruoyi.system.domain.test.sys.service.ISysOperationLogXService;
 import eu.bitwalker.useragentutils.UserAgent;
 import java.util.TimerTask;
 import org.slf4j.Logger;
@@ -59,17 +59,17 @@ public class AsyncFactory {
                 // 封装对象
                 SysLoginInfoXEntity logininfor = new SysLoginInfoXEntity();
                 logininfor.setUserName(username);
-                logininfor.setIpaddr(ip);
+                logininfor.setIpAddress(ip);
                 logininfor.setLoginLocation(address);
                 logininfor.setBrowser(browser);
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
                 logininfor.setLoginTime(DateUtil.date());
-                // 日志状态
+                // 日志状态 TODO 替换魔法值
                 if (StrUtil.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
-                    logininfor.setStatus(Constants.SUCCESS);
+                    logininfor.setStatus(1);
                 } else if (Constants.LOGIN_FAIL.equals(status)) {
-                    logininfor.setStatus(Constants.FAIL);
+                    logininfor.setStatus(0);
                 }
                 // 插入数据
                 SpringUtil.getBean(ISysLoginInfoXService.class).save(logininfor);
@@ -83,13 +83,13 @@ public class AsyncFactory {
      * @param operLog 操作日志信息
      * @return 任务task
      */
-    public static TimerTask recordOper(final SysOperLog operLog) {
+    public static TimerTask recordOperationLog(final SysOperationLogXEntity operLog) {
         return new TimerTask() {
             @Override
             public void run() {
                 // 远程查询操作地点
-                operLog.setOperLocation(AddressUtils.getRealAddressByIp(operLog.getOperIp()));
-                SpringUtil.getBean(ISysOperLogService.class).insertOperlog(operLog);
+                operLog.setOperatorLocation(AddressUtils.getRealAddressByIp(operLog.getOperatorIp()));
+                SpringUtil.getBean(ISysOperationLogXService.class).save(operLog);
             }
         };
     }
