@@ -1,5 +1,6 @@
 package com.ruoyi.framework.aspectj;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
@@ -89,6 +90,7 @@ public class LogAspect {
             operLog.setRequestMethod(getHttpMethodIntValue(ServletHolderUtil.getRequest().getMethod()));
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
+            operLog.setOperationTime(DateUtil.date());
             // 保存数据库
             AsyncManager.me().execute(AsyncFactory.recordOperationLog(operLog));
         } catch (Exception exp) {
