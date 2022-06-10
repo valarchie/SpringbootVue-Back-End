@@ -15,7 +15,7 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletHolderUtil;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.system.service.ISysConfigService;
+import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
 import com.ruoyi.system.service.ISysUserService;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class SysLoginService {
     private ISysUserService userService;
 
     @Autowired
-    private ISysConfigService configService;
+    private ISysConfigXService configService;
 
     /**
      * 登录验证
@@ -58,7 +58,7 @@ public class SysLoginService {
      * @return 结果
      */
     public String login(String username, String password, String code, String uuid) {
-        boolean captchaOnOff = configService.selectCaptchaOnOff();
+        boolean captchaOnOff = configService.isCaptchaOn();
         // 验证码开关
         if (captchaOnOff) {
             validateCaptcha(username, code, uuid);

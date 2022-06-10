@@ -7,7 +7,6 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.enums.DataSourceType;
-import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.mapper.SysConfigMapper;
 import com.ruoyi.system.service.ISysConfigService;
@@ -45,7 +44,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
      * @param configId 参数配置ID
      * @return 参数配置信息
      */
-    @Override
     @DataSource(DataSourceType.MASTER)
     public SysConfig selectConfigById(Long configId) {
         SysConfig config = new SysConfig();
@@ -75,19 +73,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
         return StrUtil.EMPTY;
     }
 
-    /**
-     * 获取验证码开关
-     *
-     * @return true开启，false关闭
-     */
-    @Override
-    public boolean selectCaptchaOnOff() {
-        String captchaOnOff = selectConfigByKey("sys.account.captchaOnOff");
-        if (StrUtil.isEmpty(captchaOnOff)) {
-            return true;
-        }
-        return Convert.toBool(captchaOnOff);
-    }
 
     /**
      * 查询参数配置列表
@@ -95,7 +80,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
      * @param config 参数配置信息
      * @return 参数配置集合
      */
-    @Override
     public List<SysConfig> selectConfigList(SysConfig config) {
         return configMapper.selectConfigList(config);
     }
@@ -106,7 +90,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
      * @param config 参数配置信息
      * @return 结果
      */
-    @Override
     public int insertConfig(SysConfig config) {
         int row = configMapper.insertConfig(config);
         if (row > 0) {
@@ -121,7 +104,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
      * @param config 参数配置信息
      * @return 结果
      */
-    @Override
     public int updateConfig(SysConfig config) {
         int row = configMapper.updateConfig(config);
         if (row > 0) {
@@ -130,22 +112,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
         return row;
     }
 
-    /**
-     * 批量删除参数信息
-     *
-     * @param configIds 需要删除的参数ID
-     */
-    @Override
-    public void deleteConfigByIds(Long[] configIds) {
-        for (Long configId : configIds) {
-            SysConfig config = selectConfigById(configId);
-            if (StrUtil.equals(UserConstants.YES, config.getConfigType())) {
-                throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
-            }
-            configMapper.deleteConfigById(configId);
-            redisCache.deleteObject(getCacheKey(config.getConfigKey()));
-        }
-    }
 
     /**
      * 加载参数缓存数据

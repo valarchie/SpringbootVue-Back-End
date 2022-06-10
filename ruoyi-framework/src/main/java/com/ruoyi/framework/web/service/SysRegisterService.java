@@ -12,7 +12,7 @@ import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.system.service.ISysConfigService;
+import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class SysRegisterService {
     private ISysUserService userService;
 
     @Autowired
-    private ISysConfigService configService;
+    private ISysConfigXService configService;
 
     @Autowired
     private RedisCache redisCache;
@@ -40,7 +40,7 @@ public class SysRegisterService {
     public String register(RegisterBody registerBody) {
         String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword();
 
-        boolean captchaOnOff = configService.selectCaptchaOnOff();
+        boolean captchaOnOff = configService.isCaptchaOn();
         // 验证码开关
         if (captchaOnOff) {
             validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());

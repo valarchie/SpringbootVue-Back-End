@@ -616,7 +616,7 @@ drop table if exists sys_notice;
 create table sys_notice
 (
     `notice_id`      int          NOT NULL AUTO_INCREMENT COMMENT '公告ID',
-    `notice_title`   varchar(50)  NOT NULL COMMENT '公告标题',
+    `notice_title`   varchar(64)  NOT NULL COMMENT '公告标题',
     `notice_type`    smallint     NOT NULL COMMENT '公告类型（1通知 2公告）',
     `notice_content` text COMMENT '公告内容',
     `status`         smallint     NOT NULL DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',

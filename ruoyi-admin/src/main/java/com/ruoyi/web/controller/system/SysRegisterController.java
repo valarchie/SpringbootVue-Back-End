@@ -5,7 +5,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.framework.web.service.SysRegisterService;
-import com.ruoyi.system.service.ISysConfigService;
+import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +23,11 @@ public class SysRegisterController extends BaseController {
     private SysRegisterService registerService;
 
     @Autowired
-    private ISysConfigService configService;
+    private ISysConfigXService configService;
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody RegisterBody user) {
-        if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser")))) {
+        if (!("true".equals(configService.getConfigValueByKey("sys.account.registerUser")))) {
             return error("当前系统没有开启注册功能！");
         }
         String msg = registerService.register(user);

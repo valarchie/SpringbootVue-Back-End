@@ -42,7 +42,7 @@ public class CodeGenerator {
             .author("valarchie")
             .module("/ruoyi-system")
             .parentPackage("com.ruoyi.system.domain.test")
-            .tableName("sys_operation_log").build();
+            .tableName("sys_config").build();
 
         generator.generateCode();
     }

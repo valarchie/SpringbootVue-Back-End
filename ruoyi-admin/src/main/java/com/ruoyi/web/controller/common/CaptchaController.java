@@ -7,7 +7,7 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.system.service.ISysConfigService;
+import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public class CaptchaController {
     private RedisCache redisCache;
 
     @Autowired
-    private ISysConfigService configService;
+    private ISysConfigXService configService;
 
     /**
      * 生成验证码
@@ -45,7 +45,7 @@ public class CaptchaController {
     @GetMapping("/captchaImage")
     public ResponseDTO getCode(HttpServletResponse response) {
         ResponseDTO ajax = ResponseDTO.success();
-        boolean captchaOnOff = configService.selectCaptchaOnOff();
+        boolean captchaOnOff = configService.isCaptchaOn();
         ajax.put("captchaOnOff", captchaOnOff);
         if (!captchaOnOff) {
             return ajax;
