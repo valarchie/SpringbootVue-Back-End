@@ -17,9 +17,6 @@ public interface ISysConfigService {
      */
     String selectConfigByKey(String configKey);
 
-
-
-
     /**
      * 加载参数缓存数据
      */
