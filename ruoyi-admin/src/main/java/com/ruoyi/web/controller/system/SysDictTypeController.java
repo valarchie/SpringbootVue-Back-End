@@ -1,15 +1,21 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysDictType;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDictTypeService;
+import com.ruoyi.system.domain.test.sys.po.SysDictTypeXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysDictTypeXService;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,23 +39,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysDictTypeController extends BaseController {
 
     @Autowired
-    private ISysDictTypeService dictTypeService;
+    private ISysDictTypeXService dictTypeService;
 
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysDictType dictType) {
-        startPage();
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        return getDataTable(list);
+        Page<SysDictTypeXEntity> page = getPage();
+        QueryWrapper<SysDictTypeXEntity> sysNoticeWrapper = new QueryWrapper<>();
+        sysNoticeWrapper.like(StrUtil.isNotEmpty(dictType.getDictName()), "dict_name", dictType.getDictName())
+            .like(dictType.getDictType() != null, "dict_type", dictType.getDictType())
+            .eq(dictType.getStatus() != null, "status", dictType.getStatus());
+        dictTypeService.page(page, sysNoticeWrapper);
+        return getDataTable(page);
     }
 
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:dict:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysDictType dictType) {
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        ExcelUtil<SysDictType> util = new ExcelUtil<SysDictType>(SysDictType.class);
-        util.exportExcel(response, list, "字典类型");
+        Page<SysDictTypeXEntity> page = getPage();
+        QueryWrapper<SysDictTypeXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StrUtil.isNotEmpty(dictType.getDictName()), "dict_name", dictType.getDictName())
+            .like(dictType.getDictType() != null, "dict_type", dictType.getDictType())
+            .eq(dictType.getStatus() != null, "status", dictType.getStatus());
+        fillOrderBy(queryWrapper);
+
+        dictTypeService.page(page, queryWrapper);
+        List<SysDictType> excelModels = page.getRecords().stream().map(o->toSysDictType(o))
+            .collect(Collectors.toList());
+
+        ExcelUtil<SysDictType> util = new ExcelUtil<>(SysDictType.class);
+        util.exportExcel(response, excelModels, "字典类型");
     }
 
     /**
@@ -58,7 +78,8 @@ public class SysDictTypeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:query')")
     @GetMapping(value = "/{dictId}")
     public ResponseDTO getInfo(@PathVariable Long dictId) {
-        return ResponseDTO.success(dictTypeService.selectDictTypeById(dictId));
+        // TODO 需要判空
+        return ResponseDTO.success(dictTypeService.getById(dictId));
     }
 
     /**
@@ -68,11 +89,15 @@ public class SysDictTypeController extends BaseController {
     @Log(title = "字典类型", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysDictType dict) {
-        if (UserConstants.NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict))) {
-            return ResponseDTO.error("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
-        }
-        dict.setCreateBy(getUsername());
-        return toAjax(dictTypeService.insertDictType(dict));
+
+        SysDictTypeXEntity entity = new SysDictTypeXEntity();
+        entity.setDictType(dict.getDictType());
+        entity.setDictName(dict.getDictName());
+        entity.setCreatorId(getUserId());
+        entity.setCreatorName(getUsername());
+        entity.setCreateTime(DateUtil.date());
+
+        return toAjax(dictTypeService.save(entity));
     }
 
     /**
@@ -82,11 +107,16 @@ public class SysDictTypeController extends BaseController {
     @Log(title = "字典类型", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysDictType dict) {
-        if (UserConstants.NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict))) {
-            return ResponseDTO.error("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
-        }
-        dict.setUpdateBy(getUsername());
-        return toAjax(dictTypeService.updateDictType(dict));
+
+        SysDictTypeXEntity entity = new SysDictTypeXEntity();
+        entity.setDictId(dict.getDictId());
+        entity.setDictType(dict.getDictType());
+        entity.setDictName(dict.getDictName());
+        entity.setCreatorId(getUserId());
+        entity.setCreatorName(getUsername());
+        entity.setCreateTime(DateUtil.date());
+
+        return toAjax(dictTypeService.updateById(entity));
     }
 
     /**
@@ -96,8 +126,9 @@ public class SysDictTypeController extends BaseController {
     @Log(title = "字典类型", businessType = BusinessType.DELETE)
     @DeleteMapping("/{dictIds}")
     public ResponseDTO remove(@PathVariable Long[] dictIds) {
-        dictTypeService.deleteDictTypeByIds(dictIds);
-        return success();
+        QueryWrapper<SysDictTypeXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("info_id", dictIds);
+        return toAjax(dictTypeService.remove(queryWrapper));
     }
 
     /**
@@ -107,7 +138,8 @@ public class SysDictTypeController extends BaseController {
     @Log(title = "字典类型", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
     public ResponseDTO refreshCache() {
-        dictTypeService.resetDictCache();
+        // TODO 清缓存
+//        dictTypeService.resetDictCache();
         return ResponseDTO.success();
     }
 
@@ -115,8 +147,22 @@ public class SysDictTypeController extends BaseController {
      * 获取字典选择框列表
      */
     @GetMapping("/optionselect")
-    public ResponseDTO optionselect() {
-        List<SysDictType> dictTypes = dictTypeService.selectDictTypeAll();
-        return ResponseDTO.success(dictTypes);
+    public ResponseDTO optionSelect() {
+        List<SysDictTypeXEntity> dictTypes = dictTypeService.list();
+        List<SysDictType> models = dictTypes.stream().map(this::toSysDictType)
+            .collect(Collectors.toList());
+        return ResponseDTO.success(models);
     }
+
+
+
+    public SysDictType toSysDictType(SysDictTypeXEntity entity) {
+        SysDictType model = new SysDictType();
+        model.setDictId(entity.getDictId());
+        model.setDictName(entity.getDictName());
+        model.setDictType(entity.getDictType());
+        model.setStatus(Convert.toStr(entity.getStatus()));
+        return model;
+    }
+
 }

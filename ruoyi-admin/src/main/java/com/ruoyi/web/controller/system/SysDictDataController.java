@@ -1,5 +1,10 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
@@ -7,10 +12,10 @@ import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDictDataService;
-import com.ruoyi.system.service.ISysDictTypeService;
-import java.util.ArrayList;
+import com.ruoyi.system.domain.test.sys.po.SysDictDataXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysDictDataXService;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,26 +39,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysDictDataController extends BaseController {
 
     @Autowired
-    private ISysDictDataService dictDataService;
-
-    @Autowired
-    private ISysDictTypeService dictTypeService;
+    private ISysDictDataXService dictDataService;
 
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysDictData dictData) {
-        startPage();
-        List<SysDictData> list = dictDataService.selectDictDataList(dictData);
-        return getDataTable(list);
+        Page<SysDictDataXEntity> page = getPage();
+        QueryWrapper<SysDictDataXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(StrUtil.isNotEmpty(dictData.getDictType()), "dict_type", dictData.getDictType())
+            .eq(dictData.getDictValue() != null, "dict_value", dictData.getDictValue())
+            .like(StrUtil.isNotEmpty(dictData.getDictLabel()), "dict_label", dictData.getDictLabel());
+        dictDataService.page(page, queryWrapper);
+        return getDataTable(page);
     }
 
     @Log(title = "字典数据", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:dict:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysDictData dictData) {
-        List<SysDictData> list = dictDataService.selectDictDataList(dictData);
-        ExcelUtil<SysDictData> util = new ExcelUtil<SysDictData>(SysDictData.class);
-        util.exportExcel(response, list, "字典数据");
+        Page<SysDictDataXEntity> page = getPage();
+        QueryWrapper<SysDictDataXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(StrUtil.isNotEmpty(dictData.getDictType()), "dict_type", dictData.getDictType())
+            .eq(dictData.getDictValue() != null, "dict_value", dictData.getDictValue())
+            .like(StrUtil.isNotEmpty(dictData.getDictLabel()), "dict_label", dictData.getDictLabel());
+        fillOrderBy(queryWrapper);
+
+        dictDataService.page(page, queryWrapper);
+        List<SysDictData> excelModels = page.getRecords().stream().map(this::toSysDictData)
+            .collect(Collectors.toList());
+
+        ExcelUtil<SysDictData> util = new ExcelUtil<>(SysDictData.class);
+        util.exportExcel(response, excelModels, "字典类型数据");
     }
 
     /**
@@ -62,7 +78,9 @@ public class SysDictDataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:query')")
     @GetMapping(value = "/{dictCode}")
     public ResponseDTO getInfo(@PathVariable Long dictCode) {
-        return ResponseDTO.success(dictDataService.selectDictDataById(dictCode));
+        // TODO 需要判空
+        SysDictData sysDictData = toSysDictData(dictDataService.getById(dictCode));
+        return ResponseDTO.success(sysDictData);
     }
 
     /**
@@ -70,11 +88,14 @@ public class SysDictDataController extends BaseController {
      */
     @GetMapping(value = "/type/{dictType}")
     public ResponseDTO dictType(@PathVariable String dictType) {
-        List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);
-        if (data == null) {
-            data = new ArrayList<SysDictData>();
-        }
-        return ResponseDTO.success(data);
+        QueryWrapper<SysDictDataXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dict_type", dictType);
+        List<SysDictDataXEntity> list = dictDataService.list(queryWrapper);
+
+        List<SysDictData> excelModels = list.stream().map(this::toSysDictData)
+            .collect(Collectors.toList());
+
+        return ResponseDTO.success(excelModels);
     }
 
     /**
@@ -84,8 +105,20 @@ public class SysDictDataController extends BaseController {
     @Log(title = "字典数据", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysDictData dict) {
-        dict.setCreateBy(getUsername());
-        return toAjax(dictDataService.insertDictData(dict));
+
+        SysDictDataXEntity entity = new SysDictDataXEntity();
+        entity.setDictSort(Convert.toInt(dict.getDictSort()));
+        entity.setDictLabel(dict.getDictLabel());
+        entity.setDictValue(dict.getDictValue());
+        entity.setDictType(dict.getDictType());
+        entity.setCssClass(dict.getCssClass());
+        entity.setListClass(dict.getListClass());
+        entity.setIsDefault(dict.isDefault());
+        entity.setCreatorId(getUserId());
+        entity.setCreateName(getUsername());
+        entity.setCreateTime(DateUtil.date());
+        entity.setRemark(dict.getRemark());
+        return toAjax(entity.insert());
     }
 
     /**
@@ -95,8 +128,22 @@ public class SysDictDataController extends BaseController {
     @Log(title = "字典数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysDictData dict) {
-        dict.setUpdateBy(getUsername());
-        return toAjax(dictDataService.updateDictData(dict));
+
+        SysDictDataXEntity entity = new SysDictDataXEntity();
+        entity.setDictSort(Convert.toInt(dict.getDictSort()));
+        entity.setDictLabel(dict.getDictLabel());
+        entity.setDictValue(dict.getDictValue());
+        entity.setDictType(dict.getDictType());
+        entity.setCssClass(dict.getCssClass());
+        entity.setListClass(dict.getListClass());
+        entity.setIsDefault(dict.isDefault());
+        entity.setCreatorId(getUserId());
+        entity.setCreateName(getUsername());
+        entity.setCreateTime(DateUtil.date());
+        entity.setRemark(dict.getRemark());
+
+        entity.setDictDataId(dict.getDictCode());
+        return toAjax(entity.updateById());
     }
 
     /**
@@ -105,8 +152,23 @@ public class SysDictDataController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
     @Log(title = "字典类型", businessType = BusinessType.DELETE)
     @DeleteMapping("/{dictCodes}")
-    public ResponseDTO remove(@PathVariable Long[] dictCodes) {
-        dictDataService.deleteDictDataByIds(dictCodes);
-        return success();
+    public ResponseDTO remove(@PathVariable Long[] dictDataIds) {
+        QueryWrapper<SysDictDataXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("dict_date_id", dictDataIds);
+        return toAjax(dictDataService.remove(queryWrapper));
+    }
+
+    public SysDictData toSysDictData(SysDictDataXEntity entity) {
+        SysDictData model = new SysDictData();
+        model.setDictCode(entity.getDictDataId());
+        model.setDictSort(Long.valueOf(entity.getDictSort()));
+        model.setDictLabel(entity.getDictLabel());
+        model.setDictValue(entity.getDictValue());
+        model.setDictType(entity.getDictType());
+        model.setCssClass(entity.getCssClass());
+        model.setListClass(entity.getListClass());
+        model.setIsDefault(Convert.toStr(entity.getIsDefault()));
+        model.setStatus(Convert.toStr(entity.getStatus()));
+        return model;
     }
 }
