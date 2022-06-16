@@ -16,7 +16,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 角色信息表
  * </p>
  *
  * @author valarchie
@@ -24,29 +24,41 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_role")
+@ApiModel(value = "SysRoleXEntity对象", description = "角色信息表")
+public class SysRoleXEntity extends Model<SysRoleXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("角色ID")
+    @TableId(value = "role_id", type = IdType.AUTO)
+    private Long roleId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("角色名称")
+    @TableField("role_name")
+    private String roleName;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("角色权限字符串")
+    @TableField("role_key")
+    private String roleKey;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
+    @ApiModelProperty("显示顺序")
+    @TableField("role_sort")
+    private Integer roleSort;
 
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）")
+    @TableField("data_scope")
+    private Integer dataScope;
+
+    @ApiModelProperty("菜单树选择项是否关联显示")
+    @TableField("menu_check_strictly")
+    private Boolean menuCheckStrictly;
+
+    @ApiModelProperty("部门树选择项是否关联显示")
+    @TableField("dept_check_strictly")
+    private Boolean deptCheckStrictly;
+
+    @ApiModelProperty("角色状态（0正常 1停用）")
     @TableField("`status`")
     private Integer status;
 
@@ -78,15 +90,15 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
     @TableField("remark")
     private String remark;
 
-    @ApiModelProperty("逻辑删除")
+    @ApiModelProperty("删除标志（0代表存在 2代表删除）")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.roleId;
     }
 
 }

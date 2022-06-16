@@ -16,7 +16,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 用户信息表
  * </p>
  *
  * @author valarchie
@@ -24,33 +24,65 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_user")
+@ApiModel(value = "SysUserXEntity对象", description = "用户信息表")
+public class SysUserXEntity extends Model<SysUserXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("用户ID")
+    @TableId(value = "user_id", type = IdType.AUTO)
+    private Long userId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("部门ID")
+    @TableField("dept_id")
+    private Long deptId;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("用户账号")
+    @TableField("user_name")
+    private String userName;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
+    @ApiModelProperty("用户昵称")
+    @TableField("nick_name")
+    private String nickName;
 
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("用户类型（00系统用户）")
+    @TableField("user_type")
+    private Integer userType;
+
+    @ApiModelProperty("用户邮箱")
+    @TableField("email")
+    private String email;
+
+    @ApiModelProperty("手机号码")
+    @TableField("phone_number")
+    private String phoneNumber;
+
+    @ApiModelProperty("用户性别（0男 1女 2未知）")
+    @TableField("sex")
+    private Integer sex;
+
+    @ApiModelProperty("头像地址")
+    @TableField("avatar")
+    private String avatar;
+
+    @ApiModelProperty("密码")
+    @TableField("`password`")
+    private String password;
+
+    @ApiModelProperty("帐号状态（0正常 1停用）")
     @TableField("`status`")
     private Integer status;
 
-    @ApiModelProperty("创建者ID")
+    @ApiModelProperty("最后登录IP")
+    @TableField("login_ip")
+    private String loginIp;
+
+    @ApiModelProperty("最后登录时间")
+    @TableField("login_date")
+    private Date loginDate;
+
+    @ApiModelProperty("更新者ID")
     @TableField("creator_id")
     private Long creatorId;
 
@@ -78,15 +110,15 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
     @TableField("remark")
     private String remark;
 
-    @ApiModelProperty("逻辑删除")
+    @ApiModelProperty("删除标志（0代表存在 2代表删除）")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.userId;
     }
 
 }

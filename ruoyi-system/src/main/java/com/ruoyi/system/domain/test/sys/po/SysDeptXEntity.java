@@ -16,7 +16,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 部门表
  * </p>
  *
  * @author valarchie
@@ -24,29 +24,48 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_dept")
+@ApiModel(value = "SysDeptXEntity对象", description = "部门表")
+public class SysDeptXEntity extends Model<SysDeptXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("部门id")
+    @TableId(value = "dept_id", type = IdType.AUTO)
+    private Long deptId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("父部门id")
+    @TableField("parent_id")
+    private Long parentId;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("祖级列表")
+    @TableField("ancestors")
+    private String ancestors;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
+    @ApiModelProperty("部门名称")
+    @TableField("dept_name")
+    private String deptName;
 
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("显示顺序")
+    @TableField("order_num")
+    private Integer orderNum;
+
+    @TableField("leader_id")
+    private Long leaderId;
+
+    @ApiModelProperty("负责人")
+    @TableField("leader_name")
+    private String leaderName;
+
+    @ApiModelProperty("联系电话")
+    @TableField("phone")
+    private String phone;
+
+    @ApiModelProperty("邮箱")
+    @TableField("email")
+    private String email;
+
+    @ApiModelProperty("部门状态（0正常 1停用）")
     @TableField("`status`")
     private Integer status;
 
@@ -74,19 +93,15 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-    @ApiModelProperty("备注")
-    @TableField("remark")
-    private String remark;
-
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.deptId;
     }
 
 }

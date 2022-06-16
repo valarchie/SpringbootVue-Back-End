@@ -16,7 +16,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 岗位信息表
  * </p>
  *
  * @author valarchie
@@ -24,51 +24,49 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_post")
+@ApiModel(value = "SysPostXEntity对象", description = "岗位信息表")
+public class SysPostXEntity extends Model<SysPostXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("岗位ID")
+    @TableId(value = "post_id", type = IdType.AUTO)
+    private Long postId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("岗位编码")
+    @TableField("post_code")
+    private String postCode;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("岗位名称")
+    @TableField("post_name")
+    private String postName;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
+    @ApiModelProperty("显示顺序")
+    @TableField("post_sort")
+    private Integer postSort;
 
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("状态（0正常 1停用）")
     @TableField("`status`")
     private Integer status;
 
-    @ApiModelProperty("创建者ID")
     @TableField("creator_id")
     private Long creatorId;
 
     @ApiModelProperty("创建者")
-    @TableField("creator_name")
-    private String creatorName;
+    @TableField("create_name")
+    private String createName;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
-    @ApiModelProperty("更新者ID")
     @TableField("updater_id")
     private Long updaterId;
 
     @ApiModelProperty("更新者")
-    @TableField("updater_name")
-    private String updaterName;
+    @TableField("update_name")
+    private String updateName;
 
     @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
@@ -86,7 +84,7 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.postId;
     }
 
 }

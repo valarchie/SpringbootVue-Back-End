@@ -16,37 +16,33 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 字典类型表
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-06-13
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_dict_type")
+@ApiModel(value = "SysDictTypeXEntity对象", description = "字典类型表")
+public class SysDictTypeXEntity extends Model<SysDictTypeXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("字典主键")
+    @TableId(value = "dict_id", type = IdType.AUTO)
+    private Long dictId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("字典名称")
+    @TableField("dict_name")
+    private String dictName;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("字典类型")
+    @TableField("dict_type")
+    private String dictType;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
-
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("状态（0正常 1停用）")
     @TableField("`status`")
     private Integer status;
 
@@ -86,7 +82,7 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.dictId;
     }
 
 }

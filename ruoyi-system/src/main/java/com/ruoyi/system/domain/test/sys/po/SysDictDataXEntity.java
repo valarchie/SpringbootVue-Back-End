@@ -16,47 +16,67 @@ import lombok.Setter;
 
 /**
  * <p>
- * 通知公告表
+ * 字典数据表
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-06-13
  */
 @Getter
 @Setter
-@TableName("sys_notice")
-@ApiModel(value = "SysNoticeXEntity对象", description = "通知公告表")
-public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
+@TableName("sys_dict_data")
+@ApiModel(value = "SysDictDataXEntity对象", description = "字典数据表")
+public class SysDictDataXEntity extends Model<SysDictDataXEntity> {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("公告ID")
-    @TableId(value = "notice_id", type = IdType.AUTO)
-    private Integer noticeId;
+    @ApiModelProperty("字典编码")
+    @TableId(value = "dict_data_id", type = IdType.AUTO)
+    private Long dictDataId;
 
-    @ApiModelProperty("公告标题")
-    @TableField("notice_title")
-    private String noticeTitle;
+    @ApiModelProperty("字典排序")
+    @TableField("dict_sort")
+    private Integer dictSort;
 
-    @ApiModelProperty("公告类型（1通知 2公告）")
-    @TableField("notice_type")
-    private Integer noticeType;
+    @ApiModelProperty("字典标签")
+    @TableField("dict_label")
+    private String dictLabel;
 
-    @ApiModelProperty("公告内容")
-    @TableField("notice_content")
-    private String noticeContent;
+    @ApiModelProperty("字典键值")
+    @TableField("dict_value")
+    private String dictValue;
 
-    @ApiModelProperty("公告状态（0正常 1关闭）")
+    @ApiModelProperty("字典类型")
+    @TableField("dict_type")
+    private String dictType;
+
+    @ApiModelProperty("样式属性（其他样式扩展）")
+    @TableField("css_class")
+    private String cssClass;
+
+    @ApiModelProperty("列表回显样式")
+    @TableField("list_class")
+    private String listClass;
+
+    @ApiModelProperty("图标")
+    @TableField("icon_class")
+    private String iconClass;
+
+    @ApiModelProperty("是否默认（1是 0否）")
+    @TableField("is_default")
+    private Boolean isDefault;
+
+    @ApiModelProperty("状态（0正常 1停用）")
     @TableField("`status`")
-    private Integer status;
+    private Boolean status;
 
     @ApiModelProperty("创建者ID")
     @TableField("creator_id")
     private Long creatorId;
 
     @ApiModelProperty("创建者")
-    @TableField("creator_name")
-    private String creatorName;
+    @TableField("create_name")
+    private String createName;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
@@ -67,8 +87,8 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
     private Long updaterId;
 
     @ApiModelProperty("更新者")
-    @TableField("updater_name")
-    private String updaterName;
+    @TableField("update_name")
+    private String updateName;
 
     @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
@@ -86,7 +106,7 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
 
     @Override
     public Serializable pkVal() {
-        return this.noticeId;
+        return this.dictDataId;
     }
 
 }

@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 通知公告表 前端控制器
+ * 角色和菜单关联表 前端控制器
  * </p>
  *
  * @author valarchie
  * @since 2022-06-16
  */
 @RestController
-@RequestMapping("/sys/sys-notice-xentity")
-public class SysNoticeXController extends BaseController {
+@RequestMapping("/sys/sys-role-menu-xentity")
+public class SysRoleMenuXController extends BaseController {
 
 }
 

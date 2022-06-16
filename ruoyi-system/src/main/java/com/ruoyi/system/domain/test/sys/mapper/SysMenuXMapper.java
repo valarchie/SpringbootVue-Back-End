@@ -1,16 +1,16 @@
 package com.ruoyi.system.domain.test.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.system.domain.test.sys.po.SysNoticeXEntity;
+import com.ruoyi.system.domain.test.sys.po.SysMenuXEntity;
 
 /**
  * <p>
- * 通知公告表 Mapper 接口
+ * 菜单权限表 Mapper 接口
  * </p>
  *
  * @author valarchie
  * @since 2022-06-16
  */
-public interface SysNoticeXMapper extends BaseMapper<SysNoticeXEntity> {
+public interface SysMenuXMapper extends BaseMapper<SysMenuXEntity> {
 
 }
