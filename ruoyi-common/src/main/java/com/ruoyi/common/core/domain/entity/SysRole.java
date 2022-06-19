@@ -1,8 +1,10 @@
 package com.ruoyi.common.core.domain.entity;
 
+import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.domain.test.sys.po.SysRoleXEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
@@ -18,6 +20,33 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SysRole extends BaseEntity {
+
+    public SysRole(SysRoleXEntity entity) {
+
+        this.dataScope = entity.getDataScope()+"";
+        this.deptCheckStrictly = entity.getDeptCheckStrictly();
+        this.roleId = entity.getRoleId();
+        this.roleKey = entity.getRoleKey();
+        this.roleName = entity.getRoleName();
+        this.roleSort = entity.getRoleSort() + "";
+        this.status = entity.getStatus() + "";
+
+    }
+
+    public SysRoleXEntity toEntity() {
+
+        SysRoleXEntity entity = new SysRoleXEntity();
+        entity.setRoleId(this.roleId);
+        entity.setDeptCheckStrictly(this.deptCheckStrictly);
+        entity.setDataScope(Convert.toInt(this.dataScope));
+        entity.setRoleKey(this.roleKey);
+        entity.setRoleName(this.roleName);
+        entity.setRoleSort(Convert.toInt(this.roleSort));
+        entity.setStatus(Convert.toInt(this.status));
+
+        return entity;
+    }
+
 
     private static final long serialVersionUID = 1L;
 

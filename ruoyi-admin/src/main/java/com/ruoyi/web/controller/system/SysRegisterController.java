@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
@@ -27,7 +28,7 @@ public class SysRegisterController extends BaseController {
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody RegisterBody user) {
-        if (!("true".equals(configService.getConfigValueByKey("sys.account.registerUser")))) {
+        if (!(Convert.toBool(configService.getConfigValueByKey("sys.account.registerUser")))) {
             return error("当前系统没有开启注册功能！");
         }
         String msg = registerService.register(user);

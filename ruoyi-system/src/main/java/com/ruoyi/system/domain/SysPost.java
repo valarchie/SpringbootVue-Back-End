@@ -1,12 +1,15 @@
 package com.ruoyi.system.domain;
 
+import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.domain.test.sys.po.SysPostXEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 岗位表 sys_post
@@ -15,7 +18,32 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class SysPost extends BaseEntity {
+
+
+    public SysPost(SysPostXEntity entity) {
+
+        this.postId = entity.getPostId();
+        this.postCode = entity.getPostCode();
+        this.postName = entity.getPostName();
+        this.postSort = entity.getPostSort() + "";
+        this.status = entity.getStatus() + "";
+
+    }
+
+    public SysPostXEntity toEntity() {
+        SysPostXEntity entity = new SysPostXEntity();
+        entity.setPostId(this.postId);
+        entity.setPostCode(this.postCode);
+        entity.setPostName(this.postName);
+        entity.setStatus(Convert.toInt(this.status));
+        entity.setPostSort(Convert.toInt(this.postSort));
+
+        return entity;
+    }
+
+
 
     private static final long serialVersionUID = 1L;
 

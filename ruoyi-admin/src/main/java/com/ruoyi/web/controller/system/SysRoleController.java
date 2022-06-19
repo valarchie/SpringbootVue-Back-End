@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -13,9 +15,12 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.web.service.SysPermissionService;
 import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.test.sys.po.SysRoleXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysRoleXService;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysRoleController extends BaseController {
 
     @Autowired
-    private ISysRoleService roleService;
+    private ISysRoleXService roleService;
 
     @Autowired
     private TokenService tokenService;
@@ -48,21 +53,38 @@ public class SysRoleController extends BaseController {
     private SysPermissionService permissionService;
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysRole role) {
-        startPage();
-        List<SysRole> list = roleService.selectRoleList(role);
-        return getDataTable(list);
+
+        Page<SysRoleXEntity> page = getPage();
+        QueryWrapper<SysRoleXEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq(role.getStatus() != null, "status", role.getStatus())
+            .eq(role.getRoleKey() != null, "role_key", role.getRoleKey())
+            .like(StrUtil.isNotEmpty(role.getRoleName()), "role_name", role.getRoleName());
+
+        roleService.page(page, queryWrapper);
+        return getDataTable(page);
     }
 
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:role:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysRole role) {
-        List<SysRole> list = roleService.selectRoleList(role);
+
+        Page<SysRoleXEntity> page = getPage();
+        QueryWrapper<SysRoleXEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq(role.getStatus() != null, "status", role.getStatus())
+            .eq(role.getRoleKey() != null, "role_key", role.getRoleKey())
+            .like(StrUtil.isNotEmpty(role.getRoleName()), "role_name", role.getRoleName());
+
+        roleService.page(page, queryWrapper);
+
+        List<SysRole> list = page.getRecords().stream().map(SysRole::new).collect(Collectors.toList());
         ExcelUtil<SysRole> util = new ExcelUtil<SysRole>(SysRole.class);
         util.exportExcel(response, list, "角色数据");
     }
@@ -74,7 +96,7 @@ public class SysRoleController extends BaseController {
     @GetMapping(value = "/{roleId}")
     public ResponseDTO getInfo(@PathVariable Long roleId) {
         roleService.checkRoleDataScope(roleId);
-        return ResponseDTO.success(roleService.selectRoleById(roleId));
+        return ResponseDTO.success(new SysRole(roleService.getById(roleId)));
     }
 
     /**
@@ -84,9 +106,10 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysRole role) {
-        if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role))) {
+        if (roleService.checkRoleNameUnique(role)) {
             return ResponseDTO.error("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
-        } else if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleKeyUnique(role))) {
+        }
+        if (roleService.checkRoleKeyUnique(role)) {
             return ResponseDTO.error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setCreateBy(getUsername());
@@ -103,18 +126,20 @@ public class SysRoleController extends BaseController {
     public ResponseDTO edit(@Validated @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
-        if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role))) {
+        if (roleService.checkRoleNameUnique(role)) {
             return ResponseDTO.error("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
-        } else if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleKeyUnique(role))) {
+        }
+        if (roleService.checkRoleKeyUnique(role)) {
             return ResponseDTO.error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setUpdateBy(getUsername());
 
-        if (roleService.updateRole(role) > 0) {
+        if (roleService.updateRole(role)) {
             // 更新缓存用户权限
             LoginUser loginUser = getLoginUser();
             if (loginUser.getUser() != null && !loginUser.getUser().isAdmin()) {
                 loginUser.setPermissions(permissionService.getMenuPermission(loginUser.getUser()));
+                userService.selectUserByUserName(loginUser.getUser().getUserName());
                 loginUser.setUser(userService.selectUserByUserName(loginUser.getUser().getUserName()));
                 tokenService.setLoginUser(loginUser);
             }
@@ -155,7 +180,8 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{roleIds}")
     public ResponseDTO remove(@PathVariable Long[] roleIds) {
-        return toAjax(roleService.deleteRoleByIds(roleIds));
+        List<Long> idList = Arrays.stream(roleIds).collect(Collectors.toList());
+        return toAjax(roleService.removeByIds(idList));
     }
 
     /**
@@ -164,7 +190,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:role:query')")
     @GetMapping("/optionselect")
     public ResponseDTO optionselect() {
-        return ResponseDTO.success(roleService.selectRoleAll());
+        return ResponseDTO.success(roleService.list().stream().map(SysRole::new).collect(Collectors.toList()));
     }
 
     /**

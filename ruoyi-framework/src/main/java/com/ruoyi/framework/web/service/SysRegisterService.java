@@ -12,8 +12,9 @@ import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.system.domain.test.sys.po.SysUserXEntity;
 import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class SysRegisterService {
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @Autowired
     private ISysConfigXService configService;
@@ -56,14 +57,17 @@ public class SysRegisterService {
         } else if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
             || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {
             msg = "密码长度必须在5到20个字符之间";
-        } else if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username))) {
+        } else if (userService.checkUserNameUnique(username)) {
             msg = "保存用户'" + username + "'失败，注册账号已存在";
         } else {
             SysUser sysUser = new SysUser();
             sysUser.setUserName(username);
             sysUser.setNickName(username);
             sysUser.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
-            boolean regFlag = userService.registerUser(sysUser);
+
+            SysUserXEntity entity = sysUser.toEntity();
+
+            boolean regFlag = entity.insert();
             if (!regFlag) {
                 msg = "注册失败,请联系系统管理人员";
             } else {

@@ -1,6 +1,8 @@
 package com.ruoyi.common.core.domain.entity;
 
+import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.domain.test.sys.po.SysMenuXEntity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 菜单权限表 sys_menu
@@ -16,7 +19,70 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class SysMenu extends BaseEntity {
+
+    public SysMenu(SysMenuXEntity entity) {
+        this.menuId = entity.getMenuId();
+        this.menuName = entity.getMenuName();
+        this.parentId = entity.getParentId();
+        this.orderNum = entity.getOrderNum();
+        this.path = entity.getPath();
+        this.component = entity.getComponent();
+        this.query = entity.getQuery();
+        this.isCache = entity.getIsCache()+"";
+        this.isFrame = entity.getIsFrame() +"";
+        this.menuType = transferMenuType(entity.getMenuType());
+        this.visible = entity.getIsVisible()+"";
+        this.setCreateBy(entity.getCreatorName());
+        this.setCreateTime(entity.getCreateTime());
+    }
+
+    public SysMenuXEntity toEntity() {
+
+        SysMenuXEntity entity = new SysMenuXEntity();
+
+        entity.setMenuId(this.menuId);
+        entity.setMenuName(this.menuName);
+        entity.setParentId(this.parentId);
+        entity.setOrderNum(this.orderNum);
+        entity.setPath(this.path);
+        entity.setComponent(this.component);
+        entity.setQuery(this.query);
+        entity.setIsCache(Convert.toBool(this.isCache));
+        entity.setIsFrame(Convert.toBool(this.isFrame));
+        entity.setMenuType(transferMenuType(this.menuType));
+        entity.setIsVisible(Convert.toBool(this.visible));
+
+        return entity;
+    }
+
+    public int transferMenuType(String typeStr) {
+        int type = 0;
+        switch (typeStr) {
+            case "M": type = 1;break;
+            case"C": type = 2;break;
+            case "F": type = 3;break;
+            default:type = 0;
+        }
+        return type;
+    }
+
+
+
+    public String transferMenuType(Integer type) {
+        String typeStr = "";
+
+        switch (type) {
+            case 1: typeStr = "M";break;
+            case 2: typeStr = "C";break;
+            case 3: typeStr = "F";break;
+            default:typeStr = "Unknow";
+        }
+        return typeStr;
+    }
+
+
 
     private static final long serialVersionUID = 1L;
 

@@ -60,11 +60,11 @@ public class SysMenuXEntity extends Model<SysMenuXEntity> {
 
     @ApiModelProperty("是否为外链（0是 1否）")
     @TableField("is_frame")
-    private Integer isFrame;
+    private Boolean isFrame;
 
     @ApiModelProperty("是否缓存（0缓存 1不缓存）")
     @TableField("is_cache")
-    private Integer isCache;
+    private Boolean isCache;
 
     @ApiModelProperty("菜单类型（M=1目录 C=2菜单 F=3按钮）")
     @TableField("menu_type")
@@ -91,8 +91,8 @@ public class SysMenuXEntity extends Model<SysMenuXEntity> {
     private Long creatorId;
 
     @ApiModelProperty("创建者")
-    @TableField("create_name")
-    private String createName;
+    @TableField("creator_name")
+    private String creatorName;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
@@ -117,7 +117,7 @@ public class SysMenuXEntity extends Model<SysMenuXEntity> {
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override

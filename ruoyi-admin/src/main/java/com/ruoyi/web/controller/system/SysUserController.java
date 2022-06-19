@@ -2,7 +2,6 @@ package com.ruoyi.web.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -11,9 +10,12 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysPostService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.SysPost;
+import com.ruoyi.system.domain.test.sys.po.SysUserXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysPostXService;
+import com.ruoyi.system.domain.test.sys.service.ISysRoleXService;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
@@ -41,13 +43,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class SysUserController extends BaseController {
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @Autowired
-    private ISysRoleService roleService;
+    private ISysRoleXService roleService;
 
     @Autowired
-    private ISysPostService postService;
+    private ISysPostXService postService;
 
     /**
      * 获取用户列表
@@ -94,12 +96,12 @@ public class SysUserController extends BaseController {
     public ResponseDTO getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         userService.checkUserDataScope(userId);
         ResponseDTO ajax = ResponseDTO.success();
-        List<SysRole> roles = roleService.selectRoleAll();
+        List<SysRole> roles = roleService.list().stream().map(SysRole::new).collect(Collectors.toList());
         ajax.put("roles",
             SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
-        ajax.put("posts", postService.selectPostAll());
+        ajax.put("posts", postService.list().stream().map(SysPost::new).collect(Collectors.toList()));
         if (userId != null) {
-            SysUser sysUser = userService.selectUserById(userId);
+            SysUser sysUser = new SysUser(userService.getById(userId));
             ajax.put(ResponseDTO.DATA_TAG, sysUser);
             ajax.put("postIds", postService.selectPostListByUserId(userId));
             ajax.put("roleIds", sysUser.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList()));
@@ -114,18 +116,19 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysUser user) {
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user.getUserName()))) {
+        if (userService.checkUserNameUnique(user.getUserName())) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-        } else if (StrUtil.isNotEmpty(user.getPhonenumber())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+        }
+        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user)) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StrUtil.isNotEmpty(user.getEmail())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
+        }
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setCreateBy(getUsername());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
-        return toAjax(userService.insertUser(user));
+        SysUserXEntity entity = user.toEntity();
+        return toAjax(entity.insert());
     }
 
     /**
@@ -137,15 +140,15 @@ public class SysUserController extends BaseController {
     public ResponseDTO edit(@Validated @RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
-        if (StrUtil.isNotEmpty(user.getPhonenumber())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+        if (StrUtil.isNotEmpty(user.getPhonenumber())  && userService.checkPhoneUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StrUtil.isNotEmpty(user.getEmail())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
+        }
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUpdateBy(getUsername());
-        return toAjax(userService.updateUser(user));
+        SysUserXEntity entity = user.toEntity();
+        return toAjax(entity.updateById());
     }
 
     /**
@@ -158,7 +161,8 @@ public class SysUserController extends BaseController {
         if (ArrayUtils.contains(userIds, getUserId())) {
             return error("当前用户不能删除");
         }
-        return toAjax(userService.deleteUserByIds(userIds));
+        List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
+        return toAjax(userService.removeByIds(userIdList));
     }
 
     /**
@@ -172,7 +176,9 @@ public class SysUserController extends BaseController {
         userService.checkUserDataScope(user.getUserId());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
         user.setUpdateBy(getUsername());
-        return toAjax(userService.resetPwd(user));
+        SysUserXEntity entity = user.toEntity();
+
+        return toAjax(entity.updateById());
     }
 
     /**
@@ -185,7 +191,8 @@ public class SysUserController extends BaseController {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
         user.setUpdateBy(getUsername());
-        return toAjax(userService.updateUserStatus(user));
+        SysUserXEntity entity = user.toEntity();
+        return toAjax(entity.updateById());
     }
 
     /**
@@ -195,7 +202,8 @@ public class SysUserController extends BaseController {
     @GetMapping("/authRole/{userId}")
     public ResponseDTO authRole(@PathVariable("userId") Long userId) {
         ResponseDTO ajax = ResponseDTO.success();
-        SysUser user = userService.selectUserById(userId);
+
+        SysUser user = new SysUser(userService.getById(userId));
         List<SysRole> roles = roleService.selectRolesByUserId(userId);
         ajax.put("user", user);
         ajax.put("roles",

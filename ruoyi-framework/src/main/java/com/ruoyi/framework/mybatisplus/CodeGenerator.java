@@ -41,8 +41,8 @@ public class CodeGenerator {
             .password("Wds123123#")
             .author("valarchie")
             .module("/ruoyi-system")
-            .parentPackage("com.ruoyi.system.domain.test")
-            .tableName("sys_user_role").build();
+            .parentPackage("com.ruoyi.system.domain.test1")
+            .tableName("sys_menu").build();
 
         generator.generateCode();
     }

@@ -1,17 +1,18 @@
 package com.ruoyi.web.controller.system;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.service.ISysDeptService;
-import java.util.Iterator;
+import com.ruoyi.system.domain.test.sys.po.SysDeptXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysDeptXService;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
 import java.util.List;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysDeptController extends BaseController {
 
     @Autowired
-    private ISysDeptService deptService;
+    private ISysDeptXService deptService;
+
+    @Autowired
+    private ISysUserXService userService;
 
     /**
      * 获取部门列表
@@ -42,8 +46,16 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @GetMapping("/list")
     public ResponseDTO list(SysDept dept) {
-        List<SysDept> depts = deptService.selectDeptList(dept);
-        return ResponseDTO.success(depts);
+        Page<SysDeptXEntity> page = getPage();
+        QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq(dept.getStatus() != null, "status", dept.getStatus())
+            .eq(dept.getDeptId() != null, "dept_id", dept.getDeptId())
+            .eq(dept.getParentId() != null, "parent_id", dept.getParentId())
+            .like(StrUtil.isNotEmpty(dept.getDeptName()), "dept_name", dept.getDeptName());
+
+        deptService.page(page, queryWrapper);
+        return ResponseDTO.success(page.getRecords());
     }
 
     /**
@@ -52,16 +64,21 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @GetMapping("/list/exclude/{deptId}")
     public ResponseDTO excludeChild(@PathVariable(value = "deptId", required = false) Long deptId) {
-        List<SysDept> depts = deptService.selectDeptList(new SysDept());
-        Iterator<SysDept> it = depts.iterator();
-        while (it.hasNext()) {
-            SysDept d = (SysDept) it.next();
-            if (d.getDeptId().intValue() == deptId
-                || ArrayUtils.contains(CharSequenceUtil.splitToArray(d.getAncestors(), ","), deptId + "")) {
-
-                it.remove();
-            }
-        }
+        QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(deptId != null, "dept_id", deptId)
+            .apply(deptId != null, "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
+        // in_set
+        List<SysDeptXEntity> depts = deptService.list(queryWrapper);
+//        Iterator<SysDeptXEntity> it = depts.iterator();
+//        while (it.hasNext()) {
+//            SysDeptXEntity d = it.next();
+//            if (d.getDeptId().intValue() == deptId
+//                || ArrayUtils.contains(CharSequenceUtil.splitToArray(d.getAncestors(), ","),
+//                deptId + "")) {
+//
+//                it.remove();
+//            }
+//        }
         return ResponseDTO.success(depts);
     }
 
@@ -71,8 +88,8 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:query')")
     @GetMapping(value = "/{deptId}")
     public ResponseDTO getInfo(@PathVariable Long deptId) {
-        deptService.checkDeptDataScope(deptId);
-        return ResponseDTO.success(deptService.selectDeptById(deptId));
+        // TODO 防止越权操作
+        return ResponseDTO.success(deptService.getById(deptId));
     }
 
     /**
@@ -80,8 +97,17 @@ public class SysDeptController extends BaseController {
      */
     @GetMapping("/treeselect")
     public ResponseDTO treeselect(SysDept dept) {
-        List<SysDept> depts = deptService.selectDeptList(dept);
-        return ResponseDTO.success(deptService.buildDeptTreeSelect(depts));
+
+        QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq(dept.getStatus() != null, "status", dept.getStatus())
+            .eq(dept.getDeptId() != null, "dept_id", dept.getDeptId())
+            .eq(dept.getParentId() != null, "parent_id", dept.getParentId())
+            .like(StrUtil.isNotEmpty(dept.getDeptName()), "dept_name", dept.getDeptName());
+
+        List<SysDeptXEntity> list = deptService.list(queryWrapper);
+
+        return ResponseDTO.success(deptService.buildDeptTreeSelect(list));
     }
 
     /**
@@ -89,10 +115,10 @@ public class SysDeptController extends BaseController {
      */
     @GetMapping(value = "/roleDeptTreeselect/{roleId}")
     public ResponseDTO roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
-        List<SysDept> depts = deptService.selectDeptList(new SysDept());
+        List<SysDeptXEntity> list = deptService.list();
         ResponseDTO ajax = ResponseDTO.success();
         ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
-        ajax.put("depts", deptService.buildDeptTreeSelect(depts));
+        ajax.put("depts", deptService.buildDeptTreeSelect(list));
         return ajax;
     }
 
@@ -103,11 +129,23 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysDept dept) {
-        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
+        if (deptService.checkDeptNameUnique(dept)) {
             return ResponseDTO.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         dept.setCreateBy(getUsername());
-        return toAjax(deptService.insertDept(dept));
+
+        SysDeptXEntity entity = new SysDeptXEntity();
+        entity.setParentId(dept.getParentId());
+        entity.setAncestors(dept.getAncestors());
+        entity.setDeptName(dept.getDeptName());
+        entity.setOrderNum(dept.getOrderNum());
+        entity.setLeaderName(dept.getLeader());
+        entity.setPhone(dept.getPhone());
+        entity.setEmail(dept.getEmail());
+        entity.setCreatorId(getUserId());
+        entity.setCreatorName(getUsername());
+
+        return toAjax(entity.insert());
     }
 
     /**
@@ -119,16 +157,29 @@ public class SysDeptController extends BaseController {
     public ResponseDTO edit(@Validated @RequestBody SysDept dept) {
         Long deptId = dept.getDeptId();
         deptService.checkDeptDataScope(deptId);
-        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
+        if (deptService.checkDeptNameUnique(dept)) {
             return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
-        } else if (dept.getParentId().equals(deptId)) {
+        }
+        if (dept.getParentId().equals(deptId)) {
             return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
-        } else if (StrUtil.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
-            && deptService.selectNormalChildrenDeptById(deptId) > 0) {
+        }
+        if (StrUtil.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
+            && deptService.countEnabledChildrenDeptById(deptId) > 0) {
             return ResponseDTO.error("该部门包含未停用的子部门！");
         }
-        dept.setUpdateBy(getUsername());
-        return toAjax(deptService.updateDept(dept));
+
+        SysDeptXEntity entity = new SysDeptXEntity();
+        entity.setDeptId(deptId);
+        entity.setParentId(dept.getParentId());
+        entity.setAncestors(dept.getAncestors());
+        entity.setDeptName(dept.getDeptName());
+        entity.setOrderNum(dept.getOrderNum());
+        entity.setLeaderName(dept.getLeader());
+        entity.setPhone(dept.getPhone());
+        entity.setEmail(dept.getEmail());
+        entity.setUpdaterName(getUsername());
+        entity.setUpdaterId(getUserId());
+        return toAjax(entity.updateById());
     }
 
     /**
@@ -138,13 +189,13 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
     public ResponseDTO remove(@PathVariable Long deptId) {
-        if (deptService.hasChildByDeptId(deptId)) {
+        if (deptService.hasChildDeptById(deptId)) {
             return ResponseDTO.error("存在下级部门,不允许删除");
         }
-        if (deptService.checkDeptExistUser(deptId)) {
+        if (userService.checkDeptExistUser(deptId)) {
             return ResponseDTO.error("部门存在用户,不允许删除");
         }
         deptService.checkDeptDataScope(deptId);
-        return toAjax(deptService.deleteDeptById(deptId));
+        return toAjax(deptService.removeById(deptId));
     }
 }

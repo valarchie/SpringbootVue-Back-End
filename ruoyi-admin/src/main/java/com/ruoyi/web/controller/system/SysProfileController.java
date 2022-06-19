@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -12,7 +11,8 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.web.service.TokenService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.test.sys.po.SysUserXEntity;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SysProfileController extends BaseController {
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @Autowired
     private TokenService tokenService;
@@ -47,6 +47,7 @@ public class SysProfileController extends BaseController {
         LoginUser loginUser = getLoginUser();
         SysUser user = loginUser.getUser();
         ResponseDTO ajax = ResponseDTO.success(user);
+        // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
         ajax.put("roleGroup", userService.selectUserRoleGroup(loginUser.getUsername()));
         ajax.put("postGroup", userService.selectUserPostGroup(loginUser.getUsername()));
         return ajax;
@@ -61,17 +62,17 @@ public class SysProfileController extends BaseController {
         LoginUser loginUser = getLoginUser();
         SysUser sysUser = loginUser.getUser();
         user.setUserName(sysUser.getUserName());
-        if (StrUtil.isNotEmpty(user.getPhonenumber())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        if (StrUtil.isNotEmpty(user.getEmail())
-            && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUserId(sysUser.getUserId());
         user.setPassword(null);
-        if (userService.updateUserProfile(user) > 0) {
+
+        SysUserXEntity entity = user.toEntity();
+        if (entity.updateById()) {
             // 更新缓存用户信息
             sysUser.setNickName(user.getNickName());
             sysUser.setPhonenumber(user.getPhonenumber());
@@ -90,7 +91,6 @@ public class SysProfileController extends BaseController {
     @PutMapping("/updatePwd")
     public ResponseDTO updatePwd(String oldPassword, String newPassword) {
         LoginUser loginUser = getLoginUser();
-        String userName = loginUser.getUsername();
         String password = loginUser.getPassword();
         if (!AuthenticationUtils.matchesPassword(oldPassword, password)) {
             return ResponseDTO.error("修改密码失败，旧密码错误");
@@ -98,7 +98,11 @@ public class SysProfileController extends BaseController {
         if (AuthenticationUtils.matchesPassword(newPassword, password)) {
             return ResponseDTO.error("新密码不能与旧密码相同");
         }
-        if (userService.resetUserPwd(userName, AuthenticationUtils.encryptPassword(newPassword)) > 0) {
+        SysUserXEntity entity = new SysUserXEntity();
+        entity.setUserId(getUserId());
+        entity.setPassword(AuthenticationUtils.encryptPassword(newPassword));
+
+        if (entity.updateById()) {
             // 更新缓存用户密码
             loginUser.getUser().setPassword(AuthenticationUtils.encryptPassword(newPassword));
             tokenService.setLoginUser(loginUser);
@@ -116,7 +120,12 @@ public class SysProfileController extends BaseController {
         if (!file.isEmpty()) {
             LoginUser loginUser = getLoginUser();
             String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
-            if (userService.updateUserAvatar(loginUser.getUsername(), avatar)) {
+
+            SysUserXEntity entity = new SysUserXEntity();
+            entity.setUserId(getUserId());
+            entity.setAvatar(avatar);
+
+            if (entity.updateById()) {
                 ResponseDTO ajax = ResponseDTO.success();
                 ajax.put("imgUrl", avatar);
                 // 更新缓存用户头像

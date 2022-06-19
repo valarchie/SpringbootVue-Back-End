@@ -1,12 +1,11 @@
 package com.ruoyi.framework.web.service;
 
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.system.service.ISysMenuService;
-import com.ruoyi.system.service.ISysRoleService;
 
 /**
  * 用户权限处理
@@ -17,10 +16,8 @@ import com.ruoyi.system.service.ISysRoleService;
 public class SysPermissionService {
 
     @Autowired
-    private ISysRoleService roleService;
+    private ISysUserXService userService;
 
-    @Autowired
-    private ISysMenuService menuService;
 
     /**
      * 获取角色数据权限
@@ -34,7 +31,7 @@ public class SysPermissionService {
         if (user.isAdmin()) {
             roles.add("admin");
         } else {
-            roles.addAll(roleService.selectRolePermissionByUserId(user.getUserId()));
+            roles.addAll(userService.selectRolePermissionByUserId(user.getUserId()));
         }
         return roles;
     }
@@ -51,7 +48,7 @@ public class SysPermissionService {
         if (user.isAdmin()) {
             perms.add("*:*:*");
         } else {
-            perms.addAll(menuService.selectMenuPermsByUserId(user.getUserId()));
+            perms.addAll(userService.selectMenuPermsByUserId(user.getUserId()));
         }
         return perms;
     }

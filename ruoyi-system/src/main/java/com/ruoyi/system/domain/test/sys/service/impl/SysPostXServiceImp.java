@@ -1,9 +1,12 @@
 package com.ruoyi.system.domain.test.sys.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.test.sys.mapper.SysPostXMapper;
 import com.ruoyi.system.domain.test.sys.po.SysPostXEntity;
 import com.ruoyi.system.domain.test.sys.service.ISysPostXService;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +19,33 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysPostXServiceImp extends ServiceImpl<SysPostXMapper, SysPostXEntity> implements ISysPostXService {
+
+    /**
+     * 校验岗位名称是否唯一
+     *
+     * @param post 岗位信息
+     * @return 结果
+     */
+    @Override
+    public boolean checkPostNameUnique(SysPost post) {
+        QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.ne(post.getPostId() != null, "post_id", post.getPostId())
+            .eq("post_name", post.getPostName());
+        return baseMapper.selectCount(queryWrapper) > 0;
+    }
+
+    @Override
+    public boolean checkPostCodeUnique(SysPost post) {
+        QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.ne(post.getPostId() != null, "post_id", post.getPostId())
+            .eq("post_code", post.getPostCode());
+        return baseMapper.selectCount(queryWrapper) > 0;
+    }
+
+    @Override
+    public List<Long> selectPostListByUserId(Long userId) {
+        return baseMapper.selectPostListByUserId(userId);
+    }
+
 
 }

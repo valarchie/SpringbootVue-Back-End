@@ -1,10 +1,12 @@
 package com.ruoyi.common.core.domain.entity;
 
+import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.system.domain.test.sys.po.SysUserXEntity;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.Email;
@@ -29,6 +31,38 @@ public class SysUser extends BaseEntity {
     public SysUser(Long userId) {
         this.userId = userId;
     }
+
+    public SysUserXEntity toEntity() {
+        SysUserXEntity entity = new SysUserXEntity();
+
+        entity.setUserId(this.userId);
+        entity.setDeptId(this.deptId);
+        entity.setUserName(this.userName);
+        entity.setNickName(this.nickName);
+        entity.setEmail(this.email);
+        entity.setPhoneNumber(this.phonenumber);
+        entity.setSex(Convert.toInt(this.sex));
+        entity.setAvatar(this.avatar);
+        entity.setPassword(this.password);
+        // TODO 密码没加盐？
+        entity.setStatus(Convert.toInt(this.status));
+        return entity;
+    }
+
+    public SysUser(SysUserXEntity entity) {
+
+        this.userId = entity.getUserId();
+        this.deptId = entity.getDeptId();
+        this.userName = entity.getUserName();
+        this.nickName = entity.getNickName();
+        this.email = entity.getEmail();
+        this.phonenumber = entity.getPhoneNumber();
+        this.sex = entity.getSex() + "";
+        this.avatar = entity.getAvatar();
+        this.password = entity.getPassword();
+        this.status = entity.getStatus()+"";
+    }
+
 
     /**
      * 用户ID

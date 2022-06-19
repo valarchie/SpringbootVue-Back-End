@@ -1,24 +1,22 @@
 package com.ruoyi.framework.aspectj;
 
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.stereotype.Component;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.DataPermissionScope;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.utils.AuthenticationUtils;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Before;
 
 /**
  * 数据过滤处理
  *
  * @author ruoyi
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class DataScopeAspect {
 
     /**
