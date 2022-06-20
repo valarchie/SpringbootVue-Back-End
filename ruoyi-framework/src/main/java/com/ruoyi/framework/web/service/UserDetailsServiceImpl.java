@@ -1,10 +1,10 @@
 package com.ruoyi.framework.web.service;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.enums.UserStatus;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.framework.loginuser.LoginUser;
+import com.springvue.orm.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -5,8 +5,8 @@ import com.ruoyi.common.annotation.DataPermissionScope;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.framework.loginuser.AuthenticationUtils;
+import com.ruoyi.framework.loginuser.LoginUser;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Before;
 

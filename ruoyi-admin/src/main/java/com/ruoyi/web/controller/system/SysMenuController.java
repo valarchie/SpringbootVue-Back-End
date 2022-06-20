@@ -10,8 +10,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.test.sys.po.SysMenuXEntity;
-import com.ruoyi.system.domain.test.sys.service.ISysMenuXService;
+import com.springvue.orm.domain.test.sys.po.SysMenuXEntity;
+import com.springvue.orm.domain.test.sys.service.ISysMenuXService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class SysMenuController extends BaseController {
 
         List<SysMenu> collect = menus.stream().map(SysMenu::new).collect(Collectors.toList());
 
-        return ResponseDTO.success(menuService.buildMenuTreeSelect(collect));
+        return ResponseDTO.success(menuService.buildMenuTree(collect));
     }
 
     /**
@@ -85,7 +85,7 @@ public class SysMenuController extends BaseController {
         List<SysMenu> collect = menus.stream().map(SysMenu::new).collect(Collectors.toList());
         ResponseDTO ajax = ResponseDTO.success();
         ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        ajax.put("menus", menuService.buildMenuTreeSelect(collect));
+        ajax.put("menus", menuService.buildMenuTree(collect));
         return ajax;
     }
 

@@ -16,7 +16,6 @@ import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.exception.UtilException;
-import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -857,7 +856,8 @@ public class ExcelUtil<T> {
      * @return 字典标签
      */
     public static String convertDictByExp(String dictValue, String dictType, String separator) {
-        return DictUtils.getDictLabel(dictType, dictValue, separator);
+//        return DictUtils.getDictLabel(dictType, dictValue, separator);
+        return "......";
     }
 
     /**
@@ -869,7 +869,8 @@ public class ExcelUtil<T> {
      * @return 字典值
      */
     public static String reverseDictByExp(String dictLabel, String dictType, String separator) {
-        return DictUtils.getDictValue(dictType, dictLabel, separator);
+//        return DictUtils.getDictValue(dictType, dictLabel, separator);
+        return ".....";
     }
 
     /**

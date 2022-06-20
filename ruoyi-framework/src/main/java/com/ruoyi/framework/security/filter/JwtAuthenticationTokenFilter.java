@@ -1,5 +1,8 @@
 package com.ruoyi.framework.security.filter;
 
+import com.ruoyi.framework.loginuser.AuthenticationUtils;
+import com.ruoyi.framework.loginuser.LoginUser;
+import com.ruoyi.framework.web.service.TokenService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,10 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.AuthenticationUtils;
-import cn.hutool.core.util.StrUtil;
-import com.ruoyi.framework.web.service.TokenService;
 
 /**
  * token过滤器 验证token有效性

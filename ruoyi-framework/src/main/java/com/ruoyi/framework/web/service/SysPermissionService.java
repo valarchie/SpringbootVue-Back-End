@@ -1,7 +1,7 @@
 package com.ruoyi.framework.web.service;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
+import com.springvue.orm.domain.test.sys.service.ISysUserXService;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;

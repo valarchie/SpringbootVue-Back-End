@@ -6,7 +6,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
 import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.framework.web.service.SysRegisterService;
-import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
+import com.springvue.orm.domain.test.sys.service.ISysConfigXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

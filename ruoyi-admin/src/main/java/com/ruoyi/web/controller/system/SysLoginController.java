@@ -2,13 +2,12 @@ package com.ruoyi.web.controller.system;
 
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.ResponseDTO;
-import com.ruoyi.common.core.domain.entity.SysMenu;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginBody;
-import com.ruoyi.common.utils.AuthenticationUtils;
+import com.ruoyi.framework.loginuser.AuthenticationUtils;
 import com.ruoyi.framework.web.service.SysLoginService;
 import com.ruoyi.framework.web.service.SysPermissionService;
-import com.ruoyi.system.service.ISysMenuService;
+import com.springvue.orm.domain.entity.SysUser;
+import com.springvue.orm.service.ISysMenuService;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;

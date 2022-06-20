@@ -8,13 +8,13 @@ import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.utils.AuthenticationUtils;
 import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.framework.loginuser.AuthenticationUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.system.domain.test.sys.po.SysUserXEntity;
-import com.ruoyi.system.domain.test.sys.service.ISysConfigXService;
-import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
+import com.springvue.orm.domain.test.sys.po.SysUserXEntity;
+import com.springvue.orm.domain.test.sys.service.ISysConfigXService;
+import com.springvue.orm.domain.test.sys.service.ISysUserXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

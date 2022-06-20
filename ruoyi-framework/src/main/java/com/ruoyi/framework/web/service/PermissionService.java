@@ -1,13 +1,12 @@
 package com.ruoyi.framework.web.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.framework.loginuser.AuthenticationUtils;
+import com.ruoyi.framework.loginuser.LoginUser;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import com.ruoyi.common.core.domain.entity.SysRole;
-import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.utils.AuthenticationUtils;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * RuoYi首创 自定义权限实现，ss取自SpringSecurity首字母

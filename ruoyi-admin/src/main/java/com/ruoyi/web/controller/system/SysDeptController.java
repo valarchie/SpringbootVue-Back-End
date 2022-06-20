@@ -7,11 +7,11 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResponseDTO;
-import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.test.sys.po.SysDeptXEntity;
-import com.ruoyi.system.domain.test.sys.service.ISysDeptXService;
-import com.ruoyi.system.domain.test.sys.service.ISysUserXService;
+import com.springvue.orm.domain.entity.SysDept;
+import com.springvue.orm.domain.test.sys.po.SysDeptXEntity;
+import com.springvue.orm.domain.test.sys.service.ISysDeptXService;
+import com.springvue.orm.domain.test.sys.service.ISysUserXService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -107,7 +107,7 @@ public class SysDeptController extends BaseController {
 
         List<SysDeptXEntity> list = deptService.list(queryWrapper);
 
-        return ResponseDTO.success(deptService.buildDeptTreeSelect(list));
+        return ResponseDTO.success(deptService.buildDeptTree(list));
     }
 
     /**
@@ -118,7 +118,7 @@ public class SysDeptController extends BaseController {
         List<SysDeptXEntity> list = deptService.list();
         ResponseDTO ajax = ResponseDTO.success();
         ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
-        ajax.put("depts", deptService.buildDeptTreeSelect(list));
+        ajax.put("depts", deptService.buildDeptTree(list));
         return ajax;
     }
 

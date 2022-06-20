@@ -1,11 +1,8 @@
 package com.ruoyi.common.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ruoyi.common.core.domain.entity.SysDept;
-import com.ruoyi.common.core.domain.entity.SysMenu;
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 
 /**
@@ -38,21 +35,4 @@ public class TreeSelect implements Serializable {
 
     }
 
-    public TreeSelect(SysDept dept) {
-        this.id = dept.getDeptId();
-        this.label = dept.getDeptName();
-        this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
-    }
-
-    public TreeSelect(SysMenu menu) {
-        this.id = menu.getMenuId();
-        this.label = menu.getMenuName();
-        this.children = menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
-    }
-
-    public TreeSelect(com.ruoyi.system.domain.test.sys.po.SysDeptXEntity sysDeptXEntity) {
-        this.id = sysDeptXEntity.getDeptId();
-        this.label = sysDeptXEntity.getDeptName();
-        this.children = sysDeptXEntity.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
-    }
 }
