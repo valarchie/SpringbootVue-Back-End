@@ -1,7 +1,7 @@
 package com.agileboot.infrastructure.security.filter;
 
-import com.agileboot.infrastructure.loginuser.AuthenticationUtils;
-import com.agileboot.infrastructure.loginuser.LoginUser;
+import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
 import java.io.IOException;
 import javax.servlet.FilterChain;

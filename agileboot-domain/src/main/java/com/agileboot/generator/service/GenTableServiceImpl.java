@@ -8,7 +8,7 @@ import cn.hutool.json.JSONUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.constant.GenConstants;
 import com.agileboot.common.exception.ServiceException;
-import com.agileboot.common.utils.AuthenticationUtils;
+import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.generator.domain.GenTable;
 import com.agileboot.generator.domain.GenTableColumn;
 import com.agileboot.generator.mapper.GenTableColumnMapper;

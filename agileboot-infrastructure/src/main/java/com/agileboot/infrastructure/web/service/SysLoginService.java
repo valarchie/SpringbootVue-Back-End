@@ -4,19 +4,19 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.entity.SysUser;
 import com.agileboot.common.core.redis.RedisCache;
 import com.agileboot.common.exception.ServiceException;
 import com.agileboot.common.exception.user.CaptchaException;
 import com.agileboot.common.exception.user.CaptchaExpireException;
 import com.agileboot.common.exception.user.UserPasswordNotMatchException;
+import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.infrastructure.loginuser.LoginUser;
 import com.agileboot.infrastructure.manager.AsyncManager;
 import com.agileboot.infrastructure.manager.factory.AsyncFactory;
-import com.springvue.orm.domain.test.sys.service.ISysConfigXService;
-import com.springvue.orm.service.ISysUserService;
+import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.service.ISysConfigXService;
+import com.agileboot.orm.service.ISysUserXService;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,7 +43,7 @@ public class SysLoginService {
     private RedisCache redisCache;
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @Autowired
     private ISysConfigXService configService;
@@ -119,10 +119,11 @@ public class SysLoginService {
      * @param userId 用户ID
      */
     public void recordLoginInfo(Long userId) {
-        SysUser sysUser = new SysUser();
-        sysUser.setUserId(userId);
-        sysUser.setLoginIp(ServletUtil.getClientIP(ServletHolderUtil.getRequest()));
-        sysUser.setLoginDate(DateUtil.date());
-        userService.updateUserProfile(sysUser);
+        SysUserXEntity entity = new SysUserXEntity();
+
+        entity.setUserId(userId);
+        entity.setLoginIp(ServletUtil.getClientIP(ServletHolderUtil.getRequest()));
+        entity.setLoginDate(DateUtil.date());
+        entity.updateById();
     }
 }

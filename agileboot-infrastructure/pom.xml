@@ -55,13 +55,14 @@
 
         <!-- 系统模块-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-system</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-orm</artifactId>
         </dependency>
-        <!-- 系统模块-->
+
+        <!-- 通用模块-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-common</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-common</artifactId>
         </dependency>
 
 

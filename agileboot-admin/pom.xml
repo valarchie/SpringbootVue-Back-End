@@ -45,20 +45,20 @@
 
         <!-- 核心模块-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-framework</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-infrastructure</artifactId>
         </dependency>
 
         <!-- 定时任务-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-quartz</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-api</artifactId>
         </dependency>
 
         <!-- 代码生成-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-generator</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-domain</artifactId>
         </dependency>
 
     </dependencies>

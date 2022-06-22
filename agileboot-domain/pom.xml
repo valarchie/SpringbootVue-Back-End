@@ -32,8 +32,8 @@
 
         <!-- 通用工具-->
         <dependency>
-            <groupId>com.springvue</groupId>
-            <artifactId>springvue-common</artifactId>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-common</artifactId>
         </dependency>
 
     </dependencies>

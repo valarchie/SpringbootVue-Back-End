@@ -64,13 +64,13 @@
            left join sys_dept d on u.dept_id = d.dept_id
   </sql>
 
-  <select id="selectRolesByUserName" parameterType="String" resultType="com.springvue.orm.domain.test.sys.po.SysRoleXEntity">
+  <select id="selectRolesByUserName" parameterType="String" resultType="com.agileboot.orm.po.SysRoleXEntity">
     <include refid="selectRoleVo"/>
     WHERE r.deleted = 0 and u.user_name = #{userName}
   </select>
 
 
-  <select id="selectPostsByUserName" parameterType="String" resultType="com.springvue.orm.domain.test.sys.po.SysPostXEntity">
+  <select id="selectPostsByUserName" parameterType="String" resultType="com.agileboot.orm.po.SysPostXEntity">
     select p.post_id, p.post_name, p.post_code
     from sys_post p
            left join sys_user_post up on up.post_id = p.post_id
@@ -79,7 +79,7 @@
   </select>
 
 
-  <select id="selectRolePermissionByUserId" parameterType="Long" resultType="com.springvue.orm.domain.test.sys.po.SysRoleXEntity">
+  <select id="selectRolePermissionByUserId" parameterType="Long" resultType="com.agileboot.orm.po.SysRoleXEntity">
     <include refid="selectRoleVo"/>
     WHERE r.del_flag = '0' and ur.user_id = #{userId}
   </select>

@@ -165,28 +165,28 @@
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.agileboot</groupId>
-                <artifactId>agileboot-quartz</artifactId>
+                <artifactId>agileboot-api</artifactId>
                 <version>${agileboot.version}</version>
             </dependency>
 
             <!-- 代码生成-->
             <dependency>
                 <groupId>com.agileboot</groupId>
-                <artifactId>agileboot-generator</artifactId>
+                <artifactId>agileboot-domain</artifactId>
                 <version>${agileboot.version}</version>
             </dependency>
 
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.agileboot</groupId>
-                <artifactId>agileboot-framework</artifactId>
+                <artifactId>agileboot-infrastructure</artifactId>
                 <version>${agileboot.version}</version>
             </dependency>
 
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.agileboot</groupId>
-                <artifactId>agileboot-system</artifactId>
+                <artifactId>agileboot-orm</artifactId>
                 <version>${agileboot.version}</version>
             </dependency>
 
@@ -222,12 +222,12 @@
     </dependencyManagement>
 
     <modules>
-        <module>agileboot-admin</module>
+<!--        <module>agileboot-admin</module>-->
+        <module>agileboot-api</module>
+        <module>agileboot-common</module>
+        <module>agileboot-domain</module>
         <module>agileboot-infrastructure</module>
         <module>agileboot-orm</module>
-        <module>agileboot-api</module>
-        <module>agileboot-domain</module>
-        <module>agileboot-common</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -271,29 +271,29 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>public</id>-->
+<!--            <name>aliyun nexus</name>-->
+<!--            <url>https://maven.aliyun.com/repository/public</url>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--            </releases>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+<!--    <pluginRepositories>-->
+<!--        <pluginRepository>-->
+<!--            <id>public</id>-->
+<!--            <name>aliyun nexus</name>-->
+<!--            <url>https://maven.aliyun.com/repository/public</url>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--        </pluginRepository>-->
+<!--    </pluginRepositories>-->
 
 </project>

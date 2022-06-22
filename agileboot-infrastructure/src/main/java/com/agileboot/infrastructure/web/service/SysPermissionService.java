@@ -1,7 +1,6 @@
 package com.agileboot.infrastructure.web.service;
 
-import com.agileboot.common.core.domain.entity.SysUser;
-import com.springvue.orm.domain.test.sys.service.ISysUserXService;
+import com.agileboot.orm.service.ISysUserXService;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +21,16 @@ public class SysPermissionService {
     /**
      * 获取角色数据权限
      *
-     * @param user 用户信息
+     * @param userId 用户信息
      * @return 角色权限信息
      */
-    public Set<String> getRolePermission(SysUser user) {
+    public Set<String> getRolePermission(Long userId) {
         Set<String> roles = new HashSet<String>();
         // 管理员拥有所有权限
-        if (user.isAdmin()) {
+        if (isAdmin(userId)) {
             roles.add("admin");
         } else {
-            roles.addAll(userService.selectRolePermissionByUserId(user.getUserId()));
+            roles.addAll(userService.selectRolePermissionByUserId(userId));
         }
         return roles;
     }
@@ -39,17 +38,23 @@ public class SysPermissionService {
     /**
      * 获取菜单数据权限
      *
-     * @param user 用户信息
+     * @param userId 用户信息
      * @return 菜单权限信息
      */
-    public Set<String> getMenuPermission(SysUser user) {
+    public Set<String> getMenuPermission(Long userId) {
         Set<String> perms = new HashSet<String>();
         // 管理员拥有所有权限
-        if (user.isAdmin()) {
+        if (isAdmin(userId)) {
             perms.add("*:*:*");
         } else {
-            perms.addAll(userService.selectMenuPermsByUserId(user.getUserId()));
+            perms.addAll(userService.selectMenuPermsByUserId(userId));
         }
         return perms;
     }
+
+
+    public boolean isAdmin(Long userId) {
+        return userId != null && 1L == userId;
+    }
+
 }

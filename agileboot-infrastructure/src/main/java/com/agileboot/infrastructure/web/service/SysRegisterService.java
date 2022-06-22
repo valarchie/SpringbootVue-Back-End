@@ -3,18 +3,17 @@ package com.agileboot.infrastructure.web.service;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.constant.UserConstants;
-import com.agileboot.common.core.domain.entity.SysUser;
 import com.agileboot.common.core.domain.model.RegisterBody;
 import com.agileboot.common.core.redis.RedisCache;
 import com.agileboot.common.exception.user.CaptchaException;
 import com.agileboot.common.exception.user.CaptchaExpireException;
+import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.MessageUtils;
-import com.agileboot.infrastructure.loginuser.AuthenticationUtils;
 import com.agileboot.infrastructure.manager.AsyncManager;
 import com.agileboot.infrastructure.manager.factory.AsyncFactory;
-import com.springvue.orm.domain.test.sys.po.SysUserXEntity;
-import com.springvue.orm.domain.test.sys.service.ISysConfigXService;
-import com.springvue.orm.domain.test.sys.service.ISysUserXService;
+import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.service.ISysConfigXService;
+import com.agileboot.orm.service.ISysUserXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,12 +59,10 @@ public class SysRegisterService {
         } else if (userService.checkUserNameUnique(username)) {
             msg = "保存用户'" + username + "'失败，注册账号已存在";
         } else {
-            SysUser sysUser = new SysUser();
-            sysUser.setUserName(username);
-            sysUser.setNickName(username);
-            sysUser.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
+            SysUserXEntity entity = new SysUserXEntity();
 
-            SysUserXEntity entity = sysUser.toEntity();
+            entity.setUserName(username);
+            entity.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
 
             boolean regFlag = entity.insert();
             if (!regFlag) {

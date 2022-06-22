@@ -1,10 +1,11 @@
 package com.agileboot.infrastructure.web.service;
 
-import com.agileboot.common.core.domain.entity.SysUser;
 import com.agileboot.common.enums.UserStatus;
 import com.agileboot.common.exception.ServiceException;
-import com.agileboot.infrastructure.loginuser.LoginUser;
-import com.springvue.orm.service.ISysUserService;
+import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.orm.deprecated.entity.SysUser;
+import com.agileboot.orm.service.ISysUserXService;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private ISysUserService userService;
+    private ISysUserXService userService;
 
     @Autowired
     private SysPermissionService permissionService;
@@ -40,11 +41,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.info("登录用户：{} 已被停用.", username);
             throw new ServiceException("对不起，您的账号：" + username + " 已停用");
         }
+        Set<String> roleKeys = userService.selectRolePermissionByUserId(user.getUserId());
 
-        return createLoginUser(user);
+        return new LoginUser(user.getUserId(), user.getDeptId(), roleKeys,
+            permissionService.getMenuPermission(user.getUserId()));
     }
 
-    public UserDetails createLoginUser(SysUser user) {
-        return new LoginUser(user.getUserId(), user.getDeptId(), user, permissionService.getMenuPermission(user));
-    }
+
 }

@@ -16,9 +16,10 @@
     </description>
 
     <dependencies>
-
-
-
+        <dependency>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,9 +1,9 @@
 package com.agileboot.infrastructure.web.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.core.domain.entity.SysRole;
-import com.agileboot.infrastructure.loginuser.AuthenticationUtils;
-import com.agileboot.infrastructure.loginuser.LoginUser;
+import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.common.loginuser.LoginUser;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -41,10 +41,10 @@ public class PermissionService {
             return false;
         }
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getPermissions())) {
+        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getMenuPermissions())) {
             return false;
         }
-        return hasPermissions(loginUser.getPermissions(), permission);
+        return hasPermissions(loginUser.getMenuPermissions(), permission);
     }
 
     /**
@@ -68,10 +68,10 @@ public class PermissionService {
             return false;
         }
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getPermissions())) {
+        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getMenuPermissions())) {
             return false;
         }
-        Set<String> authorities = loginUser.getPermissions();
+        Set<String> authorities = loginUser.getMenuPermissions();
         for (String permission : permissions.split(PERMISSION_DELIMETER)) {
             if (permission != null && hasPermissions(authorities, permission)) {
                 return true;
@@ -83,24 +83,20 @@ public class PermissionService {
     /**
      * 判断用户是否拥有某个角色
      *
-     * @param role 角色字符串
+     * @param roleKey 角色字符串
      * @return 用户是否具备某角色
      */
-    public boolean hasRole(String role) {
-        if (StrUtil.isEmpty(role)) {
+    public boolean hasRole(String roleKey) {
+        if (StrUtil.isEmpty(roleKey)) {
             return false;
         }
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getUser().getRoles())) {
+        if (loginUser == null || CollUtil.isEmpty(loginUser.getRoleKeys())) {
             return false;
         }
-        for (SysRole sysRole : loginUser.getUser().getRoles()) {
-            String roleKey = sysRole.getRoleKey();
-            if (SUPER_ADMIN.equals(roleKey) || roleKey.equals(StrUtil.trim(role))) {
-                return true;
-            }
-        }
-        return false;
+
+        return loginUser.getRoleKeys().contains(roleKey) || loginUser.getRoleKeys().contains(SUPER_ADMIN);
+
     }
 
     /**
@@ -110,7 +106,7 @@ public class PermissionService {
      * @return 用户是否不具备某角色
      */
     public boolean lacksRole(String role) {
-        return hasRole(role) != true;
+        return !hasRole(role);
     }
 
     /**
@@ -119,16 +115,17 @@ public class PermissionService {
      * @param roles 以 ROLE_NAMES_DELIMETER 为分隔符的角色列表
      * @return 用户是否具有以下任意一个角色
      */
-    public boolean hasAnyRoles(String roles) {
-        if (StrUtil.isEmpty(roles)) {
+    public boolean hasAnyRoles(String targetRoleKeys) {
+        if (StrUtil.isEmpty(targetRoleKeys)) {
             return false;
         }
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getUser().getRoles())) {
+        if (loginUser == null || CollectionUtils.isEmpty(loginUser.getRoleKeys())) {
             return false;
         }
-        for (String role : roles.split(ROLE_DELIMETER)) {
-            if (hasRole(role)) {
+        Set<String> roleKeys = loginUser.getRoleKeys();
+        for (String targetKey : targetRoleKeys.split(ROLE_DELIMETER)) {
+            if (roleKeys.contains(targetKey)) {
                 return true;
             }
         }

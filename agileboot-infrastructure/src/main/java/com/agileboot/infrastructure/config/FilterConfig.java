@@ -1,6 +1,6 @@
 package com.agileboot.infrastructure.config;
 
-import com.agileboot.common.filter.RepeatableFilter;
+import com.agileboot.infrastructure.filter.RepeatableFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
