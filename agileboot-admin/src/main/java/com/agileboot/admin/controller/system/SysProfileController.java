@@ -44,12 +44,13 @@ public class SysProfileController extends BaseController {
      */
     @GetMapping
     public ResponseDTO profile() {
-        LoginUser loginUser = getLoginUser();
-        SysUser user = loginUser.getUser();
-        ResponseDTO ajax = ResponseDTO.success(user);
+        LoginUser user = getLoginUser();
+
+        SysUserXEntity userXEntity = userService.getById(user.getUserId());
+        ResponseDTO ajax = ResponseDTO.success(userXEntity);
         // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
-        ajax.put("roleGroup", userService.selectUserRoleGroup(loginUser.getUsername()));
-        ajax.put("postGroup", userService.selectUserPostGroup(loginUser.getUsername()));
+        ajax.put("roleGroup", userService.selectUserRoleGroup(user.getUsername()));
+        ajax.put("postGroup", userService.selectUserPostGroup(user.getUsername()));
         return ajax;
     }
 
@@ -60,24 +61,18 @@ public class SysProfileController extends BaseController {
     @PutMapping
     public ResponseDTO updateProfile(@RequestBody SysUser user) {
         LoginUser loginUser = getLoginUser();
-        SysUser sysUser = loginUser.getUser();
-        user.setUserName(sysUser.getUserName());
+        user.setUserName(loginUser.getUsername());
         if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
         if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
-        user.setUserId(sysUser.getUserId());
+        user.setUserId(loginUser.getUserId());
         user.setPassword(null);
 
         SysUserXEntity entity = user.toEntity();
         if (entity.updateById()) {
-            // 更新缓存用户信息
-            sysUser.setNickName(user.getNickName());
-            sysUser.setPhonenumber(user.getPhonenumber());
-            sysUser.setEmail(user.getEmail());
-            sysUser.setSex(user.getSex());
             tokenService.setLoginUser(loginUser);
             return ResponseDTO.success();
         }
@@ -104,7 +99,7 @@ public class SysProfileController extends BaseController {
 
         if (entity.updateById()) {
             // 更新缓存用户密码
-            loginUser.getUser().setPassword(AuthenticationUtils.encryptPassword(newPassword));
+            loginUser.setPassword(AuthenticationUtils.encryptPassword(newPassword));
             tokenService.setLoginUser(loginUser);
             return ResponseDTO.success();
         }
@@ -129,7 +124,6 @@ public class SysProfileController extends BaseController {
                 ResponseDTO ajax = ResponseDTO.success();
                 ajax.put("imgUrl", avatar);
                 // 更新缓存用户头像
-                loginUser.getUser().setAvatar(avatar);
                 tokenService.setLoginUser(loginUser);
                 return ajax;
             }

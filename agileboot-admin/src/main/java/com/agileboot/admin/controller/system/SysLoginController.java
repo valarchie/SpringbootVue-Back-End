@@ -4,10 +4,15 @@ import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.domain.model.LoginBody;
 import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
+import com.agileboot.orm.deprecated.entity.SysMenu;
 import com.agileboot.orm.deprecated.entity.SysUser;
+import com.agileboot.orm.po.SysUserXEntity;
 import com.agileboot.orm.service.ISysMenuXService;
+import com.agileboot.orm.service.ISysUserXService;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +33,9 @@ public class SysLoginController {
 
     @Autowired
     private ISysMenuXService menuService;
+
+    @Autowired
+    private ISysUserXService userService;
 
     @Autowired
     private SysPermissionService permissionService;
@@ -55,13 +63,15 @@ public class SysLoginController {
      */
     @GetMapping("getInfo")
     public ResponseDTO getInfo() {
-        SysUser user = AuthenticationUtils.getLoginUser().getUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         // 角色集合
-        Set<String> roles = permissionService.getRolePermission(user);
+        Set<String> roles = permissionService.getRolePermission(loginUser.getUserId());
         // 权限集合
-        Set<String> permissions = permissionService.getMenuPermission(user);
+        Set<String> permissions = permissionService.getMenuPermission(loginUser.getUserId());
         ResponseDTO ajax = ResponseDTO.success();
-        ajax.put("user", user);
+        SysUserXEntity byId = userService.getById(loginUser.getUserId());
+
+        ajax.put("user", new SysUser(byId));
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
         return ajax;

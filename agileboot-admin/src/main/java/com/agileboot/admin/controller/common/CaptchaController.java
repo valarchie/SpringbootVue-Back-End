@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Verification Code Endpoint
  *
- * @author ruoyi valarchie
+ * @author valarchie
  */
 @RestController
 public class CaptchaController {

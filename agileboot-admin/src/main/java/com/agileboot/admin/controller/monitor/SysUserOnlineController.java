@@ -9,8 +9,8 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.core.redis.RedisCache;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.infrastructure.web.service.SysUserOnlineServiceImpl;
 import com.agileboot.orm.deprecated.domain.SysUserOnline;
-import com.agileboot.orm.deprecated.service.ISysUserOnlineService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserOnlineController extends BaseController {
 
     @Autowired
-    private ISysUserOnlineService userOnlineService;
+    private SysUserOnlineServiceImpl userOnlineService;
 
     @Autowired
     private RedisCache redisCache;
@@ -53,7 +53,7 @@ public class SysUserOnlineController extends BaseController {
                 if (StrUtil.equals(ipaddr, user.getIpaddr())) {
                     userOnlineList.add(userOnlineService.selectOnlineByIpaddr(ipaddr, user));
                 }
-            } else if (StrUtil.isNotEmpty(userName) && user.getUser() != null) {
+            } else if (StrUtil.isNotEmpty(userName)) {
                 if (StrUtil.equals(userName, user.getUsername())) {
                     userOnlineList.add(userOnlineService.selectOnlineByUserName(userName, user));
                 }

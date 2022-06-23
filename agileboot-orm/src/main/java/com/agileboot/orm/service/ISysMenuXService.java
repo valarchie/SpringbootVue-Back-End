@@ -2,6 +2,7 @@ package com.agileboot.orm.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.agileboot.orm.deprecated.entity.SysMenu;
+import com.agileboot.orm.deprecated.vo.RouterVo;
 import com.agileboot.orm.po.SysMenuXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
@@ -65,5 +66,22 @@ public interface ISysMenuXService extends IService<SysMenuXEntity> {
      * @return 结果 true 存在 false 不存在
      */
     boolean checkMenuExistRole(Long menuId);
+
+    /**
+     * 根据用户ID查询菜单树信息
+     *
+     * @param userId 用户ID
+     * @return 菜单列表
+     */
+    List<SysMenu> selectMenuTreeByUserId(Long userId);
+
+
+    /**
+     * 构建前端路由所需要的菜单
+     *
+     * @param menus 菜单列表
+     * @return 路由列表
+     */
+    List<RouterVo> buildMenus(List<SysMenu> menus);
 
 }

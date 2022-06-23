@@ -34,4 +34,12 @@ public interface SysMenuXMapper extends BaseMapper<SysMenuXEntity> {
      */
     List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId,
         @Param("menuCheckStrictly") boolean menuCheckStrictly);
+
+        /**
+     * 根据用户ID查询菜单
+     *
+     * @param userId 用户ID
+     * @return 菜单列表
+     */
+    List<SysMenuXEntity> selectMenuTreeByUserId(Long userId);
 }

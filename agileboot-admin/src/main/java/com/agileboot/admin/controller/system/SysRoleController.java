@@ -6,6 +6,7 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
@@ -85,7 +86,7 @@ public class SysRoleController extends BaseController {
         roleService.page(page, queryWrapper);
 
         List<SysRole> list = page.getRecords().stream().map(SysRole::new).collect(Collectors.toList());
-        ExcelUtil<SysRole> util = new ExcelUtil<SysRole>(SysRole.class);
+        ExcelUtil<SysRole> util = new ExcelUtil<>(SysRole.class);
         util.exportExcel(response, list, "角色数据");
     }
 
@@ -137,10 +138,9 @@ public class SysRoleController extends BaseController {
         if (roleService.updateRole(role)) {
             // 更新缓存用户权限
             LoginUser loginUser = getLoginUser();
-            if (loginUser.getUser() != null && !loginUser.isAdmin()) {
-                loginUser.setPermissions(permissionService.getMenuPermission(loginUser.getUser()));
-                userService.selectUserByUserName(loginUser.getUser().getUserName());
-                loginUser.setUser(userService.selectUserByUserName(loginUser.getUser().getUserName()));
+            if (loginUser != null && AuthenticationUtils.isAdmin(loginUser.getUserId())) {
+                loginUser.setMenuPermissions(permissionService.getMenuPermission(loginUser.getUserId()));
+                userService.selectUserByUserName(loginUser.getUsername());
                 tokenService.setLoginUser(loginUser);
             }
             return ResponseDTO.success();
