@@ -34,7 +34,7 @@ public class CommonController {
     @Autowired
     private ServerConfig serverConfig;
 
-    private static final String FILE_DELIMETER = ",";
+    private static final String FILE_DELIMITER = ",";
 
     /**
      * 通用下载请求
@@ -108,10 +108,10 @@ public class CommonController {
                 originalFilenames.add(file.getOriginalFilename());
             }
             ResponseDTO ajax = ResponseDTO.success();
-            ajax.put("urls", StrUtil.join(FILE_DELIMETER, urls));
-            ajax.put("fileNames", StrUtil.join(FILE_DELIMETER, fileNames));
-            ajax.put("newFileNames", StrUtil.join(FILE_DELIMETER, newFileNames));
-            ajax.put("originalFilenames", StrUtil.join(FILE_DELIMETER, originalFilenames));
+            ajax.put("urls", StrUtil.join(FILE_DELIMITER, urls));
+            ajax.put("fileNames", StrUtil.join(FILE_DELIMITER, fileNames));
+            ajax.put("newFileNames", StrUtil.join(FILE_DELIMITER, newFileNames));
+            ajax.put("originalFilenames", StrUtil.join(FILE_DELIMITER, originalFilenames));
             return ajax;
         } catch (Exception e) {
             return ResponseDTO.error(e.getMessage());
@@ -138,6 +138,7 @@ public class CommonController {
             FileUploadUtils.setAttachmentResponseHeader(response, downloadName);
             IoUtil.copy(FileUtil.getInputStream(downloadPath), response.getOutputStream());
         } catch (Exception e) {
+            // TODO 失败了 如何更好的提示用户
             log.error("下载文件失败", e);
         }
     }

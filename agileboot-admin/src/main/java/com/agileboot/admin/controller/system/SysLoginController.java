@@ -3,12 +3,11 @@ package com.agileboot.admin.controller.system;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.domain.model.LoginBody;
-import com.agileboot.infrastructure.loginuser.AuthenticationUtils;
+import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
-import com.springvue.orm.domain.entity.SysUser;
-import com.springvue.orm.service.ISysMenuService;
-import java.util.List;
+import com.agileboot.orm.deprecated.entity.SysUser;
+import com.agileboot.orm.service.ISysMenuXService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,7 @@ public class SysLoginController {
     private SysLoginService loginService;
 
     @Autowired
-    private ISysMenuService menuService;
+    private ISysMenuXService menuService;
 
     @Autowired
     private SysPermissionService permissionService;

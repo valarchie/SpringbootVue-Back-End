@@ -6,7 +6,7 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.domain.model.RegisterBody;
 import com.agileboot.infrastructure.web.service.SysRegisterService;
-import com.springvue.orm.domain.test.sys.service.ISysConfigXService;
+import com.agileboot.orm.service.ISysConfigXService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

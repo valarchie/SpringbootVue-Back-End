@@ -35,6 +35,10 @@ public class CacheController {
             (RedisCallback<Object>) connection -> connection.info("commandstats"));
         Object dbSize = redisTemplate.execute((RedisCallback<Object>) connection -> connection.dbSize());
 
+        if(commandStats == null) {
+            throw new RuntimeException("找不到对应的redis信息。");
+        }
+
         Map<String, Object> result = new HashMap<>(3);
         result.put("info", info);
         result.put("dbSize", dbSize);

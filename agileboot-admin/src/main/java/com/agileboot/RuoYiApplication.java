@@ -6,8 +6,13 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * 启动程序
+ * 定制banner.txt的网站
+ * http://patorjk.com/software/taag
+ * http://www.network-science.de/ascii/
+ * http://www.degraeve.com/img2txt.php
+ * http://life.chacuo.net/convertfont2char
  *
- * @author ruoyi
+ * @author valarchie
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class RuoYiApplication {
@@ -15,15 +20,13 @@ public class RuoYiApplication {
     public static void main(String[] args) {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(RuoYiApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  若依启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
-            " .-------.       ____     __        \n" +
-            " |  _ _   \\      \\   \\   /  /    \n" +
-            " | ( ' )  |       \\  _. /  '       \n" +
-            " |(_ o _) /        _( )_ .'         \n" +
-            " | (_,_).' __  ___(_ o _)'          \n" +
-            " |  |\\ \\  |  ||   |(_,_)'         \n" +
-            " |  | \\ `'   /|   `-'  /           \n" +
-            " |  |  \\    /  \\      /           \n" +
-            " ''-'   `'-'    `-..-'              ");
+        String successMsg = "  ____   _                _                                                           __         _  _ \n"
+                          + " / ___| | |_  __ _  _ __ | |_   _   _  _ __    ___  _   _   ___  ___  ___  ___  ___  / _| _   _ | || |\n"
+                          + " \\___ \\ | __|/ _` || '__|| __| | | | || '_ \\  / __|| | | | / __|/ __|/ _ \\/ __|/ __|| |_ | | | || || |\n"
+                          + "  ___) || |_| (_| || |   | |_  | |_| || |_) | \\__ \\| |_| || (__| (__|  __/\\__ \\\\__ \\|  _|| |_| || ||_|\n"
+                          + " |____/  \\__|\\__,_||_|    \\__|  \\__,_|| .__/  |___/ \\__,_| \\___|\\___|\\___||___/|___/|_|   \\__,_||_|(_)\n"
+                          + "                                      |_|                                                             ";
+
+        System.out.println(successMsg);
     }
 }

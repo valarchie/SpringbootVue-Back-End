@@ -28,7 +28,7 @@ import oshi.util.Util;
  * @author ruoyi
  */
 @Data
-public class Server {
+public class ServerInfo {
 
     private static final int OSHI_WAIT_SECOND = 1000;
 

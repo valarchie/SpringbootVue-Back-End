@@ -162,6 +162,14 @@
                 <version>${kaptcha.version}</version>
             </dependency>
 
+
+            <!-- admin管理模块 -->
+            <dependency>
+                <groupId>com.agileboot</groupId>
+                <artifactId>agileboot-admin</artifactId>
+                <version>${agileboot.version}</version>
+            </dependency>
+
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.agileboot</groupId>
@@ -222,7 +230,7 @@
     </dependencyManagement>
 
     <modules>
-<!--        <module>agileboot-admin</module>-->
+        <module>agileboot-admin</module>
         <module>agileboot-api</module>
         <module>agileboot-common</module>
         <module>agileboot-domain</module>

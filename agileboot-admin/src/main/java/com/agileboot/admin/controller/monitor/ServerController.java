@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.monitor;
 
 import com.agileboot.common.core.domain.ResponseDTO;
-import com.agileboot.infrastructure.web.domain.Server;
+import com.agileboot.infrastructure.web.domain.ServerInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ public class ServerController {
     @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @GetMapping()
     public ResponseDTO getInfo() throws Exception {
-        Server server = new Server();
+        ServerInfo server = new ServerInfo();
         server.copyTo();
         return ResponseDTO.success(server);
     }

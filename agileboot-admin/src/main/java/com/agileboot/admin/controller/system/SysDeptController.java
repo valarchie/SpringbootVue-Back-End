@@ -6,6 +6,8 @@ import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.orm.deprecated.entity.SysDept;
+import com.agileboot.orm.po.SysDeptXEntity;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
