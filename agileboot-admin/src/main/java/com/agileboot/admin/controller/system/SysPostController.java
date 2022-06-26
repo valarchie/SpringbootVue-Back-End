@@ -94,10 +94,10 @@ public class SysPostController extends BaseController {
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysPost post) {
-        if (postService.checkPostNameUnique(post)) {
+        if (postService.checkPostNameUnique(null, post.getPostName())) {
             return ResponseDTO.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         }
-        if (postService.checkPostCodeUnique(post)) {
+        if (postService.checkPostCodeUnique(null, post.getPostCode())) {
             return ResponseDTO.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
         SysPostXEntity entity = post.toEntity();
@@ -114,10 +114,10 @@ public class SysPostController extends BaseController {
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysPost post) {
-        if (postService.checkPostNameUnique(post)) {
+        if (postService.checkPostNameUnique(post.getPostId(), post.getPostName())) {
             return ResponseDTO.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         }
-        if (postService.checkPostCodeUnique(post)) {
+        if (postService.checkPostCodeUnique(post.getPostId(), post.getPostCode())) {
             return ResponseDTO.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
 

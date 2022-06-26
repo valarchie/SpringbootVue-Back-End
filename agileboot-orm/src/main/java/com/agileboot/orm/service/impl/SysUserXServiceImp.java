@@ -3,7 +3,6 @@ package com.agileboot.orm.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ServiceException;
-import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.orm.deprecated.entity.SysUser;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,19 +81,19 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public boolean checkPhoneUnique(SysUser user) {
+    public boolean checkPhoneUnique(String phone, Long userId) {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(user.getUserId() != null, "user_id", user.getUserId())
-            .eq("phone_number", user.getPhonenumber());
-        return baseMapper.selectCount(queryWrapper) > 0;
+        queryWrapper.ne(userId != null, "user_id", userId)
+            .eq("phone_number", phone);
+        return baseMapper.exists(queryWrapper);
     }
 
     @Override
-    public boolean checkEmailUnique(SysUser user) {
+    public boolean checkEmailUnique(String email, Long userId) {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(user.getUserId() != null, "user_id", user.getUserId())
-            .eq("email", user.getEmail());
-        return baseMapper.selectCount(queryWrapper) > 0;
+        queryWrapper.ne(userId != null, "user_id", userId)
+            .eq("email", email);
+        return baseMapper.exists(queryWrapper);
     }
 
     @Override
@@ -112,14 +110,16 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
 
     @Override
     public Set<String> selectMenuPermsByUserId(Long userId) {
-        Set<String> perms = baseMapper.selectMenuPermsByUserId(userId);
-        Set<String> permsSet = new HashSet<>();
-        for (String perm : perms) {
-            if (StrUtil.isNotEmpty(perm)) {
-                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
+        Set<String> permissionStrList = baseMapper.selectMenuPermsByUserId(userId);
+        Set<String> singlePermsSet = new HashSet<>();
+        for (String perm : permissionStrList)
+        {
+            if (StrUtil.isNotEmpty(perm))
+            {
+                singlePermsSet.addAll(Arrays.asList(perm.trim().split(",")));
             }
         }
-        return permsSet;
+        return singlePermsSet;
     }
 
     @Override
@@ -205,22 +205,24 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public void checkUserAllowed(SysUser user) {
-        if (user.getUserId() != null && user.isAdmin()) {
-            throw new ServiceException("不允许操作超级管理员用户");
-        }
+    public void checkUserAllowed(Long userId) {
+        // 后面再实现
+//        if (user.getUserId() != null && user.isAdmin()) {
+//            throw new ServiceException("不允许操作超级管理员用户");
+//        }
     }
 
     @Override
     public void checkUserDataScope(Long userId) {
-        if (!SysUser.isAdmin(AuthenticationUtils.getUserId())) {
-            SysUser user = new SysUser();
-            user.setUserId(userId);
-            List<SysUser> users = ((SysUserXServiceImp) AopContext.currentProxy()).selectUserList(user);
-            if (CollUtil.isEmpty(users)) {
-                throw new ServiceException("没有权限访问用户数据！");
-            }
-        }
+        // TODO 后面再实现
+//        if (!SysUser.isAdmin(AuthenticationUtils.getUserId())) {
+//            SysUser user = new SysUser();
+//            user.setUserId(userId);
+//            List<SysUser> users = ((SysUserXServiceImp) AopContext.currentProxy()).selectUserList(user);
+//            if (CollUtil.isEmpty(users)) {
+//                throw new ServiceException("没有权限访问用户数据！");
+//            }
+//        }
     }
 
     @Override

@@ -62,10 +62,11 @@ public class SysProfileController extends BaseController {
     public ResponseDTO updateProfile(@RequestBody SysUser user) {
         LoginUser loginUser = getLoginUser();
         user.setUserName(loginUser.getUsername());
-        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(),
+            user.getUserId())) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUserId(loginUser.getUserId());

@@ -1,6 +1,5 @@
 package com.agileboot.orm.service;
 
-import com.agileboot.orm.deprecated.domain.SysPost;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
@@ -17,19 +16,15 @@ public interface ISysPostXService extends IService<SysPostXEntity> {
 
     /**
      * 校验岗位名称
-     *
-     * @param post 岗位信息
      * @return 结果
      */
-    boolean checkPostNameUnique(SysPost post);
+    boolean checkPostNameUnique(Long postId, String postName);
 
     /**
      * 校验岗位编码
-     *
-     * @param post 岗位信息
      * @return 结果
      */
-    boolean checkPostCodeUnique(SysPost post);
+    boolean checkPostCodeUnique(Long postId, String postCode);
 
     /**
      * 根据用户ID获取岗位选择框列表

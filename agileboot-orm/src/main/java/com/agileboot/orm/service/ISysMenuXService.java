@@ -38,9 +38,10 @@ public interface ISysMenuXService extends IService<SysMenuXEntity> {
 
     /**
      * 校验菜单名称是否唯一
-     *
-     * @param menu 菜单信息
-     * @return 结果
+     * @param menuName
+     * @param menuId
+     * @param parentId
+     * @return
      */
     boolean checkMenuNameUnique(String menuName, Long menuId, Long parentId);
 

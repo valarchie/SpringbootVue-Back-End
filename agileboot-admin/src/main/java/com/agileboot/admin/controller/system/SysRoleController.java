@@ -1,5 +1,6 @@
 package com.agileboot.admin.controller.system;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysUserRole;
 import com.agileboot.admin.deprecated.entity.SysRole;
@@ -12,6 +13,8 @@ import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.poi.ExcelUtil;
+import com.agileboot.domain.system.role.RoleApplicationService;
+import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.infrastructure.web.service.TokenService;
 import com.agileboot.orm.entity.SysRoleXEntity;
@@ -55,6 +58,9 @@ public class SysRoleController extends BaseController {
 
     @Autowired
     private ISysUserXService userService;
+
+    @Autowired
+    private RoleApplicationService roleApplicationService;
 
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/list")
@@ -107,14 +113,17 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysRole role) {
-        if (roleService.checkRoleNameUnique(role)) {
+        if (roleService.checkRoleNameUnique(role.getRoleId(), role.getRoleName())) {
             return ResponseDTO.error("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
         }
-        if (roleService.checkRoleKeyUnique(role)) {
+        if (roleService.checkRoleKeyUnique(role.getRoleId(), role.getRoleKey())) {
             return ResponseDTO.error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setCreateBy(getUsername());
-        return toAjax(roleService.insertRole(role));
+
+        RoleModel roleModel = role.toModel();
+
+        return toAjax(roleApplicationService.createRole(roleModel));
 
     }
 
@@ -125,17 +134,19 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysRole role) {
-        roleService.checkRoleAllowed(role);
+        roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
-        if (roleService.checkRoleNameUnique(role)) {
+        if (roleService.checkRoleNameUnique(role.getRoleId(), role.getRoleName())) {
             return ResponseDTO.error("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
         }
-        if (roleService.checkRoleKeyUnique(role)) {
+        if (roleService.checkRoleKeyUnique(role.getRoleId(), role.getRoleKey())) {
             return ResponseDTO.error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setUpdateBy(getUsername());
 
-        if (roleService.updateRole(role)) {
+        RoleModel roleModel = role.toModel();
+
+        if (roleApplicationService.updateRole(roleModel)) {
             // 更新缓存用户权限
             LoginUser loginUser = getLoginUser();
             if (loginUser != null && AuthenticationUtils.isAdmin(loginUser.getUserId())) {
@@ -154,9 +165,11 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/dataScope")
     public ResponseDTO dataScope(@RequestBody SysRole role) {
-        roleService.checkRoleAllowed(role);
+        roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
-        return toAjax(roleService.authDataScope(role));
+        RoleModel roleModel = role.toModel();
+
+        return toAjax(roleApplicationService.authDataScope(roleModel));
     }
 
     /**
@@ -166,10 +179,14 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public ResponseDTO changeStatus(@RequestBody SysRole role) {
-        roleService.checkRoleAllowed(role);
+        roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
         role.setUpdateBy(getUsername());
-        return toAjax(roleService.updateRoleStatus(role));
+
+        SysRoleXEntity roleEntity = roleService.getById(role.getRoleId());
+        roleEntity.setStatus(Convert.toInt(role.getStatus()));
+
+        return toAjax(roleEntity.updateById());
     }
 
     /**
@@ -221,7 +238,7 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancel")
     public ResponseDTO cancelAuthUser(@RequestBody SysUserRole userRole) {
-        return toAjax(roleService.deleteAuthUser(userRole));
+        return toAjax(roleApplicationService.deleteAuthUser(userRole.getRoleId(), userRole.getUserId()));
     }
 
     /**
@@ -231,7 +248,9 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancelAll")
     public ResponseDTO cancelAuthUserAll(Long roleId, Long[] userIds) {
-        return toAjax(roleService.deleteAuthUsers(roleId, userIds));
+        List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
+
+        return toAjax(roleApplicationService.deleteAuthUsers(roleId, userIdList));
     }
 
     /**
@@ -241,7 +260,8 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/selectAll")
     public ResponseDTO selectAuthUserAll(Long roleId, Long[] userIds) {
+        List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
         roleService.checkRoleDataScope(roleId);
-        return toAjax(roleService.insertAuthUsers(roleId, userIds));
+        return toAjax(roleApplicationService.insertAuthUsers(roleId, userIdList));
     }
 }

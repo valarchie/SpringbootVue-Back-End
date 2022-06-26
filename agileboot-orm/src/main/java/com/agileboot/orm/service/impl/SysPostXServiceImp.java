@@ -1,6 +1,5 @@
 package com.agileboot.orm.service.impl;
 
-import com.agileboot.orm.deprecated.domain.SysPost;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.mapper.SysPostXMapper;
 import com.agileboot.orm.service.ISysPostXService;
@@ -27,19 +26,19 @@ public class SysPostXServiceImp extends ServiceImpl<SysPostXMapper, SysPostXEnti
      * @return 结果
      */
     @Override
-    public boolean checkPostNameUnique(SysPost post) {
+    public boolean checkPostNameUnique(Long postId, String postName) {
         QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(post.getPostId() != null, "post_id", post.getPostId())
-            .eq("post_name", post.getPostName());
-        return baseMapper.selectCount(queryWrapper) > 0;
+        queryWrapper.ne(postId != null, "post_id", postId)
+            .eq("post_name", postName);
+        return baseMapper.exists(queryWrapper);
     }
 
     @Override
-    public boolean checkPostCodeUnique(SysPost post) {
+    public boolean checkPostCodeUnique(Long postId, String postCode) {
         QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne(post.getPostId() != null, "post_id", post.getPostId())
-            .eq("post_code", post.getPostCode());
-        return baseMapper.selectCount(queryWrapper) > 0;
+        queryWrapper.ne(postId != null, "post_id", postId)
+            .eq("post_code", postCode);
+        return baseMapper.exists(queryWrapper);
     }
 
     @Override

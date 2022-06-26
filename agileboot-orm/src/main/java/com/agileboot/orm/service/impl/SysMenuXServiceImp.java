@@ -40,8 +40,8 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
      */
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
-        SysRoleXEntity sysRoleXEntity = roleMapper.selectById(roleId);
-        return this.baseMapper.selectMenuListByRoleId(roleId, sysRoleXEntity.getMenuCheckStrictly());
+        SysRoleXEntity sysRole = roleMapper.selectById(roleId);
+        return this.baseMapper.selectMenuListByRoleId(roleId, sysRole.getMenuCheckStrictly());
     }
 
     @Override
@@ -74,6 +74,13 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
         return roleMenuMapper.exists(queryWrapper);
     }
 
+    @Override
+    public List<SysMenuXEntity> selectMenuList(Long userId) {
+        QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        return baseMapper.selectMenuListByUserId(new Page<>(), queryWrapper);
+    }
+
     /**
      * 根据用户查询系统菜单列表
      *
@@ -82,9 +89,8 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
      */
     @Override
     public List<SysMenuXEntity> selectMenuList(Page<SysMenuXEntity> pages, MenuQuery query, Long userId) {
-        QueryWrapper queryWrapper = query.generateQueryWrapper();
+        QueryWrapper<SysMenuXEntity> queryWrapper = query.generateQueryWrapper();
         queryWrapper.eq(userId != null, "user_id", userId);
-
         return baseMapper.selectMenuListByUserId(pages, queryWrapper);
     }
 

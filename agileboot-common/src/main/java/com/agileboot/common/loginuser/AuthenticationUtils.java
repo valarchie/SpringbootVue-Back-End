@@ -96,4 +96,12 @@ public class AuthenticationUtils {
     public static boolean isAdmin(Long userId) {
         return userId != null && 1L == userId;
     }
+
+    /**
+     * 是否为管理员角色
+     * @return 结果
+     */
+    public static boolean isAdminRole(Long roleId) {
+        return roleId != null && 1L == roleId;
+    }
 }

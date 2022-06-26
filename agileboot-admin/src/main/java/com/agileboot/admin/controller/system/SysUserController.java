@@ -11,6 +11,7 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.poi.ExcelUtil;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.agileboot.orm.service.ISysRoleXService;
@@ -120,10 +121,10 @@ public class SysUserController extends BaseController {
         if (userService.checkUserNameUnique(user.getUserName())) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         }
-        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(), user.getUserId())) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
             return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setCreateBy(getUsername());
@@ -139,12 +140,12 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysUser user) {
-        userService.checkUserAllowed(user);
+        userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
-        if (StrUtil.isNotEmpty(user.getPhonenumber())  && userService.checkPhoneUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getPhonenumber())  && userService.checkPhoneUnique(user.getPhonenumber(), user.getUserId())) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user)) {
+        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
             return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUpdateBy(getUsername());
@@ -173,7 +174,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
     public ResponseDTO resetPwd(@RequestBody SysUser user) {
-        userService.checkUserAllowed(user);
+        userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
         user.setUpdateBy(getUsername());
@@ -189,7 +190,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public ResponseDTO changeStatus(@RequestBody SysUser user) {
-        userService.checkUserAllowed(user);
+        userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setUpdateBy(getUsername());
         SysUserXEntity entity = user.toEntity();
@@ -205,7 +206,8 @@ public class SysUserController extends BaseController {
         ResponseDTO ajax = ResponseDTO.success();
 
         SysUser user = new SysUser(userService.getById(userId));
-        List<SysRole> roles = roleService.selectRolesByUserId(userId);
+        List<SysRoleXEntity> roleXEntities = roleService.selectRolesByUserId(userId);
+        List<SysRole> roles = roleXEntities.stream().map(SysRole::new).collect(Collectors.toList());
         ajax.put("user", user);
         ajax.put("roles",
             SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));

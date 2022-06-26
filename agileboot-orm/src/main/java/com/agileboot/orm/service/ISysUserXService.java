@@ -1,6 +1,5 @@
 package com.agileboot.orm.service;
 
-import com.agileboot.orm.deprecated.entity.SysUser;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
@@ -48,7 +47,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 结果
      */
-    boolean checkPhoneUnique(SysUser user);
+    boolean checkPhoneUnique(String phone, Long userId);
 
     /**
      * 校验email是否唯一
@@ -56,7 +55,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 结果
      */
-    boolean checkEmailUnique(SysUser user);
+    boolean checkEmailUnique(String Email, Long userId);
 
     /**
      * 根据用户ID查询角色权限
@@ -107,7 +106,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      *
      * @param user 用户信息
      */
-    void checkUserAllowed(SysUser user);
+    void checkUserAllowed(Long userId);
 
     /**
      * 校验用户是否有数据权限

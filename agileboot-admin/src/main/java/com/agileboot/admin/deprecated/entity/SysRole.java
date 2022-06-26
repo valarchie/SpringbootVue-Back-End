@@ -4,6 +4,7 @@ import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.Excel;
 import com.agileboot.common.annotation.Excel.ColumnType;
 import com.agileboot.common.core.domain.BaseEntity;
+import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -34,9 +35,9 @@ public class SysRole extends BaseEntity {
 
     }
 
-    public SysRoleXEntity toEntity() {
+    public RoleModel toModel() {
 
-        SysRoleXEntity entity = new SysRoleXEntity();
+        RoleModel entity = new RoleModel();
         entity.setRoleId(this.roleId);
         entity.setDeptCheckStrictly(this.deptCheckStrictly);
         entity.setDataScope(Convert.toInt(this.dataScope));
