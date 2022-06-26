@@ -1,6 +1,6 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.po.SysDictDataXEntity;
+import com.agileboot.orm.entity.SysDictDataXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

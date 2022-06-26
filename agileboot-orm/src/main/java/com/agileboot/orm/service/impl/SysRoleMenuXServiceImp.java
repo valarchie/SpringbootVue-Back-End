@@ -1,7 +1,7 @@
 package com.agileboot.orm.service.impl;
 
+import com.agileboot.orm.entity.SysRoleMenuXEntity;
 import com.agileboot.orm.mapper.SysRoleMenuXMapper;
-import com.agileboot.orm.po.SysRoleMenuXEntity;
 import com.agileboot.orm.service.ISysRoleMenuXService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

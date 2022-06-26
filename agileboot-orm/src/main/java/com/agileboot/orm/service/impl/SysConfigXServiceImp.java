@@ -2,8 +2,8 @@ package com.agileboot.orm.service.impl;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.orm.entity.SysConfigXEntity;
 import com.agileboot.orm.mapper.SysConfigXMapper;
-import com.agileboot.orm.po.SysConfigXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

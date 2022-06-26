@@ -1,6 +1,9 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.domain.SysUserRole;
+import com.agileboot.admin.deprecated.entity.SysRole;
+import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -11,10 +14,7 @@ import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.infrastructure.web.service.TokenService;
-import com.agileboot.orm.deprecated.domain.SysUserRole;
-import com.agileboot.orm.deprecated.entity.SysRole;
-import com.agileboot.orm.deprecated.entity.SysUser;
-import com.agileboot.orm.po.SysRoleXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -140,7 +140,6 @@ public class SysRoleController extends BaseController {
             LoginUser loginUser = getLoginUser();
             if (loginUser != null && AuthenticationUtils.isAdmin(loginUser.getUserId())) {
                 loginUser.setMenuPermissions(permissionService.getMenuPermission(loginUser.getUserId()));
-                userService.selectUserByUserName(loginUser.getUsername());
                 tokenService.setLoginUser(loginUser);
             }
             return ResponseDTO.success();

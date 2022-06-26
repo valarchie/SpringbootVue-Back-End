@@ -1,7 +1,7 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.deprecated.domain.SysPost;
-import com.agileboot.orm.po.SysPostXEntity;
+import com.agileboot.orm.entity.SysPostXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 

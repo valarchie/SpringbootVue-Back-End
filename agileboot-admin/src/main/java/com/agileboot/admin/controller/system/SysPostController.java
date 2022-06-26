@@ -1,14 +1,14 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
-import com.agileboot.orm.deprecated.domain.SysPost;
-import com.agileboot.orm.po.SysPostXEntity;
+import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

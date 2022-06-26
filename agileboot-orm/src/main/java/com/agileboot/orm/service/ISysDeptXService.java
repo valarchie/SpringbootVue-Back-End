@@ -1,8 +1,7 @@
 package com.agileboot.orm.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.agileboot.orm.deprecated.entity.SysDept;
-import com.agileboot.orm.po.SysDeptXEntity;
+import com.agileboot.orm.entity.SysDeptXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -39,11 +38,16 @@ public interface ISysDeptXService extends IService<SysDeptXEntity> {
      * @param dept 部门信息
      * @return 结果
      */
-    boolean checkDeptNameUnique(SysDept dept);
+    boolean checkDeptNameUnique(String deptName, Long deptId, Long parentId);
 
     boolean checkDeptDataScope(Long deptId);
 
-    long countEnabledChildrenDeptById(Long deptId);
+    /**
+     * 检测部门底下是否还有正在使用中的子部门
+     * @param deptId
+     * @return
+     */
+    boolean existEnabledChildrenDeptById(Long deptId);
 
     boolean hasChildDeptById(Long deptId);
 

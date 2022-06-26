@@ -1,7 +1,7 @@
 package com.agileboot.orm.service.impl;
 
+import com.agileboot.orm.entity.SysDictDataXEntity;
 import com.agileboot.orm.mapper.SysDictDataXMapper;
-import com.agileboot.orm.po.SysDictDataXEntity;
 import com.agileboot.orm.service.ISysDictDataXService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

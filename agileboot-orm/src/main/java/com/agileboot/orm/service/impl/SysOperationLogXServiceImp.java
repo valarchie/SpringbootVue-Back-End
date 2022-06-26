@@ -1,7 +1,7 @@
 package com.agileboot.orm.service.impl;
 
+import com.agileboot.orm.entity.SysOperationLogXEntity;
 import com.agileboot.orm.mapper.SysOperationLogXMapper;
-import com.agileboot.orm.po.SysOperationLogXEntity;
 import com.agileboot.orm.service.ISysOperationLogXService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

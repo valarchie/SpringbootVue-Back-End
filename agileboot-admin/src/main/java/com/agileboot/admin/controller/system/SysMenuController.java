@@ -2,18 +2,21 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import com.agileboot.admin.deprecated.entity.SysMenu;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.orm.deprecated.entity.SysMenu;
-import com.agileboot.orm.po.SysMenuXEntity;
+import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.domain.system.menu.MenuApplicationService;
+import com.agileboot.orm.entity.SysMenuXEntity;
+import com.agileboot.orm.query.system.MenuQuery;
 import com.agileboot.orm.service.ISysMenuXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,6 +40,8 @@ public class SysMenuController extends BaseController {
 
     @Autowired
     private ISysMenuXService menuService;
+
+    @Autowired MenuApplicationService menuApplicationService;
 
     /**
      * 获取菜单列表
@@ -67,12 +72,21 @@ public class SysMenuController extends BaseController {
      * 获取菜单下拉树列表
      */
     @GetMapping("/treeselect")
-    public ResponseDTO treeselect(SysMenu menu) {
-        List<SysMenuXEntity> menus = menuService.selectMenuList(menu, getUserId());
+    public ResponseDTO treeselect(MenuQuery query) {
 
-        List<SysMenu> collect = menus.stream().map(SysMenu::new).collect(Collectors.toList());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
-        return ResponseDTO.success(menuService.buildMenuTree(collect));
+        Page<SysMenuXEntity> page = new Page<>();
+
+        List<SysMenuXEntity> sysMenuEntities;
+
+        if(loginUser.isAdmin()) {
+            sysMenuEntities = menuService.selectMenuList(page, query, null);
+        } else {
+            sysMenuEntities = menuService.list(query.generateQueryWrapper());
+        }
+
+        return ResponseDTO.success(menuApplicationService.buildMenuTreeSelect(sysMenuEntities));
     }
 
     /**
@@ -82,10 +96,9 @@ public class SysMenuController extends BaseController {
     public ResponseDTO roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
         List<SysMenuXEntity> menus = menuService.selectMenuList(getUserId());
 
-        List<SysMenu> collect = menus.stream().map(SysMenu::new).collect(Collectors.toList());
         ResponseDTO ajax = ResponseDTO.success();
         ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        ajax.put("menus", menuService.buildMenuTree(collect));
+        ajax.put("menus", menuApplicationService.buildMenuTreeSelect(menus));
         return ajax;
     }
 
@@ -96,7 +109,7 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysMenu menu) {
-        if (menuService.checkMenuNameUnique(menu)) {
+        if (menuService.checkMenuNameUnique(menu.getMenuName(), null, menu.getParentId())) {
             return ResponseDTO.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
         if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())
@@ -116,7 +129,7 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysMenu menu) {
-        if (menuService.checkMenuNameUnique(menu)) {
+        if (menuService.checkMenuNameUnique(menu.getMenuName(), menu.getMenuId(), menu.getParentId())) {
             return ResponseDTO.error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
         if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())

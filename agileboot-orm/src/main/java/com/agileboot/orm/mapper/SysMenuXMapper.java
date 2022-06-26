@@ -1,8 +1,9 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.deprecated.entity.SysMenu;
-import com.agileboot.orm.po.SysMenuXEntity;
+import com.agileboot.orm.entity.SysMenuXEntity;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,11 +19,11 @@ public interface SysMenuXMapper extends BaseMapper<SysMenuXEntity> {
 
     /**
      * 根据用户查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
+     * @param page
+     * @param queryWrapper
+     * @return
      */
-    List<SysMenuXEntity> selectMenuListByUserId(SysMenu menu);
+    List<SysMenuXEntity> selectMenuListByUserId(Page<SysMenuXEntity> page, @Param("queryConditions") Wrapper<SysMenuXEntity> queryWrapper);
 
 
     /**

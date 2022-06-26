@@ -1,6 +1,6 @@
 package com.agileboot.orm.service;
 
-import com.agileboot.orm.po.SysRoleMenuXEntity;
+import com.agileboot.orm.entity.SysRoleMenuXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

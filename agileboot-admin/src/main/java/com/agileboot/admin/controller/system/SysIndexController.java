@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +18,7 @@ public class SysIndexController {
      * 系统基础配置
      */
     @Autowired
-    private RuoYiConfig ruoyiConfig;
+    private AgileBootConfig ruoyiConfig;
 
     /**
      * 访问首页，提示语

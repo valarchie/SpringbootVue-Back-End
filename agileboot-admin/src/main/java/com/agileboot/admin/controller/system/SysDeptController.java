@@ -1,13 +1,13 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.entity.SysDept;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.orm.deprecated.entity.SysDept;
-import com.agileboot.orm.po.SysDeptXEntity;
+import com.agileboot.orm.entity.SysDeptXEntity;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -129,7 +129,7 @@ public class SysDeptController extends BaseController {
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysDept dept) {
-        if (deptService.checkDeptNameUnique(dept)) {
+        if (deptService.checkDeptNameUnique(dept.getDeptName(), null, dept.getParentId())) {
             return ResponseDTO.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         dept.setCreateBy(getUsername());
@@ -157,14 +157,14 @@ public class SysDeptController extends BaseController {
     public ResponseDTO edit(@Validated @RequestBody SysDept dept) {
         Long deptId = dept.getDeptId();
         deptService.checkDeptDataScope(deptId);
-        if (deptService.checkDeptNameUnique(dept)) {
+        if (deptService.checkDeptNameUnique(dept.getDeptName(), dept.getDeptId(), dept.getParentId())) {
             return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         if (dept.getParentId().equals(deptId)) {
             return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
         }
         if (StrUtil.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
-            && deptService.countEnabledChildrenDeptById(deptId) > 0) {
+            && deptService.existEnabledChildrenDeptById(deptId)) {
             return ResponseDTO.error("该部门包含未停用的子部门！");
         }
 

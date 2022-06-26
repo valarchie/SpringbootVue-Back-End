@@ -1,6 +1,6 @@
 package com.agileboot.infrastructure.config;
 
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ResourcesConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /** 本地文件上传路径 */
         registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
-            .addResourceLocations("file:" + RuoYiConfig.getProfile() + "/");
+            .addResourceLocations("file:" + AgileBootConfig.getProfile() + "/");
 
         /** swagger配置 */
         registry.addResourceHandler("/swagger-ui/**")

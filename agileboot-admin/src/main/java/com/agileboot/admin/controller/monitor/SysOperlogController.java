@@ -1,6 +1,7 @@
 package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.domain.SysOperLog;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -8,8 +9,7 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.common.utils.time.DatePicker;
-import com.agileboot.orm.deprecated.domain.SysOperLog;
-import com.agileboot.orm.po.SysOperationLogXEntity;
+import com.agileboot.orm.entity.SysOperationLogXEntity;
 import com.agileboot.orm.service.ISysOperationLogXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

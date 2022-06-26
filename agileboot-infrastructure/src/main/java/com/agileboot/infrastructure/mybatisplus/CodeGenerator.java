@@ -67,12 +67,17 @@ public class CodeGenerator {
     }
 
 
+    /**
+     * 为了避免  覆盖掉service中的方法   关闭  fileOverride开发， 如果想生成新的类，
+     * 记得先删掉旧的类
+     * @param generator 生成器
+     */
     private void globalConfig(FastAutoGenerator generator) {
         generator.globalConfig(
             builder -> {
                 builder
                     // override old code of file
-                    .fileOverride()
+//                    .fileOverride()
                     .outputDir(System.getProperty("user.dir") + module + "/src/main/java")
                     // use date type under package of java utils
                     .dateType(DateType.ONLY_DATE)
@@ -93,8 +98,8 @@ public class CodeGenerator {
             builder
                 // parent package name
                 .parent(parentPackage)
-                .moduleName("sys")
-                .entity("po")
+                .moduleName("orm")
+                .entity("entity")
                 .service("service")
                 .serviceImpl("service.impl")
                 .mapper("mapper")

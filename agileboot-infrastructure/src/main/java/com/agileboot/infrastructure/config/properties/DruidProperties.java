@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author ruoyi
  */
 @Configuration
+//@ConfigurationProperties(prefix = "agileboot")
 public class DruidProperties {
 
     @Value("${spring.datasource.druid.initialSize}")

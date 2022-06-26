@@ -1,7 +1,7 @@
 package com.agileboot.orm.service.impl;
 
+import com.agileboot.orm.entity.SysNoticeXEntity;
 import com.agileboot.orm.mapper.SysNoticeXMapper;
-import com.agileboot.orm.po.SysNoticeXEntity;
 import com.agileboot.orm.service.ISysNoticeXService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

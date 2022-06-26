@@ -1,6 +1,6 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.po.SysDeptXEntity;
+import com.agileboot.orm.entity.SysDeptXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;

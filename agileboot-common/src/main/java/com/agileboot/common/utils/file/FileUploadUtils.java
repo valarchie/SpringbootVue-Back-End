@@ -7,7 +7,7 @@ import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.constant.DatePatterns;
 import com.agileboot.common.exception.file.FileNameLengthLimitExceededException;
@@ -44,7 +44,7 @@ public class FileUploadUtils {
     /**
      * 默认上传的地址
      */
-    private static String defaultBaseDir = RuoYiConfig.getProfile();
+    private static String defaultBaseDir = AgileBootConfig.getProfile();
 
     public static void setDefaultBaseDir(String defaultBaseDir) {
         FileUploadUtils.defaultBaseDir = defaultBaseDir;
@@ -132,7 +132,7 @@ public class FileUploadUtils {
     }
 
     public static String getPathFileName(String uploadDir, String fileName) {
-        String currentDir = StrUtil.subAfter(uploadDir, RuoYiConfig.getProfile(), false);
+        String currentDir = StrUtil.subAfter(uploadDir, AgileBootConfig.getProfile(), false);
         return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
     }
 
@@ -208,9 +208,9 @@ public class FileUploadUtils {
         String extension = FileTypeUtil.getType(baInputStream);
         String pathName =
             DateUtil.format(DateUtil.date(), DatePatterns.YYYYMMDD_SLASH) + "/" + IdUtil.fastUUID() + "." + extension;
-        File file = FileUploadUtils.getAbsoluteFile(RuoYiConfig.getImportPath(), pathName);
+        File file = FileUploadUtils.getAbsoluteFile(AgileBootConfig.getImportPath(), pathName);
         FileUtil.writeFromStream(baInputStream, file);
-        return FileUploadUtils.getPathFileName(RuoYiConfig.getImportPath(), pathName);
+        return FileUploadUtils.getPathFileName(AgileBootConfig.getImportPath(), pathName);
     }
 
 

@@ -33,10 +33,16 @@ public class JacksonUtilTest {
      */
     @Test
     public void testAllPrimitiveTypeToJson() {
-        String json = "{\"code\":\"200\",\"id\":\"2001215464647687987\",\"message\":\"success\",\"amount\":\"1.12345\","
-            + "\"amount1\":\"0.12345\",\"isSuccess\":\"true\",\"isSuccess1\":\"1\",\"key\":\"82091672020903776548573741"
-            + "78856064487200234961995543450245362822537162918731039965956758726661669012305745755921310000297396309887"
-            + "550627402157318910581311\"}";
+        String json = "{\n"
+            + "\"code\": \"200\",\n"
+            + "\"id\": \"2001215464647687987\",\n"
+            + "\"message\": \"success\",\n"
+            + "\"amount\": \"1.12345\",\n"
+            + "\"amount1\": \"0.12345\",\n"
+            + "\"isSuccess\": \"true\",\n"
+            + "\"isSuccess1\": \"1\",\n"
+            + "\"key\": \"8209167202090377654857374178856064487200234961995543450245362822537162918731039965956758726661669012305745755921310000297396309887550627402157318910581311\"\n"
+            + "}";
         Assert.assertEquals(200, JacksonUtil.getAsInt(json, "code"));
         Assert.assertEquals(2001215464647687987L,JacksonUtil.getAsLong(json, "id"));
         Assert.assertEquals("success", JacksonUtil.getAsString(json, "message"));
@@ -47,8 +53,7 @@ public class JacksonUtilTest {
         Assert.assertEquals(true, JacksonUtil.getAsBoolean(json, "isSuccess"));
         Assert.assertEquals(true, JacksonUtil.getAsBoolean(json, "isSuccess1"));
         Assert.assertEquals(new BigInteger(
-            "82091672020903776548573741788560644872002349619955434502453628225371629187310399659567587266616690"
-                + "12305745755921310000297396309887550627402157318910581311"),
+            "8209167202090377654857374178856064487200234961995543450245362822537162918731039965956758726661669012305745755921310000297396309887550627402157318910581311"),
             JacksonUtil.getAsBigInteger(json, "key"));
         Assert.assertEquals("1", JacksonUtil.getAsString(json, "isSuccess1"));
     }

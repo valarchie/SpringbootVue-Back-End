@@ -1,10 +1,11 @@
 package com.agileboot.infrastructure.web.service;
 
-import com.agileboot.common.enums.UserStatus;
 import com.agileboot.common.exception.ServiceException;
 import com.agileboot.common.loginuser.LoginUser;
-import com.agileboot.orm.deprecated.entity.SysUser;
+import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.enums.UserStatusEnum;
 import com.agileboot.orm.service.ISysUserXService;
+import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = userService.selectUserByUserName(username);
+        SysUserXEntity user = userService.getUserByUserName(username);
         if (user == null) {
             log.info("登录用户：{} 不存在.", username);
             throw new ServiceException("登录用户：" + username + " 不存在");
-        } else if (UserStatus.DELETED.getCode().equals(user.getDelFlag())) {
-            log.info("登录用户：{} 已被删除.", username);
-            throw new ServiceException("对不起，您的账号：" + username + " 已被删除");
-        } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+        }
+        if (!Objects.equals(UserStatusEnum.NORMAL.getValue(), user.getStatus())) {
             log.info("登录用户：{} 已被停用.", username);
             throw new ServiceException("对不起，您的账号：" + username + " 已停用");
         }

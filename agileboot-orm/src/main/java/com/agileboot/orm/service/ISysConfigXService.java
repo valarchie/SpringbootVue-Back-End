@@ -1,6 +1,6 @@
 package com.agileboot.orm.service;
 
-import com.agileboot.orm.po.SysConfigXEntity;
+import com.agileboot.orm.entity.SysConfigXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

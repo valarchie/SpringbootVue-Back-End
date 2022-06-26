@@ -11,7 +11,7 @@ import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.infrastructure.manager.AsyncManager;
 import com.agileboot.infrastructure.manager.factory.AsyncFactory;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;
 import org.springframework.beans.factory.annotation.Autowired;

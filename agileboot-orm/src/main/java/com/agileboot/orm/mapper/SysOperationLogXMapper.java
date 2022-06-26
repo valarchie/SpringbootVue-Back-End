@@ -1,6 +1,6 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.po.SysOperationLogXEntity;
+import com.agileboot.orm.entity.SysOperationLogXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

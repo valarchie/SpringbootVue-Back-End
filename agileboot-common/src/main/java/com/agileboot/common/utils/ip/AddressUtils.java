@@ -3,7 +3,7 @@ package com.agileboot.common.utils.ip;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.utils.JacksonUtil;
 import java.nio.charset.Charset;
@@ -33,7 +33,7 @@ public class AddressUtils {
         if (NetUtil.isInnerIP(ip)) {
             geographyAddress = "internal IP";
         }
-        if (RuoYiConfig.isAddressEnabled()) {
+        if (AgileBootConfig.isAddressEnabled()) {
             try {
 
                 String rspStr = HttpUtil.get(ADDRESS_QUERY_SITE + "ip=" + ip + "&json=true",

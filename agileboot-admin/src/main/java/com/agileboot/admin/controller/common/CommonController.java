@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.common;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.utils.file.FileUploadUtils;
@@ -50,7 +50,7 @@ public class CommonController {
                 throw new Exception(StrUtil.format("文件名称({})非法，不允许下载。 ", fileName));
             }
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
-            String filePath = RuoYiConfig.getDownloadPath() + fileName;
+            String filePath = AgileBootConfig.getDownloadPath() + fileName;
 
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUploadUtils.setAttachmentResponseHeader(response, realFileName);
@@ -71,7 +71,7 @@ public class CommonController {
     public ResponseDTO uploadFile(MultipartFile file) throws Exception {
         try {
             // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
+            String filePath = AgileBootConfig.getUploadPath();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
@@ -93,7 +93,7 @@ public class CommonController {
     public ResponseDTO uploadFiles(List<MultipartFile> files) throws Exception {
         try {
             // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
+            String filePath = AgileBootConfig.getUploadPath();
             List<String> urls = new ArrayList<String>();
             List<String> fileNames = new ArrayList<String>();
             List<String> newFileNames = new ArrayList<String>();
@@ -129,7 +129,7 @@ public class CommonController {
                 throw new Exception(StrUtil.format("资源文件({})非法，不允许下载。 ", resource));
             }
             // 本地资源路径
-            String localPath = RuoYiConfig.getProfile();
+            String localPath = AgileBootConfig.getProfile();
             // 数据库资源地址
             String downloadPath = localPath + StrUtil.subAfter(resource, Constants.RESOURCE_PREFIX, false);
             // 下载名称

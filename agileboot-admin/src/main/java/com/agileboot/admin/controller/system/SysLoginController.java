@@ -1,18 +1,17 @@
 package com.agileboot.admin.controller.system;
 
+import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.domain.model.LoginBody;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.domain.system.menu.MenuApplicationService;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
-import com.agileboot.orm.deprecated.entity.SysMenu;
-import com.agileboot.orm.deprecated.entity.SysUser;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysMenuXService;
 import com.agileboot.orm.service.ISysUserXService;
-import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +38,9 @@ public class SysLoginController {
 
     @Autowired
     private SysPermissionService permissionService;
+
+    @Autowired
+    private MenuApplicationService menuApplicationService;
 
     /**
      * 登录方法
@@ -85,7 +87,6 @@ public class SysLoginController {
     @GetMapping("getRouters")
     public ResponseDTO getRouters() {
         Long userId = AuthenticationUtils.getUserId();
-        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
-        return ResponseDTO.success(menuService.buildMenus(menus));
+        return ResponseDTO.success(menuApplicationService.getRouterTree(userId));
     }
 }

@@ -140,4 +140,14 @@ public class LoginUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+
+    /**
+     * 是否为管理员
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    public boolean isAdmin() {
+        return userId != null && 1L == userId;
+    }
 }

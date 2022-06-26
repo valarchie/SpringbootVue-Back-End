@@ -1,8 +1,9 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.annotation.Log;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
@@ -10,8 +11,7 @@ import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.web.service.TokenService;
-import com.agileboot.orm.deprecated.entity.SysUser;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysUserXService;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +114,7 @@ public class SysProfileController extends BaseController {
     public ResponseDTO avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
             LoginUser loginUser = getLoginUser();
-            String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
+            String avatar = FileUploadUtils.upload(AgileBootConfig.getAvatarPath(), file);
 
             SysUserXEntity entity = new SysUserXEntity();
             entity.setUserId(getUserId());

@@ -1,6 +1,6 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.po.SysRoleXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

@@ -1,7 +1,7 @@
 package com.agileboot.orm.service.impl;
 
+import com.agileboot.orm.entity.SysDictTypeXEntity;
 import com.agileboot.orm.mapper.SysDictTypeXMapper;
-import com.agileboot.orm.po.SysDictTypeXEntity;
 import com.agileboot.orm.service.ISysDictTypeXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

@@ -3,11 +3,10 @@ package com.agileboot.orm.service.impl;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import com.agileboot.orm.deprecated.entity.SysDept;
+import com.agileboot.orm.entity.SysDeptXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.mapper.SysDeptXMapper;
 import com.agileboot.orm.mapper.SysRoleXMapper;
-import com.agileboot.orm.po.SysDeptXEntity;
-import com.agileboot.orm.po.SysRoleXEntity;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -60,10 +59,11 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
     }
 
     @Override
-    public boolean checkDeptNameUnique(SysDept dept) {
+    public boolean checkDeptNameUnique(String deptName, Long deptId, Long parentId) {
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dept_name", dept.getDeptName()).eq("parent_id", dept.getParentId())
-            .ne("dept_id", dept.getDeptId());
+        queryWrapper.eq("dept_name", deptName)
+            .ne(deptId != null, "dept_id", deptId)
+            .eq(parentId != null, "parent_id", parentId);
 
         SysDeptXEntity one = this.getOne(queryWrapper);
         return one != null;
@@ -84,13 +84,12 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
     }
 
     @Override
-    public long countEnabledChildrenDeptById(Long deptId) {
-
+    public boolean existEnabledChildrenDeptById(Long deptId) {
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(deptId != null, "dept_id", deptId)
-            .apply(deptId != null, "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
-
-        return this.count(queryWrapper);
+        queryWrapper.eq( "dept_id", deptId)
+            .eq("status", 1)
+            .apply( "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
+        return this.baseMapper.exists(queryWrapper);
     }
 
     @Override

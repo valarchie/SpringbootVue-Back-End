@@ -14,7 +14,7 @@ import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.manager.AsyncManager;
 import com.agileboot.infrastructure.manager.factory.AsyncFactory;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;
 import javax.annotation.Resource;

@@ -1,16 +1,15 @@
 package com.agileboot.admin.controller.monitor;
 
 
-import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.deprecated.domain.SysLogininfor;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
-import com.agileboot.common.utils.time.DatePicker;
-import com.agileboot.orm.deprecated.domain.SysLogininfor;
-import com.agileboot.orm.po.SysLoginInfoXEntity;
+import com.agileboot.orm.entity.SysLoginInfoXEntity;
+import com.agileboot.orm.query.system.LoginInfoQuery;
 import com.agileboot.orm.service.ISysLoginInfoXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,19 +40,10 @@ public class SysLogininforController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysLogininfor logininfor) {
+    public TableDataInfo list(LoginInfoQuery loginInfoQuery) {
 
         Page<SysLoginInfoXEntity> page = getPage();
-        QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ip_address", logininfor.getIpaddr())
-            .eq(StrUtil.isNotEmpty(logininfor.getStatus()), "status", logininfor.getStatus())
-            .like(StrUtil.isNotEmpty(logininfor.getUserName()), "user_name", logininfor.getUserName())
-            .ge(logininfor.getParams().get("beginTime") != null, "login_time",
-                DatePicker.getBeginOfTheDay(logininfor.getParams().get("beginTime")))
-            .le(logininfor.getParams().get("endTime") != null, "login_time",
-                DatePicker.getEndOfTheDay(logininfor.getParams().get("endTime")));
-        fillOrderBy(queryWrapper);
+        QueryWrapper queryWrapper = loginInfoQuery.generateQueryWrapper();
 
         loginInfoService.page(page, queryWrapper);
         return getDataTable(page);
@@ -62,20 +52,11 @@ public class SysLogininforController extends BaseController {
     @Log(title = "登录日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:export')")
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SysLogininfor logininfor) {
+    public void export(HttpServletResponse response, LoginInfoQuery loginInfoQuery) {
 
         Page<SysLoginInfoXEntity> page = getPage();
-        QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.like(StrUtil.isNotEmpty(logininfor.getIpaddr()), "ip_address", logininfor.getIpaddr())
-            .eq(StrUtil.isNotEmpty(logininfor.getStatus()), "status", logininfor.getStatus())
-            .like(StrUtil.isNotEmpty(logininfor.getUserName()), "user_name", logininfor.getUserName())
-            .ge(logininfor.getParams().get("beginTime") != null, "login_time",
-                DatePicker.getBeginOfTheDay(logininfor.getParams().get("beginTime")))
-            .le(logininfor.getParams().get("endTime") != null, "login_time",
-                DatePicker.getEndOfTheDay(logininfor.getParams().get("endTime")));
-
-        fillOrderBy(queryWrapper);
+        QueryWrapper queryWrapper = loginInfoQuery.generateQueryWrapper();
 
         loginInfoService.page(page, queryWrapper);
         List<SysLogininfor> excelModels = page.getRecords().stream().map(SysLogininfor::new)

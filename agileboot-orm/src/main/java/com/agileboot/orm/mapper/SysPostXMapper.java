@@ -1,6 +1,6 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.po.SysPostXEntity;
+import com.agileboot.orm.entity.SysPostXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 

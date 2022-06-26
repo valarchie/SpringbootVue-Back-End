@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.common;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.redis.RedisCache;
@@ -59,7 +59,7 @@ public class CaptchaController {
         BufferedImage image = null;
 
         // 生成验证码
-        String captchaType = RuoYiConfig.getCaptchaType();
+        String captchaType = AgileBootConfig.getCaptchaType();
         if ("math".equals(captchaType)) {
             String capText = captchaProducerMath.createText();
             capStr = capText.substring(0, capText.lastIndexOf("@"));

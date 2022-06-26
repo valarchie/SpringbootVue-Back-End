@@ -13,7 +13,7 @@ import com.agileboot.common.annotation.Excel;
 import com.agileboot.common.annotation.Excel.ColumnType;
 import com.agileboot.common.annotation.Excel.Type;
 import com.agileboot.common.annotation.Excels;
-import com.agileboot.common.config.RuoYiConfig;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.exception.UtilException;
 import com.agileboot.common.utils.file.FileUploadUtils;
@@ -941,7 +941,7 @@ public class ExcelUtil<T> {
      * @param filename 文件名称
      */
     public String getAbsoluteFile(String filename) {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
+        String downloadPath = AgileBootConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);
         if (!desc.getParentFile().exists()) {
             desc.getParentFile().mkdirs();

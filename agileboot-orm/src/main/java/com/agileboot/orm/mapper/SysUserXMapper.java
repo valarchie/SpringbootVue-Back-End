@@ -1,9 +1,9 @@
 package com.agileboot.orm.mapper;
 
 import com.agileboot.orm.deprecated.entity.SysUser;
-import com.agileboot.orm.po.SysPostXEntity;
-import com.agileboot.orm.po.SysRoleXEntity;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysPostXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 import java.util.Set;
@@ -51,13 +51,6 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
      */
     Set<String> selectMenuPermsByUserId(Long userId);
 
-    /**
-     * 通过用户名查询用户
-     *
-     * @param userName 用户名
-     * @return 用户对象信息
-     */
-    SysUser selectUserByUserName(String userName);
 
     List<SysUser> selectAllocatedList(SysUser user);
 

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.redis.RedisCache;
-import com.agileboot.orm.deprecated.entity.SysDictData;
+import com.agileboot.orm.entity.SysDictDataXEntity;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class DictUtils {
      * @param key 参数键
      * @param dictDatas 字典数据列表
      */
-    public static void setDictCache(String key, List<SysDictData> dictDatas) {
+    public static void setDictCache(String key, List<SysDictDataXEntity> dictDatas) {
         SpringUtil.getBean(RedisCache.class).setCacheObject(getCacheKey(key), dictDatas);
     }
 
@@ -37,10 +37,10 @@ public class DictUtils {
      * @param key 参数键
      * @return dictDatas 字典数据列表
      */
-    public static List<SysDictData> getDictCache(String key) {
+    public static List<SysDictDataXEntity> getDictCache(String key) {
         Object cacheObj = SpringUtil.getBean(RedisCache.class).getCacheObject(getCacheKey(key));
         if (cacheObj != null) {
-            return (List<SysDictData>) cacheObj;
+            return (List<SysDictDataXEntity>) cacheObj;
         }
         return null;
     }
@@ -77,10 +77,10 @@ public class DictUtils {
      */
     public static String getDictLabel(String dictType, String dictValue, String separator) {
         StringBuilder propertyString = new StringBuilder();
-        List<SysDictData> datas = getDictCache(dictType);
+        List<SysDictDataXEntity> datas = getDictCache(dictType);
 
         if (StrUtil.containsAny(separator, dictValue) && CollUtil.isNotEmpty(datas)) {
-            for (SysDictData dict : datas) {
+            for (SysDictDataXEntity dict : datas) {
                 for (String value : dictValue.split(separator)) {
                     if (value.equals(dict.getDictValue())) {
                         propertyString.append(dict.getDictLabel()).append(separator);
@@ -89,7 +89,7 @@ public class DictUtils {
                 }
             }
         } else {
-            for (SysDictData dict : datas) {
+            for (SysDictDataXEntity dict : datas) {
                 if (dictValue.equals(dict.getDictValue())) {
                     return dict.getDictLabel();
                 }
@@ -108,10 +108,10 @@ public class DictUtils {
      */
     public static String getDictValue(String dictType, String dictLabel, String separator) {
         StringBuilder propertyString = new StringBuilder();
-        List<SysDictData> datas = getDictCache(dictType);
+        List<SysDictDataXEntity> datas = getDictCache(dictType);
 
         if (StrUtil.containsAny(separator, dictLabel) && CollUtil.isNotEmpty(datas)) {
-            for (SysDictData dict : datas) {
+            for (SysDictDataXEntity dict : datas) {
                 for (String label : dictLabel.split(separator)) {
                     if (label.equals(dict.getDictLabel())) {
                         propertyString.append(dict.getDictValue()).append(separator);
@@ -120,7 +120,7 @@ public class DictUtils {
                 }
             }
         } else {
-            for (SysDictData dict : datas) {
+            for (SysDictDataXEntity dict : datas) {
                 if (dictLabel.equals(dict.getDictLabel())) {
                     return dict.getDictValue();
                 }

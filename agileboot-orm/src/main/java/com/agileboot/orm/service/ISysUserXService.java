@@ -1,7 +1,7 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.deprecated.entity.SysUser;
-import com.agileboot.orm.po.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +80,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param userName 用户名
      * @return 用户对象信息
      */
-    SysUser selectUserByUserName(String userName);
+    SysUserXEntity getUserByUserName(String userName);
 
     List<SysUser> selectAllocatedList(SysUser user);
 

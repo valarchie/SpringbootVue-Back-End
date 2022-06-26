@@ -2,7 +2,7 @@ package com.agileboot.orm.service;
 
 import com.agileboot.orm.deprecated.domain.SysUserRole;
 import com.agileboot.orm.deprecated.entity.SysRole;
-import com.agileboot.orm.po.SysRoleXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
