@@ -1,7 +1,6 @@
 package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.domain.SysUserOnline;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.controller.BaseController;
@@ -10,6 +9,7 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.core.redis.RedisCache;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.infrastructure.web.domain.SysUserOnline;
 import com.agileboot.infrastructure.web.service.SysUserOnlineServiceImpl;
 import java.util.ArrayList;
 import java.util.Collection;

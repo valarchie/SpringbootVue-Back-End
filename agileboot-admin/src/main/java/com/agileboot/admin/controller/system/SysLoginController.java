@@ -10,7 +10,6 @@ import com.agileboot.domain.system.menu.MenuApplicationService;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysMenuXService;
 import com.agileboot.orm.service.ISysUserXService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,6 @@ public class SysLoginController {
 
     @Autowired
     private SysLoginService loginService;
-
-    @Autowired
-    private ISysMenuXService menuService;
 
     @Autowired
     private ISysUserXService userService;

@@ -1,8 +1,10 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.query.system.SearchUserQuery;
+import com.agileboot.orm.result.SearchUserResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,16 +45,12 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
 
     /**
      * 校验手机号码是否唯一
-     *
-     * @param user 用户信息
      * @return 结果
      */
     boolean checkPhoneUnique(String phone, Long userId);
 
     /**
      * 校验email是否唯一
-     *
-     * @param user 用户信息
      * @return 结果
      */
     boolean checkEmailUnique(String Email, Long userId);
@@ -81,7 +79,8 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      */
     SysUserXEntity getUserByUserName(String userName);
 
-    List<SysUser> selectAllocatedList(SysUser user);
+    Page<SysUserXEntity> selectAllocatedList(Long roleId, String username, String phoneNumber,
+        Page<SysUserXEntity> page);
 
     /**
      * 根据条件分页查询未分配用户角色列表
@@ -89,7 +88,8 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUser> selectUnallocatedList(SysUser user);
+    Page<SysUserXEntity>  selectUnallocatedList(Long roleId, String username, String phoneNumber,
+        Page<SysUserXEntity> page);
 
     /**
      * 根据条件分页查询用户列表
@@ -97,14 +97,10 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUser> selectUserList(SysUser user);
-
-    String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+    Page<SearchUserResult> selectUserList( Page<SearchUserResult> page,  SearchUserQuery query);
 
     /**
      * 校验用户是否允许操作
-     *
-     * @param user 用户信息
      */
     void checkUserAllowed(Long userId);
 

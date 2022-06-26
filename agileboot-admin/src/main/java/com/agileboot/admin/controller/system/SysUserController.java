@@ -11,11 +11,14 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.poi.ExcelUtil;
+import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.query.system.SearchUserQuery;
 import com.agileboot.orm.service.ISysPostXService;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,23 +54,27 @@ public class SysUserController extends BaseController {
 
     @Autowired
     private ISysPostXService postService;
+    @Autowired
+    private UserApplicationService userApplicationService;
 
     /**
      * 获取用户列表
      */
     @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysUser user) {
-        startPage();
-        List<SysUser> list = userService.selectUserList(user);
-        return getDataTable(list);
+    public TableDataInfo list(SearchUserQuery query) {
+        Page page = getPage();
+        userService.selectUserList(page, query);
+        return getDataTable(page);
     }
 
     @Log(title = "用户管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:user:export')")
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SysUser user) {
-        List<SysUser> list = userService.selectUserList(user);
+    public void export(HttpServletResponse response, SearchUserQuery query) {
+        Page page = getPage();
+        userService.selectUserList(page, query);
+        List<SysUser> list = page.getRecords();
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
         util.exportExcel(response, list, "用户数据");
     }
@@ -79,8 +86,9 @@ public class SysUserController extends BaseController {
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
         List<SysUser> userList = util.importExcel(file.getInputStream());
         String operName = getUsername();
+        List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
 
-        String message = userService.importUser(userList, updateSupport, operName);
+        String message = userApplicationService.importUser(collect, updateSupport, operName);
         return ResponseDTO.success(message);
     }
 

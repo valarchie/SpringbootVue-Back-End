@@ -2,7 +2,7 @@ package com.agileboot.infrastructure.web.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.loginuser.LoginUser;
-import com.agileboot.orm.deprecated.domain.SysUserOnline;
+import com.agileboot.infrastructure.web.domain.SysUserOnline;
 import org.springframework.stereotype.Component;
 
 /**

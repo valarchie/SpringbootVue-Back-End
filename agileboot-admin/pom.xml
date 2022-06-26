@@ -51,6 +51,12 @@
             <artifactId>agileboot-domain</artifactId>
         </dependency>
 
+        <!-- 核心模块-->
+        <dependency>
+            <groupId>com.agileboot</groupId>
+            <artifactId>agileboot-infrastructure</artifactId>
+        </dependency>
+
     </dependencies>
 
 

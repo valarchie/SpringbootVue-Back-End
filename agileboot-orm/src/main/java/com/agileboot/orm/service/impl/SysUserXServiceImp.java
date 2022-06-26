@@ -2,17 +2,18 @@ package com.agileboot.orm.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.exception.ServiceException;
-import com.agileboot.orm.deprecated.entity.SysUser;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.mapper.SysUserXMapper;
+import com.agileboot.orm.query.system.SearchUserQuery;
+import com.agileboot.orm.result.SearchUserResult;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,79 +131,39 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public List<SysUser> selectAllocatedList(SysUser user) {
-        return baseMapper.selectAllocatedList(user);
+    public Page<SysUserXEntity> selectAllocatedList(Long roleId, String username, String phoneNumber,
+        Page<SysUserXEntity> page) {
+
+        QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
+            .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber);
+
+        baseMapper.selectAllocatedList(page, queryWrapper);
+        return page;
     }
 
     @Override
-    public List<SysUser> selectUnallocatedList(SysUser user) {
-        return null;
+    public Page<SysUserXEntity> selectUnallocatedList(Long roleId, String username, String phoneNumber,
+        Page<SysUserXEntity> page) {
+
+        QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
+            .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber)
+            .and(o-> o.ne("r.role_id", roleId)
+                .or().isNull("r.role_id"));
+
+        baseMapper.selectAllocatedList(page, queryWrapper);
+        return page;
     }
 
     @Override
-    public List<SysUser> selectUserList(SysUser user) {
-        return baseMapper.selectUserList(user);
+    public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, SearchUserQuery query) {
+        QueryWrapper<SearchUserResult> queryWrapper = query.generateQueryWrapper();
+        baseMapper.selectUserList(page, queryWrapper);
+        return page;
     }
 
-    @Override
-    public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName) {
-        if (userList == null || userList.size() == 0) {
-            throw new ServiceException("导入用户数据不能为空！");
-        }
-        int successNum = 0;
-        int failureNum = 0;
-        StringBuilder successMsg = new StringBuilder();
-        StringBuilder failureMsg = new StringBuilder();
-        String password = configService.getConfigValueByKey("sys.user.initPassword");
-//        for (SysUser user : userList) {
-//            try {
-//                // 验证是否存在这个用户
-//                SysUser u = this.getUserByUserName(user.getUserName());
-//                if (u == null) {
-//                    Set<ConstraintViolation<Object>> constraintViolations = validator.validate(user);
-//                    if (!constraintViolations.isEmpty()) {
-//                        throw new ConstraintViolationException(constraintViolations);
-//                    }
-//                    user.setPassword(AuthenticationUtils.encryptPassword(password));
-//                    user.setCreateBy(operName);
-//                    SysUserXEntity entity = user.toEntity();
-//                    entity.insert();
-//
-//                    successNum++;
-//                    successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
-//                } else if (isUpdateSupport) {
-//                    Set<ConstraintViolation<Object>> constraintViolations = validator.validate(user);
-//                    if (!constraintViolations.isEmpty()) {
-//                        throw new ConstraintViolationException(constraintViolations);
-//                    }
-//                    user.setUpdateBy(operName);
-//                    SysUserXEntity entity = user.toEntity();
-//
-//                    entity.updateById();
-//
-//                    successNum++;
-//                    successMsg.append("<br/>").append(successNum).append("、账号 ").append(user.getUserName())
-//                        .append(" 更新成功");
-//                } else {
-//                    failureNum++;
-//                    failureMsg.append("<br/>").append(failureNum).append("、账号 ").append(user.getUserName())
-//                        .append(" 已存在");
-//                }
-//            } catch (Exception e) {
-//                failureNum++;
-//                String msg = "<br/>" + failureNum + "、账号 " + user.getUserName() + " 导入失败：";
-//                failureMsg.append(msg + e.getMessage());
-//                log.error(msg, e);
-//            }
-//        }
-//        if (failureNum > 0) {
-//            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
-//            throw new ServiceException(failureMsg.toString());
-//        } else {
-//            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
-//        }
-        return successMsg.toString();
-    }
+
 
     @Override
     public void checkUserAllowed(Long userId) {

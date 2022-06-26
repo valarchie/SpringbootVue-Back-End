@@ -1,12 +1,15 @@
 package com.agileboot.orm.mapper;
 
-import com.agileboot.orm.deprecated.entity.SysUser;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.result.SearchUserResult;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.Set;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -52,22 +55,23 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
     Set<String> selectMenuPermsByUserId(Long userId);
 
 
-    List<SysUser> selectAllocatedList(SysUser user);
+    List<SysUserXEntity> selectAllocatedList(Page<SysUserXEntity> page,
+        @Param("queryConditions") Wrapper<SysUserXEntity> queryWrapper);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param user 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUser> selectUnallocatedList(SysUser user);
+    List<SysUserXEntity> selectUnallocatedList(Page<SysUserXEntity> page,
+        @Param("queryConditions") Wrapper<SysUserXEntity> queryWrapper);
 
     /**
      * 根据条件分页查询用户列表
      *
-     * @param sysUser 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUser> selectUserList(SysUser sysUser);
+    List<SearchUserResult> selectUserList(Page<SearchUserResult> page,
+        @Param("queryConditions") Wrapper<SearchUserResult> queryWrapper);
 
 }
