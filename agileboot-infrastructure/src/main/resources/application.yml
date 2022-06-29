@@ -83,7 +83,7 @@ token:
     # 令牌密钥 TODO 记得更换
     secret: abcdefghijklmnopqrstuvwxyz
     # 令牌有效期（默认30分钟）
-    expire-time: 30
+    expireTime: 30
 
 # MyBatis配置
 mybatis-plus:

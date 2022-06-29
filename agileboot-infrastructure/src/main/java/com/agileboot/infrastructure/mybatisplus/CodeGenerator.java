@@ -41,7 +41,7 @@ public class CodeGenerator {
             .password("Wds123123#")
             .author("valarchie")
             .module("/ruoyi-system")
-            .parentPackage("com.ruoyi.system.domain.test1")
+            .parentPackage("com.agilebboot")
             .tableName("sys_menu").build();
 
         generator.generateCode();

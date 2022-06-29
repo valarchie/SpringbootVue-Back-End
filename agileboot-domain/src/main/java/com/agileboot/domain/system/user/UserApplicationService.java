@@ -3,7 +3,9 @@ package com.agileboot.domain.system.user;
 import com.agileboot.common.exception.ServiceException;
 import com.agileboot.orm.entity.SysUserXEntity;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserApplicationService {
 
 

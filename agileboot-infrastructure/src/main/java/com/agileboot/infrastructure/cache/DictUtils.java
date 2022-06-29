@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.redis.RedisCache;
 import com.agileboot.orm.entity.SysDictDataXEntity;
 import java.util.Collection;
 import java.util.List;

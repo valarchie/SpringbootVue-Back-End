@@ -1,6 +1,7 @@
 package com.agileboot.orm.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -31,7 +32,7 @@ public class SysUserPostXEntity extends Model<SysUserPostXEntity> {
     private Long userId;
 
     @ApiModelProperty("岗位ID")
-    @TableId(value = "post_id", type = IdType.AUTO)
+    @TableField("post_id")
     private Long postId;
 
 

@@ -5,7 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
-import com.agileboot.common.core.redis.RedisCache;
+import com.agileboot.infrastructure.cache.RedisCache;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;

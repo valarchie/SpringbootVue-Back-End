@@ -1,4 +1,4 @@
-package com.agileboot.common.core.redis;
+package com.agileboot.infrastructure.cache;
 
 import java.util.Collection;
 import java.util.Iterator;

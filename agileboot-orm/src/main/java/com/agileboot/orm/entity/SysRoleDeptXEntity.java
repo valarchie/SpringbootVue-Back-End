@@ -1,6 +1,7 @@
 package com.agileboot.orm.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -31,7 +32,7 @@ public class SysRoleDeptXEntity extends Model<SysRoleDeptXEntity> {
     private Long roleId;
 
     @ApiModelProperty("部门ID")
-    @TableId(value = "dept_id", type = IdType.AUTO)
+    @TableField("dept_id")
     private Long deptId;
 
 
