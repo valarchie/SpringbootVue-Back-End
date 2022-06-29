@@ -61,7 +61,7 @@ public class SysRegisterService {
         } else {
             SysUserXEntity entity = new SysUserXEntity();
 
-            entity.setUserName(username);
+            entity.setUsername(username);
             entity.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
 
             boolean regFlag = entity.insert();

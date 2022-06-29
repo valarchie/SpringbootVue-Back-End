@@ -42,8 +42,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         Set<String> roleKeys = userService.selectRolePermissionByUserId(user.getUserId());
 
-        return new LoginUser(user.getUserId(),user.getUserName(), user.getDeptId(), roleKeys,
-            permissionService.getMenuPermission(user.getUserId()));
+        return new LoginUser(user.getUserId(),user.getUsername(), user.getDeptId(), roleKeys,
+            permissionService.getMenuPermission(user.getUserId()), user.getPassword());
     }
 
 

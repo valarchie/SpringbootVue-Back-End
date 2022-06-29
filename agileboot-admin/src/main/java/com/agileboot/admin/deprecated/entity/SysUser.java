@@ -37,7 +37,7 @@ public class SysUser extends BaseEntity {
 
         entity.setUserId(this.userId);
         entity.setDeptId(this.deptId);
-        entity.setUserName(this.userName);
+        entity.setUsername(this.userName);
         entity.setNickName(this.nickName);
         entity.setEmail(this.email);
         entity.setPhoneNumber(this.phonenumber);
@@ -53,7 +53,7 @@ public class SysUser extends BaseEntity {
 
         this.userId = entity.getUserId();
         this.deptId = entity.getDeptId();
-        this.userName = entity.getUserName();
+        this.userName = entity.getUsername();
         this.nickName = entity.getNickName();
         this.email = entity.getEmail();
         this.phonenumber = entity.getPhoneNumber();

@@ -81,7 +81,7 @@
 
   <select id="selectRolePermissionByUserId" parameterType="Long" resultType="com.agileboot.orm.entity.SysRoleXEntity">
     <include refid="selectRoleVo"/>
-    WHERE r.del_flag = '0' and ur.user_id = #{userId}
+    WHERE r.deleted = 0 and ur.user_id = #{userId}
   </select>
 
   <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">

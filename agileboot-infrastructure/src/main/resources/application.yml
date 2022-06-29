@@ -39,7 +39,8 @@ server:
 # 日志配置
 logging:
   level:
-    com.ruoyi: debug
+    # 记得配置到包名
+    com.agileboot: debug
     org.springframework: warn
 
 # Spring配置
@@ -48,6 +49,9 @@ spring:
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
+    # 有些版本的 IDEA  会自动设置properties的编码为IOS-8859-1
+    # 请在IDEA配置里设置成UTF8
+    encoding: UTF-8
   profiles:
     active: test
   # 文件上传
@@ -120,3 +124,5 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+

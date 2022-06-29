@@ -34,15 +34,20 @@ public class CodeGenerator {
     private String password;
     private String parentPackage;
 
+    /**
+     * 避免覆盖掉原有生成的类  生成的类 放在orm子模块下的/target/generated-code目录底下
+     * 有需要更新的实体自己在手动覆盖  或者 挪动过去
+     * @param args
+     */
     public static void main(String[] args) {
         CodeGenerator generator = CodeGenerator.builder()
             .databaseUrl("jdbc:mysql://localhost:33066/ry-vue")
             .username("root")
             .password("Wds123123#")
             .author("valarchie")
-            .module("/ruoyi-system")
-            .parentPackage("com.agilebboot")
-            .tableName("sys_menu").build();
+            .module("/agileboot-orm/target/generated-code")
+            .parentPackage("com.agileboot")
+            .tableName("sys_user").build();
 
         generator.generateCode();
     }

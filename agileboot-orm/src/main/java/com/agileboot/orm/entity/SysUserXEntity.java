@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-06-29
  */
 @Getter
 @Setter
@@ -39,8 +39,8 @@ public class SysUserXEntity extends Model<SysUserXEntity> {
     private Long deptId;
 
     @ApiModelProperty("用户账号")
-    @TableField("user_name")
-    private String userName;
+    @TableField("username")
+    private String username;
 
     @ApiModelProperty("用户昵称")
     @TableField("nick_name")

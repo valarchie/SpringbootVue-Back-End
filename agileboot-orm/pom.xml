@@ -20,6 +20,13 @@
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-common</artifactId>
         </dependency>
+
+        <!-- mybatis plus 代码生成器依赖 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
