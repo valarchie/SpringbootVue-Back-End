@@ -72,6 +72,17 @@ public class RouterModel extends SysMenuXEntity {
         return router;
     }
 
+    public RouterVo produceNormalRouterVO() {
+        RouterVo router = new RouterVo();
+        router.setHidden(getIsVisible());
+        router.setName(getRouteName());
+        router.setPath(getRouterPath());
+        router.setComponent(getComponent());
+        router.setQuery(getQuery());
+        router.setMeta(new MetaVo(getMenuName(), getIcon(), getIsCache(), getPath()));
+        return router;
+    }
+
 
     /**
      * 获取路由名称

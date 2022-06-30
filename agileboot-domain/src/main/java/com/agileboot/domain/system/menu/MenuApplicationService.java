@@ -1,5 +1,6 @@
 package com.agileboot.domain.system.menu;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
@@ -51,8 +52,11 @@ public class MenuApplicationService {
         TreeNodeConfig config = new TreeNodeConfig();
         //默认为id可以不设置
         config.setIdKey("menuId");
+
         return TreeUtil.build(menus, 0L, config, (menu, tree) -> {
             // 也可以使用 tree.setId(dept.getId());等一些默认值
+            tree.setId(menu.getMenuId());
+            tree.setParentId(menu.getParentId());
             tree.putExtra("entity", menu);
         });
 
@@ -64,8 +68,14 @@ public class MenuApplicationService {
         if (CollUtil.isNotEmpty(trees)) {
             for (Tree<Long> tree : trees) {
                 RouterVo routerVo = null;
-                RouterModel model = (RouterModel)tree.get("entity");
-                if(model != null) {
+
+                Object entity = tree.get("entity");
+
+                if (entity != null) {
+                    RouterModel model = new RouterModel();
+                    BeanUtil.copyProperties(tree.get("entity"), model, true);
+
+                    routerVo = model.produceNormalRouterVO();
 
                     if(MenuTypeEnum.DIRECTORY.getValue() == model.getMenuType()) {
                         routerVo = model.produceDirectoryRouterVO(buildRouterTree(tree.getChildren()));
@@ -81,6 +91,7 @@ public class MenuApplicationService {
 
                     routers.add(routerVo);
                 }
+
             }
         }
 
