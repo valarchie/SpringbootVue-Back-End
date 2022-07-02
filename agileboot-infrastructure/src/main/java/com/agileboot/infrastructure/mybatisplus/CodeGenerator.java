@@ -47,7 +47,7 @@ public class CodeGenerator {
             .author("valarchie")
             .module("/agileboot-orm/target/generated-code")
             .parentPackage("com.agileboot")
-            .tableName("sys_user").build();
+            .tableName("sys_role").build();
 
         generator.generateCode();
     }
@@ -186,6 +186,7 @@ public class CodeGenerator {
             .enableActiveRecord()
 //                    .versionColumnName("version")
 //                    .versionPropertyName("version")
+            // deleted的字段设置成tinyint  长度为1
             .logicDeleteColumnName("deleted")
 //                    .logicDeletePropertyName("deleteFlag")
             .naming(NamingStrategy.underline_to_camel)

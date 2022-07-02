@@ -1,6 +1,7 @@
 package com.agileboot.domain.system.menu;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.constant.Constants;
@@ -18,12 +19,12 @@ public class RouterModel extends SysMenuXEntity {
     public RouterVo produceDirectoryRouterVO(List<RouterVo> children) {
 
         RouterVo router = new RouterVo();
-        router.setHidden(getIsVisible());
+        router.setHidden(!getIsVisible());
         router.setName(getRouteName());
         router.setPath(getRouterPath());
-        router.setComponent(getComponent());
+        router.setComponent(getComponentTypeForFrontEnd());
         router.setQuery(getQuery());
-        router.setMeta(new MetaVo(getMenuName(), getIcon(), getIsCache(), getPath()));
+        router.setMeta(new MetaVo(getMenuName(), getIcon(), !getIsCache(), getPath()));
 
         if (CollUtil.isNotEmpty(children) && MenuTypeEnum.DIRECTORY.getValue() == getMenuType()) {
             router.setAlwaysShow(true);
@@ -44,7 +45,7 @@ public class RouterModel extends SysMenuXEntity {
         children.setPath(getPath());
         children.setComponent(getComponent());
         children.setName(StrUtil.upperFirst(getPath()));
-        children.setMeta(new MetaVo(getMenuName(), getIcon(), getIsCache(),getPath()));
+        children.setMeta(new MetaVo(getMenuName(), getIcon(), !getIsCache(), getPath()));
         children.setQuery(getQuery());
         childrenList.add(children);
         router.setChildren(childrenList);
@@ -61,25 +62,25 @@ public class RouterModel extends SysMenuXEntity {
         router.setPath("/");
         List<RouterVo> childrenList = new ArrayList<>();
         RouterVo children = new RouterVo();
-        String routerPath = innerLinkReplaceEach(getPath());
+        String routerPath = trimHttpPrefixForInnerLink(getPath());
         children.setPath(routerPath);
         children.setComponent(UserConstants.INNER_LINK);
         children.setName(StrUtil.upperFirst(routerPath));
-        children.setMeta(new MetaVo(getMenuName(), getIcon(),getPath()));
+        children.setMeta(new MetaVo(getMenuName(), getIcon(), getPath()));
         childrenList.add(children);
         router.setChildren(childrenList);
 
         return router;
     }
 
-    public RouterVo produceNormalRouterVO() {
+    public RouterVo produceDefaultRouterVO() {
         RouterVo router = new RouterVo();
-        router.setHidden(getIsVisible());
+        router.setHidden(!getIsVisible());
         router.setName(getRouteName());
         router.setPath(getRouterPath());
-        router.setComponent(getComponent());
+        router.setComponent(getComponentTypeForFrontEnd());
         router.setQuery(getQuery());
-        router.setMeta(new MetaVo(getMenuName(), getIcon(), getIsCache(), getPath()));
+        router.setMeta(new MetaVo(getMenuName(), getIcon(), !getIsCache(), getPath()));
         return router;
     }
 
@@ -93,7 +94,7 @@ public class RouterModel extends SysMenuXEntity {
     public String getRouteName() {
         String routerName = StrUtil.upperFirst(getPath());
         // 非外链并且是一级目录（类型为目录）
-        if (isMenuFrame()) {
+        if (isSingleLevelMenu()) {
             routerName = StrUtil.EMPTY;
         }
         return routerName;
@@ -101,15 +102,24 @@ public class RouterModel extends SysMenuXEntity {
 
 
     /**
-     * 是否为菜单内部跳转
+     * 是否为单个一级菜单
      *
-     * @param menu 菜单信息
      * @return 结果
      */
-    public boolean isMenuFrame() {
+    public boolean isSingleLevelMenu() {
         return getParentId().intValue() == 0
             && MenuTypeEnum.MENU.getValue() == getMenuType()
-            && getIsFrame();
+            && !getIsExternal();
+    }
+
+
+    /**
+     * 是否为菜单内部跳转
+     *
+     * @return 结果
+     */
+    public boolean isMultipleLevelMenu(Tree<Long> tree) {
+        return MenuTypeEnum.DIRECTORY.getValue() == getMenuType() && tree.hasChild();
     }
 
 
@@ -123,16 +133,13 @@ public class RouterModel extends SysMenuXEntity {
         String routerPath = getPath();
         // 内链打开外网方式
         if (getParentId().intValue() != 0 && isInnerLink()) {
-            routerPath = innerLinkReplaceEach(routerPath);
+            routerPath = trimHttpPrefixForInnerLink(routerPath);
         }
         // 非外链并且是一级目录（类型为目录）
-        if (0L == getParentId()
-            && MenuTypeEnum.DIRECTORY.getValue() == getMenuType()
-            && getIsFrame()) {
+        if (0L == getParentId() && MenuTypeEnum.DIRECTORY.getValue() == getMenuType() && !getIsExternal()) {
             routerPath = "/" + getPath();
-        }
         // 非外链并且是一级目录（类型为菜单）
-        else if (isMenuFrame()) {
+        } else if (isSingleLevelMenu()) {
             routerPath = "/";
         }
         return routerPath;
@@ -141,19 +148,17 @@ public class RouterModel extends SysMenuXEntity {
     /**
      * 是否为内链组件
      *
-     * @param menu 菜单信息
      * @return 结果
      */
     public boolean isInnerLink() {
-        return getIsFrame() &&
-            (HttpUtil.isHttp(getPath()) || HttpUtil.isHttps(getPath()));
+        return !getIsExternal() && (HttpUtil.isHttp(getPath()) || HttpUtil.isHttps(getPath()));
     }
 
 
     /**
      * 内链域名特殊字符替换
      */
-    public String innerLinkReplaceEach(String path) {
+    public String trimHttpPrefixForInnerLink(String path) {
         return StringUtils.replaceEach(path, new String[]{Constants.HTTP, Constants.HTTPS},
             new String[]{"", ""});
     }
@@ -161,32 +166,38 @@ public class RouterModel extends SysMenuXEntity {
     /**
      * 获取组件信息
      *
-     * @param menu 菜单信息
      * @return 组件信息
      */
-    public String getMenuComponent() {
+    public String getComponentTypeForFrontEnd() {
         String component = MenuComponentEnum.LAYOUT.getDescription();
-        if (StrUtil.isNotEmpty(getComponent()) && !isMenuFrame()) {
+        if (StrUtil.isNotEmpty(getComponent()) && !isSingleLevelMenu()) {
             component = getComponent();
-        } else if (StrUtil.isEmpty(getComponent()) && getParentId().intValue() != 0 && isInnerLink()) {
+        } else if (isInnerLinkView()) {
             component = MenuComponentEnum.INNER_LINK.getDescription();
-        } else if (StrUtil.isEmpty(getComponent()) && isParentView()) {
+        } else if (isParentView()) {
             component = MenuComponentEnum.PARENT_VIEW.getDescription();
         }
         return component;
     }
 
     /**
-     * 是否为parent_view组件
+     * 是否为inner_link_view组件
      *
-     * @param menu 菜单信息
      * @return 结果
      */
-    public boolean isParentView() {
-        return getParentId().intValue() != 0 && MenuTypeEnum.DIRECTORY.getValue() == getMenuType();
+    public boolean isInnerLinkView() {
+        return StrUtil.isEmpty(getComponent()) && getParentId().intValue() != 0 && isInnerLink();
     }
 
 
+    /**
+     * 是否为parent_view组件
+     *
+     * @return 结果
+     */
+    public boolean isParentView() {
+        return StrUtil.isEmpty(getComponent()) && getParentId().intValue() != 0 && MenuTypeEnum.DIRECTORY.getValue() == getMenuType();
+    }
 
 
 }

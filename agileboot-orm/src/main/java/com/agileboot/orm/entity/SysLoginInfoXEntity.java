@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -20,7 +19,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-06
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -64,13 +63,12 @@ public class SysLoginInfoXEntity extends Model<SysLoginInfoXEntity> {
 
     @ApiModelProperty("访问时间")
     @TableField("login_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date loginTime;
 
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override

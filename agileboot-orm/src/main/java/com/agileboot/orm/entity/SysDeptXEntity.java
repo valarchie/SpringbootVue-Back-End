@@ -10,9 +10,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -105,10 +103,5 @@ public class SysDeptXEntity extends Model<SysDeptXEntity> {
     public Serializable pkVal() {
         return this.deptId;
     }
-    /**
-     * 子部门 TODO 这个应该移到领域类
-     */
-    private List<SysDeptXEntity> children = new ArrayList<>();
-
 
 }

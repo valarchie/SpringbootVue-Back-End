@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -58,11 +58,11 @@ public class SysMenuXEntity extends Model<SysMenuXEntity> {
     @TableField("`query`")
     private String query;
 
-    @ApiModelProperty("是否为外链（0是 1否）")
-    @TableField("is_frame")
-    private Boolean isFrame;
+    @ApiModelProperty("是否为外链（1是 0否）")
+    @TableField("is_external")
+    private Boolean isExternal;
 
-    @ApiModelProperty("是否缓存（0缓存 1不缓存）")
+    @ApiModelProperty("是否缓存（1缓存 0不缓存）")
     @TableField("is_cache")
     private Boolean isCache;
 
@@ -70,7 +70,7 @@ public class SysMenuXEntity extends Model<SysMenuXEntity> {
     @TableField("menu_type")
     private Integer menuType;
 
-    @ApiModelProperty("菜单状态（0显示 1隐藏）")
+    @ApiModelProperty("菜单状态（1显示 0隐藏）")
     @TableField("is_visible")
     private Boolean isVisible;
 

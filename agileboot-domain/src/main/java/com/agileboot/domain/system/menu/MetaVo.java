@@ -1,6 +1,6 @@
 package com.agileboot.domain.system.menu;
 
-import lombok.AllArgsConstructor;
+import cn.hutool.http.HttpUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class MetaVo {
 
     /**
@@ -43,7 +42,18 @@ public class MetaVo {
     public MetaVo(String title, String icon, String link) {
         this.title = title;
         this.icon = icon;
-        this.link = link;
+        if (HttpUtil.isHttp(link)) {
+            this.link = link;
+        }
+    }
+
+    public MetaVo(String title, String icon, boolean noCache, String link) {
+        this.title = title;
+        this.icon = icon;
+        this.noCache = noCache;
+        if (HttpUtil.isHttp(link)) {
+            this.link = link;
+        }
     }
 
 }

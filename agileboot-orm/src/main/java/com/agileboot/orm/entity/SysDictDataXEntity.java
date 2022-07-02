@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-13
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -68,7 +68,7 @@ public class SysDictDataXEntity extends Model<SysDictDataXEntity> {
 
     @ApiModelProperty("状态（0正常 1停用）")
     @TableField("`status`")
-    private Boolean status;
+    private Integer status;
 
     @ApiModelProperty("创建者ID")
     @TableField("creator_id")
@@ -101,7 +101,7 @@ public class SysDictDataXEntity extends Model<SysDictDataXEntity> {
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override

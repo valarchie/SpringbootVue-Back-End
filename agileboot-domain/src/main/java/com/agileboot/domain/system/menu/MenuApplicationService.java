@@ -7,7 +7,6 @@ import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.enums.MenuTypeEnum;
 import com.agileboot.orm.mapper.SysMenuXMapper;
 import com.agileboot.orm.service.ISysMenuXService;
 import java.util.LinkedList;
@@ -73,15 +72,15 @@ public class MenuApplicationService {
 
                 if (entity != null) {
                     RouterModel model = new RouterModel();
-                    BeanUtil.copyProperties(tree.get("entity"), model, true);
+                    BeanUtil.copyProperties(entity, model, true);
 
-                    routerVo = model.produceNormalRouterVO();
+                    routerVo = model.produceDefaultRouterVO();
 
-                    if(MenuTypeEnum.DIRECTORY.getValue() == model.getMenuType()) {
+                    if(model.isMultipleLevelMenu(tree)) {
                         routerVo = model.produceDirectoryRouterVO(buildRouterTree(tree.getChildren()));
                     }
 
-                    if(model.isMenuFrame()) {
+                    if(model.isSingleLevelMenu()) {
                         routerVo = model.produceMenuFrameRouterVO();
                     }
 

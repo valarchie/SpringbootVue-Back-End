@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-16
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -81,7 +81,7 @@ public class SysNoticeXEntity extends Model<SysNoticeXEntity> {
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override

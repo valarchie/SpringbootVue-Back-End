@@ -32,7 +32,7 @@ public class SysMenu extends BaseEntity {
         this.component = entity.getComponent();
         this.query = entity.getQuery();
         this.isCache = entity.getIsCache()+"";
-        this.isFrame = entity.getIsFrame() +"";
+        this.isFrame = entity.getIsExternal() +"";
         this.menuType = transferMenuType(entity.getMenuType());
         this.visible = entity.getIsVisible()+"";
         this.setCreateBy(entity.getCreatorName());
@@ -51,7 +51,7 @@ public class SysMenu extends BaseEntity {
         entity.setComponent(this.component);
         entity.setQuery(this.query);
         entity.setIsCache(Convert.toBool(this.isCache));
-        entity.setIsFrame(Convert.toBool(this.isFrame));
+        entity.setIsExternal(Convert.toBool(this.isFrame));
         entity.setMenuType(transferMenuType(this.menuType));
         entity.setIsVisible(Convert.toBool(this.visible));
 

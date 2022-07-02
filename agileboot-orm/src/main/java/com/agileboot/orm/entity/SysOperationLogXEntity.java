@@ -19,7 +19,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-08
+ * @since 2022-07-02
  */
 @Getter
 @Setter
@@ -49,7 +49,7 @@ public class SysOperationLogXEntity extends Model<SysOperationLogXEntity> {
     @TableField("request_url")
     private String requestUrl;
 
-    @ApiModelProperty("方法名称")
+    @ApiModelProperty("调用方法")
     @TableField("called_method")
     private String calledMethod;
 
@@ -65,7 +65,7 @@ public class SysOperationLogXEntity extends Model<SysOperationLogXEntity> {
     @TableField("user_name")
     private String userName;
 
-    @ApiModelProperty("主机地址")
+    @ApiModelProperty("操作人员ip")
     @TableField("operator_ip")
     private String operatorIp;
 
@@ -73,10 +73,11 @@ public class SysOperationLogXEntity extends Model<SysOperationLogXEntity> {
     @TableField("operator_location")
     private String operatorLocation;
 
-    @ApiModelProperty("部门名称")
+    @ApiModelProperty("部门ID")
     @TableField("dept_id")
     private Long deptId;
 
+    @ApiModelProperty("部门名称")
     @TableField("dept_name")
     private String deptName;
 
@@ -103,7 +104,7 @@ public class SysOperationLogXEntity extends Model<SysOperationLogXEntity> {
     @ApiModelProperty("逻辑删除")
     @TableField("deleted")
     @TableLogic
-    private Integer deleted;
+    private Boolean deleted;
 
 
     @Override
