@@ -159,7 +159,8 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     @Override
     public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, SearchUserQuery query) {
         QueryWrapper<SearchUserResult> queryWrapper = query.generateQueryWrapper();
-        baseMapper.selectUserList(page, queryWrapper);
+        List<SearchUserResult> searchUserResults = baseMapper.selectUserList(page, queryWrapper);
+        page.setRecords(searchUserResults);
         return page;
     }
 

@@ -6,6 +6,7 @@ import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.result.SearchUserResult;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.Set;
@@ -72,6 +73,6 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
      * @return 用户信息集合信息
      */
     List<SearchUserResult> selectUserList(Page<SearchUserResult> page,
-        @Param("queryConditions") Wrapper<SearchUserResult> queryWrapper);
+        @Param(Constants.WRAPPER) Wrapper<SearchUserResult> queryWrapper);
 
 }

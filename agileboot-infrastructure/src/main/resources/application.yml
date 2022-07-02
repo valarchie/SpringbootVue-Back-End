@@ -49,8 +49,7 @@ spring:
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
-    # 有些版本的 IDEA  会自动设置properties的编码为IOS-8859-1
-    # 请在IDEA配置里设置成UTF8
+    # 有些版本的 IDEA  会自动设置properties的编码为IOS-8859-1 请在IDEA配置里设置成UTF8
     encoding: UTF-8
   profiles:
     active: test
@@ -101,6 +100,8 @@ mybatis-plus:
       useGeneratedKeys: true
       defaultExecutorType: SIMPLE
       logImpl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    global-config:
+      refresh: true
 
 
 # PageHelper分页插件

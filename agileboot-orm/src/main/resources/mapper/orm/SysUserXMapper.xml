@@ -101,7 +101,7 @@
     left join sys_role r on r.role_id = ur.role_id
 
     <if test="queryConditions.emptyOfWhere == false">
-      ${ew.customSqlSegment}
+      ${queryConditions.customSqlSegment}
     </if>
   </select>
 
@@ -113,7 +113,7 @@
     left join sys_role r on r.role_id = ur.role_id
 
     <if test="queryConditions.emptyOfWhere == false">
-      ${ew.customSqlSegment}
+      ${queryConditions.customSqlSegment}
     </if>
   </select>
 
@@ -125,12 +125,12 @@
   </if>-->
 
 
-  <select id="selectUserList"  resultType="SysUserXEntity">
-    select u.*, d.dept_name, d.dept_name, d.leader
+  <select id="selectUserList"  resultType="SearchUserResult">
+    select u.*, d.dept_name, d.dept_name, d.leader_name
     from sys_user u
     left join sys_dept d on u.dept_id = d.dept_id
 
-    <if test="queryConditions.emptyOfWhere == false">
+    <if test="ew.emptyOfWhere == false">
       ${ew.customSqlSegment}
     </if>
   </select>

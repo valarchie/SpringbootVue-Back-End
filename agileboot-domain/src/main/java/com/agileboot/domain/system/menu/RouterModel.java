@@ -11,7 +11,6 @@ import com.agileboot.orm.enums.MenuComponentEnum;
 import com.agileboot.orm.enums.MenuTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 
 public class RouterModel extends SysMenuXEntity {
 
@@ -159,8 +158,13 @@ public class RouterModel extends SysMenuXEntity {
      * 内链域名特殊字符替换
      */
     public String trimHttpPrefixForInnerLink(String path) {
-        return StringUtils.replaceEach(path, new String[]{Constants.HTTP, Constants.HTTPS},
-            new String[]{"", ""});
+        if (HttpUtil.isHttp(path)) {
+            return StrUtil.stripIgnoreCase(path, Constants.HTTP, "");
+        }
+        if (HttpUtil.isHttps(path)) {
+            return StrUtil.stripIgnoreCase(path, Constants.HTTPS, "");
+        }
+        return path;
     }
 
     /**

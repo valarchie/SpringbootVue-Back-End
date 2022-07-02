@@ -10,7 +10,7 @@
     left join sys_role ro on ur.role_id = ro.role_id
 
     <if test="queryConditions.emptyOfWhere == false">
-      ${ew.customSqlSegment}
+      ${queryConditions.customSqlSegment}
     </if>
   </select>
 
