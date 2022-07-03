@@ -49,6 +49,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:list')")
     @GetMapping("/list")
     public ResponseDTO list(SysMenu menu) {
+
         Page<SysMenuXEntity> page = getPage();
         QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -76,14 +77,12 @@ public class SysMenuController extends BaseController {
 
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
-        Page<SysMenuXEntity> page = new Page<>();
-
         List<SysMenuXEntity> sysMenuEntities;
 
         if(loginUser.isAdmin()) {
-            sysMenuEntities = menuService.selectMenuList(page, query, null);
-        } else {
             sysMenuEntities = menuService.list(query.generateQueryWrapper());
+        } else {
+            sysMenuEntities = menuService.selectMenuListByUserId(getUserId());
         }
 
         return ResponseDTO.success(menuApplicationService.buildMenuTreeSelect(sysMenuEntities));
@@ -93,8 +92,8 @@ public class SysMenuController extends BaseController {
      * 加载对应角色菜单列表树
      */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public ResponseDTO roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
-        List<SysMenuXEntity> menus = menuService.selectMenuList(getUserId());
+    public ResponseDTO roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
+        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(getUserId());
 
         ResponseDTO ajax = ResponseDTO.success();
         ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));

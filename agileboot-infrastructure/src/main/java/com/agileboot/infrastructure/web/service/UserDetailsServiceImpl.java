@@ -3,7 +3,7 @@ package com.agileboot.infrastructure.web.service;
 import com.agileboot.common.exception.ServiceException;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.enums.UserStatusEnum;
+import com.agileboot.orm.enums.common.UserStatusEnum;
 import com.agileboot.orm.service.ISysUserXService;
 import java.util.Objects;
 import java.util.Set;

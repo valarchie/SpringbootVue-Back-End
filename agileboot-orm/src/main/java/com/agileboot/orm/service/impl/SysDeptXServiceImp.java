@@ -55,6 +55,7 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
     @Override
     public List<Long> selectDeptListByRoleId(Long roleId) {
         SysRoleXEntity role = roleMapper.selectById(roleId);
+
         return this.baseMapper.selectDeptListByRoleId(roleId, role.getDeptCheckStrictly());
     }
 
@@ -98,5 +99,6 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
         queryWrapper.eq(deptId != null, "parent_id", deptId);
         return baseMapper.exists(queryWrapper);
     }
+
 
 }

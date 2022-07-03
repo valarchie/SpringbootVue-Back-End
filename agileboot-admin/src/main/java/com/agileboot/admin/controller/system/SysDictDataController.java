@@ -10,7 +10,9 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
+import com.agileboot.infrastructure.cache.MapCache;
 import com.agileboot.orm.entity.SysDictDataXEntity;
+import com.agileboot.orm.enums.cache.DictionaryData;
 import com.agileboot.orm.service.ISysDictDataXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -85,17 +87,12 @@ public class SysDictDataController extends BaseController {
 
     /**
      * 根据字典类型查询字典数据信息
+     * 换成用Enum
      */
     @GetMapping(value = "/type/{dictType}")
     public ResponseDTO dictType(@PathVariable String dictType) {
-        QueryWrapper<SysDictDataXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dict_type", dictType);
-        List<SysDictDataXEntity> list = dictDataService.list(queryWrapper);
-
-        List<SysDictData> excelModels = list.stream().map(this::toSysDictData)
-            .collect(Collectors.toList());
-
-        return ResponseDTO.success(excelModels);
+        List<DictionaryData> dictionaryData = MapCache.dictionaryCache().get(dictType);
+        return ResponseDTO.success(dictionaryData);
     }
 
     /**

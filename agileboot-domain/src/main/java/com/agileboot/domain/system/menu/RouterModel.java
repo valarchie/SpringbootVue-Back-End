@@ -7,8 +7,8 @@ import cn.hutool.http.HttpUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.enums.MenuComponentEnum;
-import com.agileboot.orm.enums.MenuTypeEnum;
+import com.agileboot.orm.enums.common.MenuComponentEnum;
+import com.agileboot.orm.enums.common.MenuTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,13 +173,13 @@ public class RouterModel extends SysMenuXEntity {
      * @return 组件信息
      */
     public String getComponentTypeForFrontEnd() {
-        String component = MenuComponentEnum.LAYOUT.getDescription();
+        String component = MenuComponentEnum.LAYOUT.description();
         if (StrUtil.isNotEmpty(getComponent()) && !isSingleLevelMenu()) {
             component = getComponent();
         } else if (isInnerLinkView()) {
-            component = MenuComponentEnum.INNER_LINK.getDescription();
+            component = MenuComponentEnum.INNER_LINK.description();
         } else if (isParentView()) {
-            component = MenuComponentEnum.PARENT_VIEW.getDescription();
+            component = MenuComponentEnum.PARENT_VIEW.description();
         }
         return component;
     }

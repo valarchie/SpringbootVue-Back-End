@@ -1,3 +1,7 @@
+
+-- https://tool.lu/sql/  SQL format web site
+-- http://www.esjson.com/sqlformat.html
+
 -- ----------------------------
 -- 1、部门表
 -- ----------------------------

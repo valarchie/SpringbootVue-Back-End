@@ -3,7 +3,7 @@ package com.agileboot.orm.mapper;
 import com.agileboot.orm.entity.SysDeptXEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -15,6 +15,10 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface SysDeptXMapper extends BaseMapper<SysDeptXEntity> {
 
+    String SELECT_DEPT_LIST_SQL = "SELECT d.dept_id  "
+        + "FROM sys_dept d  "
+        + "LEFT JOIN sys_role_dept rd ON d.dept_id = rd.dept_id  ";
+
     /**
      * 根据角色ID查询部门树信息
      *
@@ -22,7 +26,11 @@ public interface SysDeptXMapper extends BaseMapper<SysDeptXEntity> {
      * @param deptCheckStrictly 部门树选择项是否关联显示
      * @return 选中部门列表
      */
-    List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId,
-        @Param("deptCheckStrictly") boolean deptCheckStrictly);
+    @Select(SELECT_DEPT_LIST_SQL
+        + "${ew.customSqlSegment}")
+    List<Long> selectDeptListByRoleId(Long roleId);
+
+
+    List<Long> selectDeptListByRoleId(Long roleId, boolean is);
 
 }

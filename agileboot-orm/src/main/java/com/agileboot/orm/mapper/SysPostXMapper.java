@@ -21,11 +21,14 @@ public interface SysPostXMapper extends BaseMapper<SysPostXEntity> {
      * @param userId 用户ID
      * @return 选中岗位ID列表
      */
-    @Select("select p.post_id\n"
-        + "    from sys_post p\n"
-        + "           left join sys_user_post up on up.post_id = p.post_id\n"
-        + "           left join sys_user u on u.user_id = up.user_id\n"
-        + "    where u.user_id = #{userId}")
+    @Select("SELECT  "
+        + "  p.post_id  "
+        + "FROM  "
+        + "  sys_post p  "
+        + "LEFT JOIN sys_user_post up ON up.post_id = p.post_id  "
+        + "LEFT JOIN sys_user u ON u.user_id = up.user_id  "
+        + "WHERE  "
+        + "  u.user_id = #{userId}")
     List<Long> selectPostListByUserId(Long userId);
 
 

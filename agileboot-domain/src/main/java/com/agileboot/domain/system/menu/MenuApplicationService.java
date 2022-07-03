@@ -7,13 +7,15 @@ import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.mapper.SysMenuXMapper;
 import com.agileboot.orm.service.ISysMenuXService;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author valarchie
+ */
 @Service
 public class MenuApplicationService {
 
@@ -31,21 +33,22 @@ public class MenuApplicationService {
         TreeNodeConfig config = new TreeNodeConfig();
         //默认为id可以不设置
         config.setIdKey("menuId");
-        return TreeUtil.build(menus, 0L, config, (dept, tree) -> {
+        return TreeUtil.build(menus, 0L, config, (menu, tree) -> {
             // 也可以使用 tree.setId(dept.getId());等一些默认值
-            tree.putExtra("label", dept.getMenuName());
+            tree.setId(menu.getMenuId());
+            tree.setParentId(menu.getParentId());
+            tree.putExtra("label", menu.getMenuName());
         });
     }
 
 
     public List<Tree<Long>> buildMenuEntityTree(Long userId) {
-        List<SysMenuXEntity> allMenus = menuService.list();
 
         List<SysMenuXEntity> menus = null;
         if (AuthenticationUtils.isAdmin(userId)) {
-            menus = allMenus;
+            menus = menuService.listMenuListWithoutButton();
         } else {
-            menus = ((SysMenuXMapper) menuService.getBaseMapper()).selectMenuTreeByUserId(userId);
+            menus = menuService.listMenuListWithoutButtonByUserId(userId);
         }
 
         TreeNodeConfig config = new TreeNodeConfig();

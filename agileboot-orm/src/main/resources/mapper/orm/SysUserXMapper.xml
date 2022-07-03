@@ -126,7 +126,7 @@
 
 
   <select id="selectUserList"  resultType="SearchUserResult">
-    select u.*, d.dept_name, d.dept_name, d.leader_name
+    select u.*, d.dept_id, d.dept_name, d.leader_name
     from sys_user u
     left join sys_dept d on u.dept_id = d.dept_id
 

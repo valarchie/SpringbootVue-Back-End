@@ -1,8 +1,6 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.query.system.MenuQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -22,11 +20,7 @@ public interface ISysMenuXService extends IService<SysMenuXEntity> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenuXEntity> selectMenuList(Long userId);
-
-    List<SysMenuXEntity> selectMenuList(Page<SysMenuXEntity> pages, MenuQuery query, Long userId);
-
-
+    List<SysMenuXEntity> selectMenuListByUserId(Long userId);
 
     /**
      * 根据角色ID查询菜单树信息
@@ -60,6 +54,19 @@ public interface ISysMenuXService extends IService<SysMenuXEntity> {
      * @return 结果 true 存在 false 不存在
      */
     boolean checkMenuExistRole(Long menuId);
+
+    /**
+     *
+     * @param userId 用户ID
+     * @return 根据用户列出不含按钮的所有菜单
+     */
+    List<SysMenuXEntity> listMenuListWithoutButtonByUserId(Long userId);
+
+    /**
+     *
+     * @return 所有不带按钮的菜单
+     */
+    List<SysMenuXEntity> listMenuListWithoutButton();
 
 
 }

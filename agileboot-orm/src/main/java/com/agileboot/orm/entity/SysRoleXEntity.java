@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-02
+ * @since 2022-07-03
  */
 @Getter
 @Setter
@@ -50,15 +50,7 @@ public class SysRoleXEntity extends Model<SysRoleXEntity> {
     @TableField("data_scope")
     private Integer dataScope;
 
-    @ApiModelProperty("菜单树选择项是否关联显示")
-    @TableField("menu_check_strictly")
-    private Boolean menuCheckStrictly;
-
-    @ApiModelProperty("部门树选择项是否关联显示")
-    @TableField("dept_check_strictly")
-    private Boolean deptCheckStrictly;
-
-    @ApiModelProperty("角色状态（0正常 1停用）")
+    @ApiModelProperty("角色状态（1正常 0停用）")
     @TableField("`status`")
     private Integer status;
 
@@ -90,7 +82,7 @@ public class SysRoleXEntity extends Model<SysRoleXEntity> {
     @TableField("remark")
     private String remark;
 
-    @ApiModelProperty("删除标志（0代表存在 2代表删除）")
+    @ApiModelProperty("删除标志（0代表存在 1代表删除）")
     @TableField("deleted")
     @TableLogic
     private Boolean deleted;

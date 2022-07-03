@@ -2,16 +2,15 @@ package com.agileboot.orm.service.impl;
 
 import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.entity.SysRoleMenuXEntity;
-import com.agileboot.orm.entity.SysRoleXEntity;
+import com.agileboot.orm.enums.common.MenuTypeEnum;
 import com.agileboot.orm.mapper.SysMenuXMapper;
 import com.agileboot.orm.mapper.SysRoleMenuXMapper;
 import com.agileboot.orm.mapper.SysRoleXMapper;
-import com.agileboot.orm.query.system.MenuQuery;
 import com.agileboot.orm.service.ISysMenuXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +39,7 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
      */
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
-        SysRoleXEntity sysRole = roleMapper.selectById(roleId);
-        return this.baseMapper.selectMenuListByRoleId(roleId, sysRole.getMenuCheckStrictly());
+        return this.baseMapper.selectMenuListByRoleId(roleId);
     }
 
     @Override
@@ -75,24 +73,36 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
     }
 
     @Override
-    public List<SysMenuXEntity> selectMenuList(Long userId) {
-        QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
-        return baseMapper.selectMenuListByUserId(new Page<>(), queryWrapper);
+    public List<SysMenuXEntity> listMenuListWithoutButtonByUserId(Long userId) {
+        List<SysMenuXEntity> sysMenuList = this.baseMapper.selectMenuListByUserId(userId);
+
+        if (sysMenuList == null) {
+            return null;
+        }
+
+        return sysMenuList.stream()
+            .filter(menu -> menu.getMenuType() != MenuTypeEnum.BUTTON.getValue())
+            .collect(Collectors.toList());
     }
 
-    /**
-     * 根据用户查询系统菜单列表
-     *
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
     @Override
-    public List<SysMenuXEntity> selectMenuList(Page<SysMenuXEntity> pages, MenuQuery query, Long userId) {
-        QueryWrapper<SysMenuXEntity> queryWrapper = query.generateQueryWrapper();
-        queryWrapper.eq(userId != null, "user_id", userId);
-        return baseMapper.selectMenuListByUserId(pages, queryWrapper);
+    public List<SysMenuXEntity> listMenuListWithoutButton() {
+        List<SysMenuXEntity> sysMenuList = this.list();
+
+        if (sysMenuList == null) {
+            return null;
+        }
+
+        return sysMenuList.stream()
+            .filter(menu -> menu.getMenuType() != MenuTypeEnum.BUTTON.getValue())
+            .collect(Collectors.toList());
     }
+
+    @Override
+    public List<SysMenuXEntity> selectMenuListByUserId(Long userId) {
+        return baseMapper.selectMenuListByUserId(userId);
+    }
+
 
 
 
