@@ -47,7 +47,7 @@ public class CodeGenerator {
             .author("valarchie")
             .module("/agileboot-orm/target/generated-code")
             .parentPackage("com.agileboot")
-            .tableName("sys_role").build();
+            .tableName("sys_config").build();
 
         generator.generateCode();
     }

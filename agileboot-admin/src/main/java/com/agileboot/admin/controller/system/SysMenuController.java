@@ -15,7 +15,6 @@ import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.query.system.MenuQuery;
 import com.agileboot.orm.service.ISysMenuXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,14 +49,13 @@ public class SysMenuController extends BaseController {
     @GetMapping("/list")
     public ResponseDTO list(SysMenu menu) {
 
-        Page<SysMenuXEntity> page = getPage();
         QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.eq(menu.getStatus() != null, "status", menu.getStatus())
             .like(StrUtil.isNotEmpty(menu.getMenuName()), "menu_name", menu.getMenuName());
 
-        menuService.page(page, queryWrapper);
-        return ResponseDTO.success(page.getRecords());
+        List<SysMenuXEntity> list = menuService.list(queryWrapper);
+        return ResponseDTO.success(list);
     }
 
     /**

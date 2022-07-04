@@ -26,7 +26,7 @@ public class SysRole extends BaseEntity {
     public SysRole(SysRoleXEntity entity) {
 
         this.dataScope = entity.getDataScope()+"";
-        this.deptCheckStrictly = entity.getDeptCheckStrictly();
+//        this.deptCheckStrictly = entity.getDeptCheckStrictly();
         this.roleId = entity.getRoleId();
         this.roleKey = entity.getRoleKey();
         this.roleName = entity.getRoleName();
@@ -39,7 +39,7 @@ public class SysRole extends BaseEntity {
 
         RoleModel entity = new RoleModel();
         entity.setRoleId(this.roleId);
-        entity.setDeptCheckStrictly(this.deptCheckStrictly);
+//        entity.setDeptCheckStrictly(this.deptCheckStrictly);
         entity.setDataScope(Convert.toInt(this.dataScope));
         entity.setRoleKey(this.roleKey);
         entity.setRoleName(this.roleName);

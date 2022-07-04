@@ -6,7 +6,9 @@ import com.agileboot.orm.query.TimeRangeQuery;
 import com.agileboot.orm.result.SearchUserResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SearchUserQuery  extends AbstractQueryConditionGenerator<SearchUserResult> {
 
@@ -28,10 +30,10 @@ public class SearchUserQuery  extends AbstractQueryConditionGenerator<SearchUser
             .eq(status != null, "u.status", status)
             .eq("u.deleted", 0)
             .and(deptId != null, o ->
-                o.eq("dept_id", deptId)
+                o.eq("u.dept_id", deptId)
                     .or()
                     .apply("u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(" + deptId
-                        + ", ancestors)"));
+                        + ", ancestors))"));
 
         if (timeRange != null) {
             timeRange.addQueryCondition(queryWrapper, "create_time");

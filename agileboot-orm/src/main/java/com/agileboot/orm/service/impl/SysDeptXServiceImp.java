@@ -1,7 +1,6 @@
 package com.agileboot.orm.service.impl;
 
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.agileboot.orm.entity.SysDeptXEntity;
 import com.agileboot.orm.mapper.SysDeptXMapper;
@@ -36,18 +35,10 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
     @Override
     public List<Tree<Long>> buildDeptTree(List<SysDeptXEntity> depts) {
 
-        TreeNodeConfig config = new TreeNodeConfig();
-        //默认为id可以不设置
-        config.setIdKey("deptId");
-        //默认为parentId可以不设置
-        config.setParentIdKey("parentId");
-        //config.setDeep(4);//最大递归深度
-        //config.setWeightKey("priority");//排序字段
-
-        // 3.转树，Tree<>里面泛型为id的类型
-        return TreeUtil.build(depts, 0L, config, (dept, tree) -> {
-            // 也可以使用 tree.setId(dept.getId());等一些默认值
-            tree.putExtra("label", dept.getDeptId());
+        return TreeUtil.build(depts, 0L, (dept, tree) -> {
+            tree.setId(dept.getDeptId());
+            tree.setParentId(dept.getParentId());
+            tree.putExtra("label", dept.getDeptName());
         });
     }
 

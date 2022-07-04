@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-02
+ * @since 2022-07-04
  */
 @Getter
 @Setter
@@ -42,13 +42,17 @@ public class SysConfigXEntity extends Model<SysConfigXEntity> {
     @TableField("config_key")
     private String configKey;
 
+    @ApiModelProperty("可选的选项")
+    @TableField("config_options")
+    private String configOptions;
+
     @ApiModelProperty("配置值")
     @TableField("config_value")
     private String configValue;
 
-    @ApiModelProperty("配置可选参数")
-    @TableField("config_options")
-    private String configOptions;
+    @ApiModelProperty("是否允许修改")
+    @TableField("is_allow_change")
+    private Boolean isAllowChange;
 
     @ApiModelProperty("创建者ID")
     @TableField("creator_id")

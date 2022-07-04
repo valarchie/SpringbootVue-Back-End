@@ -55,14 +55,14 @@
 <!--           left join sys_role r on r.role_id = ur.role_id-->
 <!--  </sql>-->
 
-  <sql id="selectRoleVo">
+  <!--<sql id="selectRoleVo">
     select distinct r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,
                     r.status, r.deleted, r.create_time, r.remark
     from sys_role r
            left join sys_user_role ur on ur.role_id = r.role_id
            left join sys_user u on u.user_id = ur.user_id
            left join sys_dept d on u.dept_id = d.dept_id
-  </sql>
+  </sql>-->
 
  <!-- <select id="selectRolesByUserId" parameterType="String" resultType="com.agileboot.orm.entity.SysRoleXEntity">
     <include refid="selectRoleVo"/>
@@ -93,7 +93,7 @@
     where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
   </select>-->
 
-  <select id="selectAllocatedList" resultType="SysUserXEntity">
+ <!-- <select id="selectRoleAssignedUserList" resultType="SysUserXEntity">
     select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time
     from sys_user u
     left join sys_dept d on u.dept_id = d.dept_id
@@ -103,9 +103,9 @@
     <if test="queryConditions.emptyOfWhere == false">
       ${queryConditions.customSqlSegment}
     </if>
-  </select>
+  </select>-->
 
-  <select id="selectUnallocatedList" resultType="SysUserXEntity">
+ <!-- <select id="selectRoleUnassignedUserList" resultType="SysUserXEntity">
     select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
     from sys_user u
     left join sys_dept d on u.dept_id = d.dept_id
@@ -115,7 +115,7 @@
     <if test="queryConditions.emptyOfWhere == false">
       ${queryConditions.customSqlSegment}
     </if>
-  </select>
+  </select>-->
 
 
   <!--安全的写法

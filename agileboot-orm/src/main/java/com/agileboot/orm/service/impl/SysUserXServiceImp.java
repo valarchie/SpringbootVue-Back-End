@@ -137,7 +137,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
         queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
             .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber);
 
-        baseMapper.selectAllocatedList(page, queryWrapper);
+        baseMapper.selectRoleAssignedUserList(page, queryWrapper);
         return page;
     }
 
@@ -151,7 +151,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
             .and(o-> o.ne("r.role_id", roleId)
                 .or().isNull("r.role_id"));
 
-        baseMapper.selectAllocatedList(page, queryWrapper);
+        baseMapper.selectRoleUnassignedUserList(page, queryWrapper);
         return page;
     }
 

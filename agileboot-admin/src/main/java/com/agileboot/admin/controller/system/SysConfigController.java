@@ -7,10 +7,13 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.infrastructure.cache.MapCache;
 import com.agileboot.orm.entity.SysConfigXEntity;
+import com.agileboot.orm.enums.cache.DictionaryData;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -47,6 +50,18 @@ public class SysConfigController extends BaseController {
         configService.page(page, sysNoticeWrapper);
         return getDataTable(page);
     }
+
+    /**
+     * 根据字典类型查询字典数据信息
+     * 换成用Enum
+     */
+    @GetMapping(value = "/dict/{dictType}")
+    public ResponseDTO dictType(@PathVariable String dictType) {
+        List<DictionaryData> dictionaryData = MapCache.dictionaryCache().get(dictType);
+        return ResponseDTO.success(dictionaryData);
+    }
+
+
 
     /**
      * 完全没必要做导出

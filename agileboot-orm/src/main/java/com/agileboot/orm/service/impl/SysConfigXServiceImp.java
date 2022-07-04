@@ -45,4 +45,5 @@ public class SysConfigXServiceImp extends ServiceImpl<SysConfigXMapper, SysConfi
         }
         return Convert.toBool(one.getConfigValue());
     }
+
 }

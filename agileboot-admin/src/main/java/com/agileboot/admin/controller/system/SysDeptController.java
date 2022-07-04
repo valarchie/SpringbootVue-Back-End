@@ -96,7 +96,7 @@ public class SysDeptController extends BaseController {
      * 获取部门下拉树列表
      */
     @GetMapping("/treeselect")
-    public ResponseDTO treeselect(SysDept dept) {
+    public ResponseDTO treeSelect(SysDept dept) {
 
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
 

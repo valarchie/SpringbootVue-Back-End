@@ -69,23 +69,37 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
     Set<String> selectMenuPermsByUserId(Long userId);
 
 
-    List<SysUserXEntity> selectAllocatedList(Page<SysUserXEntity> page,
-        @Param("queryConditions") Wrapper<SysUserXEntity> queryWrapper);
+    @Select("SELECT DISTINCT u.user_id, u.dept_id, u.username, u.nick_name, u.email "
+        + " , u.phone_number, u.status, u.create_time "
+        + "FROM sys_user u "
+        + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
+        + " LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id "
+        + " LEFT JOIN sys_role r ON r.role_id = ur.role_id "
+        + " ${ew.customSqlSegment}")
+    List<SysUserXEntity> selectRoleAssignedUserList(Page<SysUserXEntity> page,
+        @Param(Constants.WRAPPER) Wrapper<SysUserXEntity> queryWrapper);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
      * @return 用户信息集合信息
      */
-    List<SysUserXEntity> selectUnallocatedList(Page<SysUserXEntity> page,
-        @Param("queryConditions") Wrapper<SysUserXEntity> queryWrapper);
+    @Select("SELECT DISTINCT u.user_id, u.dept_id, u.username, u.nick_name, u.email "
+        + " , u.phone_number, u.status, u.create_time "
+        + "FROM sys_user u "
+        + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
+        + " LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id "
+        + " LEFT JOIN sys_role r ON r.role_id = ur.role_id"
+        + " ${ew.customSqlSegment}")
+    List<SysUserXEntity> selectRoleUnassignedUserList(Page<SysUserXEntity> page,
+        @Param(Constants.WRAPPER) Wrapper<SysUserXEntity> queryWrapper);
 
     /**
      * 根据条件分页查询用户列表
      *
      * @return 用户信息集合信息
      */
-    @Select("SELECT u.*, d.dept_id, d.dept_name, d.leader_name "
+    @Select("SELECT u.*, d.dept_name, d.leader_name "
         + "FROM sys_user u "
         + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
         + "${ew.customSqlSegment}")
