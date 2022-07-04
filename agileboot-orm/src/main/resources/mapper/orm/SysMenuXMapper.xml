@@ -2,38 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.agileboot.orm.mapper.SysMenuXMapper">
 
-  <!--<select id="selectMenuListByUserId" parameterType="SysMenuXEntity" resultType="com.agileboot.orm.entity.SysMenuXEntity">
-    select distinct m.*
-    from sys_menu m
-    left join sys_role_menu rm on m.menu_id = rm.menu_id
-    left join sys_user_role ur on rm.role_id = ur.role_id
-    left join sys_role ro on ur.role_id = ro.role_id
-
-    <if test="queryConditions.emptyOfWhere == false">
-      ${queryConditions.customSqlSegment}
-    </if>
-  </select>-->
-
-
- <!-- <select id="selectMenuListByRoleId" resultType="Long">
-    select m.menu_id
-    from sys_menu m
-    left join sys_role_menu rm on m.menu_id = rm.menu_id
-    where rm.role_id = #{roleId}
-    <if test="menuCheckStrictly">
-      and m.menu_id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId})
-    </if>
-    order by m.parent_id, m.order_num
-  </select>-->
-
-  <!--<select id="selectMenuTreeByUserId" parameterType="Long" resultType="SysMenuXEntity">
-    select distinct m.*
-    from sys_menu m
-           left join sys_role_menu rm on m.menu_id = rm.menu_id
-           left join sys_user_role ur on rm.role_id = ur.role_id
-    where ur.user_id = #{userId} and m.menu_type in (1, 2) and m.status = 0  AND ro.status = 0
-    and m.deleted = 0
-    order by m.parent_id, m.order_num
-  </select>-->
-
 </mapper>

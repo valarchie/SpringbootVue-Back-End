@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
 
 @Data
-public class SortQuery {
+public class SortQuery<T> {
 
     private String column;
     private String direction;
 
     @SuppressWarnings("rawtypes")
-    public QueryWrapper addSortByCondition(QueryWrapper queryWrapper) {
+    public QueryWrapper<T> addSortByCondition(QueryWrapper<T> queryWrapper) {
 
         if(queryWrapper != null) {
             queryWrapper.orderBy(StrUtil.isNotBlank(column), convertSortDirection(),
