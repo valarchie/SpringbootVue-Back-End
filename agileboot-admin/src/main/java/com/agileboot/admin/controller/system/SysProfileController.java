@@ -49,8 +49,8 @@ public class SysProfileController extends BaseController {
         SysUserXEntity userXEntity = userService.getById(user.getUserId());
         ResponseDTO ajax = ResponseDTO.success(userXEntity);
         // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
-        ajax.put("roleGroup", userService.selectUserRoleGroup(user.getUsername()));
-        ajax.put("postGroup", userService.selectUserPostGroup(user.getUsername()));
+        ajax.put("roleGroup", userService.selectUserRoleGroup(user.getUserId()));
+        ajax.put("postGroup", userService.selectUserPostGroup(user.getUserId()));
         return ajax;
     }
 

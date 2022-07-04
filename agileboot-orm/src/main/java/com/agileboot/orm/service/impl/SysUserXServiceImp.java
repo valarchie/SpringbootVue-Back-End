@@ -58,14 +58,13 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     public boolean checkUserNameUnique(String userName) {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", userName);
-        return this.count(queryWrapper) > 0;
+        return this.baseMapper.exists(queryWrapper);
     }
 
 
     @Override
-    public String selectUserRoleGroup(String userName) {
-        // TODO 记得xml的查询语句 要排除掉deleted = 1的 记录
-        List<SysRoleXEntity> list = baseMapper.selectRolesByUserName(userName);
+    public String selectUserRoleGroup(Long userId) {
+        List<SysRoleXEntity> list = baseMapper.selectRolesByUserId(userId);
         if (CollUtil.isEmpty(list)) {
             return StrUtil.EMPTY;
         }
@@ -73,8 +72,8 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public String selectUserPostGroup(String userName) {
-        List<SysPostXEntity> list = baseMapper.selectPostsByUserName(userName);
+    public String selectUserPostGroup(Long userId) {
+        List<SysPostXEntity> list = baseMapper.selectPostsByUserId(userId);
         if (CollUtil.isEmpty(list)) {
             return StrUtil.EMPTY;
         }
@@ -99,7 +98,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
 
     @Override
     public Set<String> selectRolePermissionByUserId(Long userId) {
-        List<SysRoleXEntity> perms = baseMapper.selectRolePermissionByUserId(userId);
+        List<SysRoleXEntity> perms = baseMapper.selectRolesByUserId(userId);
         Set<String> permsSet = new HashSet<>();
         for (SysRoleXEntity perm : perms) {
             if (perm != null) {
@@ -159,6 +158,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     @Override
     public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, SearchUserQuery query) {
         QueryWrapper<SearchUserResult> queryWrapper = query.generateQueryWrapper();
+
         List<SearchUserResult> searchUserResults = baseMapper.selectUserList(page, queryWrapper);
         page.setRecords(searchUserResults);
         return page;

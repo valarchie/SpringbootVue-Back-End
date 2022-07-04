@@ -64,34 +64,34 @@
            left join sys_dept d on u.dept_id = d.dept_id
   </sql>
 
-  <select id="selectRolesByUserName" parameterType="String" resultType="com.agileboot.orm.entity.SysRoleXEntity">
+ <!-- <select id="selectRolesByUserId" parameterType="String" resultType="com.agileboot.orm.entity.SysRoleXEntity">
     <include refid="selectRoleVo"/>
     WHERE r.deleted = 0 and u.user_name = #{userName}
   </select>
+-->
 
-
-  <select id="selectPostsByUserName" parameterType="String" resultType="com.agileboot.orm.entity.SysPostXEntity">
-    select p.post_id, p.post_name, p.post_code
+  <!--<select id="selectPostsByUserId" parameterType="String" resultType="com.agileboot.orm.entity.SysPostXEntity">
+    select p.*
     from sys_post p
            left join sys_user_post up on up.post_id = p.post_id
            left join sys_user u on u.user_id = up.user_id
     where u.user_name = #{userName} and deleted = 0
-  </select>
+  </select>-->
 
 
-  <select id="selectRolePermissionByUserId" parameterType="Long" resultType="com.agileboot.orm.entity.SysRoleXEntity">
+  <!--<select id="selectRolePermissionByUserId" parameterType="Long" resultType="com.agileboot.orm.entity.SysRoleXEntity">
     <include refid="selectRoleVo"/>
     WHERE r.deleted = 0 and ur.user_id = #{userId}
-  </select>
+  </select>-->
 
-  <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+ <!-- <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
     select distinct m.perms
     from sys_menu m
            left join sys_role_menu rm on m.menu_id = rm.menu_id
            left join sys_user_role ur on rm.role_id = ur.role_id
            left join sys_role r on r.role_id = ur.role_id
     where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
-  </select>
+  </select>-->
 
   <select id="selectAllocatedList" resultType="SysUserXEntity">
     select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time
@@ -125,15 +125,14 @@
   </if>-->
 
 
-  <select id="selectUserList"  resultType="SearchUserResult">
+  <!--<select id="selectUserList"  resultType="SearchUserResult">
     select u.*, d.dept_id, d.dept_name, d.leader_name
     from sys_user u
     left join sys_dept d on u.dept_id = d.dept_id
-
     <if test="ew.emptyOfWhere == false">
       ${ew.customSqlSegment}
     </if>
-  </select>
+  </select>-->
 
 
 

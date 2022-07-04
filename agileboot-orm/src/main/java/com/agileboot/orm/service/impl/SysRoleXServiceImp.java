@@ -70,7 +70,7 @@ public class SysRoleXServiceImp extends ServiceImpl<SysRoleXMapper, SysRoleXEnti
 
     @Override
     public List<SysRoleXEntity> selectRolesByUserId(Long userId) {
-        List<SysRoleXEntity> roleEntities = userXMapper.selectRolePermissionByUserId(userId);
+        List<SysRoleXEntity> roleEntities = userXMapper.selectRolesByUserId(userId);
         Set<Long> allRoleIdSet = this.list().stream().map(SysRoleXEntity::getRoleId).collect(Collectors.toSet());
 
         return roleEntities.stream().filter(o -> allRoleIdSet.contains(o.getRoleId()))

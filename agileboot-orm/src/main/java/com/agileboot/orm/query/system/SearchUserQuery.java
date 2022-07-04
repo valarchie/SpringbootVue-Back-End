@@ -23,10 +23,9 @@ public class SearchUserQuery  extends AbstractQueryConditionGenerator<SearchUser
         QueryWrapper<SearchUserResult> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.like(StrUtil.isNotEmpty(username), "username", username)
-            .like(StrUtil.isNotEmpty(phoneNumber), "phone_number", phoneNumber)
-            .eq(userId != null, "user_id", userId)
-            .eq(status != null, "status", status)
-            .like(StrUtil.isNotEmpty(username), "user_name", username)
+            .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber)
+            .eq(userId != null, "u.user_id", userId)
+            .eq(status != null, "u.status", status)
             .eq("u.deleted", 0)
             .and(deptId != null, o ->
                 o.eq("dept_id", deptId)

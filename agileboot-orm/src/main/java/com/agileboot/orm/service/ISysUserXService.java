@@ -33,7 +33,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param userName 用户名
      * @return 结果
      */
-    String selectUserRoleGroup(String userName);
+    String selectUserRoleGroup(Long userId);
 
     /**
      * 根据用户ID查询用户所属岗位组
@@ -41,7 +41,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param userName 用户名
      * @return 结果
      */
-    String selectUserPostGroup(String userName);
+    String selectUserPostGroup(Long userId);
 
     /**
      * 校验手机号码是否唯一

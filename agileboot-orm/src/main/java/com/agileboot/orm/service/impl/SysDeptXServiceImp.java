@@ -4,7 +4,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.agileboot.orm.entity.SysDeptXEntity;
-import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.mapper.SysDeptXMapper;
 import com.agileboot.orm.mapper.SysRoleXMapper;
 import com.agileboot.orm.service.ISysDeptXService;
@@ -54,9 +53,7 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
 
     @Override
     public List<Long> selectDeptListByRoleId(Long roleId) {
-        SysRoleXEntity role = roleMapper.selectById(roleId);
-
-        return this.baseMapper.selectDeptListByRoleId(roleId, role.getDeptCheckStrictly());
+        return this.baseMapper.selectDeptListByRoleId(roleId);
     }
 
     @Override
