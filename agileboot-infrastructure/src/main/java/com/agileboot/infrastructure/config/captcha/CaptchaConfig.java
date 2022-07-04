@@ -1,4 +1,4 @@
-package com.agileboot.infrastructure.config;
+package com.agileboot.infrastructure.config.captcha;
 
 import static com.google.code.kaptcha.Constants.KAPTCHA_BORDER;
 import static com.google.code.kaptcha.Constants.KAPTCHA_BORDER_COLOR;
@@ -75,7 +75,7 @@ public class CaptchaConfig {
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
         // 验证码文本生成器   需要填   文本生成器类的全限定包名
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL,  "com.agileboot.infrastructure.config.CaptchaMathTextCreator");
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL,  "com.agileboot.infrastructure.config.captcha.CaptchaMathTextCreator");
         // 验证码文本字符间距 默认为2
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
         // 验证码文本字符长度 默认为5

@@ -3,7 +3,7 @@ package com.agileboot.framework.config;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.math.Calculator;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.infrastructure.config.CaptchaMathTextCreator;
+import com.agileboot.infrastructure.config.captcha.CaptchaMathTextCreator;
 import org.junit.Assert;
 import org.junit.Test;
 

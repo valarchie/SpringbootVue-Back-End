@@ -1,4 +1,4 @@
-package com.agileboot.infrastructure.config;
+package com.agileboot.infrastructure.config.captcha;
 
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.RandomUtil;
