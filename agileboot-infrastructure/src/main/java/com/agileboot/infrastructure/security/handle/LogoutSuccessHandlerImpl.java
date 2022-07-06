@@ -3,7 +3,7 @@ package com.agileboot.infrastructure.security.handle;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.manager.AsyncManager;
@@ -40,6 +40,6 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
             // 记录用户退出日志
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(userName, Constants.LOGOUT, "退出成功"));
         }
-        ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(ResponseDTO.error(HttpStatus.HTTP_OK, "退出成功")));
+        ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(Rdto.error(HttpStatus.HTTP_OK, "退出成功")));
     }
 }

@@ -6,7 +6,7 @@ import com.agileboot.admin.deprecated.entity.SysRole;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
@@ -82,14 +82,14 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:user:import')")
     @PostMapping("/importData")
-    public ResponseDTO importData(MultipartFile file, boolean updateSupport) throws Exception {
+    public Rdto importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
         List<SysUser> userList = util.importExcel(file.getInputStream());
         String operName = getUsername();
         List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
 
         String message = userApplicationService.importUser(collect, updateSupport, operName);
-        return ResponseDTO.success(message);
+        return Rdto.success(message);
     }
 
     @PostMapping("/importTemplate")
@@ -103,16 +103,16 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:query')")
     @GetMapping(value = {"/", "/{userId}"})
-    public ResponseDTO getInfo(@PathVariable(value = "userId", required = false) Long userId) {
+    public Rdto getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         userService.checkUserDataScope(userId);
-        ResponseDTO ajax = ResponseDTO.success();
+        Rdto ajax = Rdto.success();
         List<SysRole> roles = roleService.list().stream().map(SysRole::new).collect(Collectors.toList());
         ajax.put("roles",
             SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
         ajax.put("posts", postService.list().stream().map(SysPost::new).collect(Collectors.toList()));
         if (userId != null) {
             SysUser sysUser = new SysUser(userService.getById(userId));
-            ajax.put(ResponseDTO.DATA_TAG, sysUser);
+            ajax.put(Rdto.DATA_TAG, sysUser);
             ajax.put("postIds", postService.selectPostListByUserId(userId));
             ajax.put("roleIds", sysUser.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList()));
         }
@@ -125,15 +125,15 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:add')")
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysUser user) {
+    public Rdto add(@Validated @RequestBody SysUser user) {
         if (userService.checkUserNameUnique(user.getUserName())) {
-            return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+            return Rdto.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         }
         if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(), user.getUserId())) {
-            return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+            return Rdto.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
         if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
-            return ResponseDTO.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            return Rdto.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setCreateBy(getUsername());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
@@ -147,14 +147,14 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysUser user) {
+    public Rdto edit(@Validated @RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         if (StrUtil.isNotEmpty(user.getPhonenumber())  && userService.checkPhoneUnique(user.getPhonenumber(), user.getUserId())) {
-            return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+            return Rdto.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
         }
         if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
-            return ResponseDTO.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            return Rdto.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setUpdateBy(getUsername());
         SysUserXEntity entity = user.toEntity();
@@ -167,7 +167,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:remove')")
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
-    public ResponseDTO remove(@PathVariable Long[] userIds) {
+    public Rdto remove(@PathVariable Long[] userIds) {
         if (ArrayUtils.contains(userIds, getUserId())) {
             return error("当前用户不能删除");
         }
@@ -181,7 +181,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
-    public ResponseDTO resetPwd(@RequestBody SysUser user) {
+    public Rdto resetPwd(@RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
@@ -197,7 +197,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    public ResponseDTO changeStatus(@RequestBody SysUser user) {
+    public Rdto changeStatus(@RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setUpdateBy(getUsername());
@@ -210,8 +210,8 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:query')")
     @GetMapping("/authRole/{userId}")
-    public ResponseDTO authRole(@PathVariable("userId") Long userId) {
-        ResponseDTO ajax = ResponseDTO.success();
+    public Rdto authRole(@PathVariable("userId") Long userId) {
+        Rdto ajax = Rdto.success();
 
         SysUser user = new SysUser(userService.getById(userId));
         List<SysRoleXEntity> roleXEntities = roleService.selectRolesByUserId(userId);
@@ -228,7 +228,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @Log(title = "用户管理", businessType = BusinessType.GRANT)
     @PutMapping("/authRole")
-    public ResponseDTO insertAuthRole(Long userId, Long[] roleIds) {
+    public Rdto insertAuthRole(Long userId, Long[] roleIds) {
         userService.checkUserDataScope(userId);
         userService.insertUserAuth(userId, roleIds);
         return success();

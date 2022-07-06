@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.tool;
 
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.R;
+import com.agileboot.common.core.domain.ResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,19 +43,19 @@ public class TestController extends BaseController {
 
     @ApiOperation("获取用户列表")
     @GetMapping("/list")
-    public R<List<UserEntity>> userList() {
+    public ResponseDTO<List<UserEntity>> userList() {
         List<UserEntity> userList = new ArrayList<>(USER_ENTITY_MAP.values());
-        return R.ok(userList);
+        return ResponseDTO.ok(userList);
     }
 
     @ApiOperation("获取用户详细")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @GetMapping("/{userId}")
-    public R<UserEntity> getUser(@PathVariable Integer userId) {
+    public ResponseDTO<UserEntity> getUser(@PathVariable Integer userId) {
         if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
-            return R.ok(USER_ENTITY_MAP.get(userId));
+            return ResponseDTO.ok(USER_ENTITY_MAP.get(userId));
         } else {
-            return R.fail("用户不存在");
+            return ResponseDTO.fail("用户不存在");
         }
     }
 
@@ -67,37 +67,37 @@ public class TestController extends BaseController {
         @ApiImplicitParam(name = "mobile", value = "用户手机", dataType = "String", dataTypeClass = String.class)
     })
     @PostMapping("/save")
-    public R<String> save(UserEntity user) {
+    public ResponseDTO<String> save(UserEntity user) {
         if (user == null || user.getUserId() == null) {
-            return R.fail("用户ID不能为空");
+            return ResponseDTO.fail("用户ID不能为空");
         }
         USER_ENTITY_MAP.put(user.getUserId(), user);
-        return R.ok();
+        return ResponseDTO.ok();
     }
 
     @ApiOperation("更新用户")
     @PutMapping("/update")
-    public R<String> update(@RequestBody UserEntity user) {
+    public ResponseDTO<String> update(@RequestBody UserEntity user) {
         if (user == null || user.getUserId() == null) {
-            return R.fail("用户ID不能为空");
+            return ResponseDTO.fail("用户ID不能为空");
         }
         if (USER_ENTITY_MAP.isEmpty() || !USER_ENTITY_MAP.containsKey(user.getUserId())) {
-            return R.fail("用户不存在");
+            return ResponseDTO.fail("用户不存在");
         }
         USER_ENTITY_MAP.remove(user.getUserId());
         USER_ENTITY_MAP.put(user.getUserId(), user);
-        return R.ok();
+        return ResponseDTO.ok();
     }
 
     @ApiOperation("删除用户信息")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @DeleteMapping("/{userId}")
-    public R<String> delete(@PathVariable Integer userId) {
+    public ResponseDTO<String> delete(@PathVariable Integer userId) {
         if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
             USER_ENTITY_MAP.remove(userId);
-            return R.ok();
+            return ResponseDTO.ok();
         } else {
-            return R.fail("用户不存在");
+            return ResponseDTO.fail("用户不存在");
         }
     }
 }

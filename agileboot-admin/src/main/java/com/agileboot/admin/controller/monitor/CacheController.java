@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ public class CacheController {
 
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @GetMapping()
-    public ResponseDTO getInfo() throws Exception {
+    public Rdto getInfo() throws Exception {
         Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) connection -> connection.info());
         Properties commandStats = (Properties) redisTemplate.execute(
             (RedisCallback<Object>) connection -> connection.info("commandstats"));
@@ -53,6 +53,6 @@ public class CacheController {
             pieList.add(data);
         });
         result.put("commandStats", pieList);
-        return ResponseDTO.success(result);
+        return Rdto.success(result);
     }
 }

@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.domain.model.RegisterBody;
 import com.agileboot.infrastructure.web.service.SysRegisterService;
 import com.agileboot.orm.service.ISysConfigXService;
@@ -27,7 +27,7 @@ public class SysRegisterController extends BaseController {
     private ISysConfigXService configService;
 
     @PostMapping("/register")
-    public ResponseDTO register(@RequestBody RegisterBody user) {
+    public Rdto register(@RequestBody RegisterBody user) {
         if (!(Convert.toBool(configService.getConfigValueByKey("sys.account.registerUser")))) {
             return error("当前系统没有开启注册功能！");
         }

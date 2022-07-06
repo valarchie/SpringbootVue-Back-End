@@ -5,7 +5,7 @@ import com.agileboot.admin.deprecated.entity.SysDept;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.orm.entity.SysDeptXEntity;
 import com.agileboot.orm.service.ISysDeptXService;
@@ -45,7 +45,7 @@ public class SysDeptController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @GetMapping("/list")
-    public ResponseDTO list(SysDept dept) {
+    public Rdto list(SysDept dept) {
         Page<SysDeptXEntity> page = getPage();
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -55,7 +55,7 @@ public class SysDeptController extends BaseController {
             .like(StrUtil.isNotEmpty(dept.getDeptName()), "dept_name", dept.getDeptName());
 
         deptService.page(page, queryWrapper);
-        return ResponseDTO.success(page.getRecords());
+        return Rdto.success(page.getRecords());
     }
 
     /**
@@ -63,7 +63,7 @@ public class SysDeptController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @GetMapping("/list/exclude/{deptId}")
-    public ResponseDTO excludeChild(@PathVariable(value = "deptId", required = false) Long deptId) {
+    public Rdto excludeChild(@PathVariable(value = "deptId", required = false) Long deptId) {
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(deptId != null, "dept_id", deptId)
             .apply(deptId != null, "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
@@ -79,7 +79,7 @@ public class SysDeptController extends BaseController {
 //                it.remove();
 //            }
 //        }
-        return ResponseDTO.success(depts);
+        return Rdto.success(depts);
     }
 
     /**
@@ -87,16 +87,16 @@ public class SysDeptController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:dept:query')")
     @GetMapping(value = "/{deptId}")
-    public ResponseDTO getInfo(@PathVariable Long deptId) {
+    public Rdto getInfo(@PathVariable Long deptId) {
         // TODO 防止越权操作
-        return ResponseDTO.success(deptService.getById(deptId));
+        return Rdto.success(deptService.getById(deptId));
     }
 
     /**
      * 获取部门下拉树列表
      */
     @GetMapping("/treeselect")
-    public ResponseDTO treeSelect(SysDept dept) {
+    public Rdto treeSelect(SysDept dept) {
 
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -107,16 +107,16 @@ public class SysDeptController extends BaseController {
 
         List<SysDeptXEntity> list = deptService.list(queryWrapper);
 
-        return ResponseDTO.success(deptService.buildDeptTree(list));
+        return Rdto.success(deptService.buildDeptTree(list));
     }
 
     /**
      * 加载对应角色部门列表树
      */
     @GetMapping(value = "/roleDeptTreeselect/{roleId}")
-    public ResponseDTO roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
+    public Rdto roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
         List<SysDeptXEntity> list = deptService.list();
-        ResponseDTO ajax = ResponseDTO.success();
+        Rdto ajax = Rdto.success();
         ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
         ajax.put("depts", deptService.buildDeptTree(list));
         return ajax;
@@ -128,9 +128,9 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:add')")
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysDept dept) {
+    public Rdto add(@Validated @RequestBody SysDept dept) {
         if (deptService.checkDeptNameUnique(dept.getDeptName(), null, dept.getParentId())) {
-            return ResponseDTO.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return Rdto.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         dept.setCreateBy(getUsername());
 
@@ -154,18 +154,18 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:edit')")
     @Log(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysDept dept) {
+    public Rdto edit(@Validated @RequestBody SysDept dept) {
         Long deptId = dept.getDeptId();
         deptService.checkDeptDataScope(deptId);
         if (deptService.checkDeptNameUnique(dept.getDeptName(), dept.getDeptId(), dept.getParentId())) {
-            return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return Rdto.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
         if (dept.getParentId().equals(deptId)) {
-            return ResponseDTO.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+            return Rdto.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
         }
         if (StrUtil.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
             && deptService.existEnabledChildrenDeptById(deptId)) {
-            return ResponseDTO.error("该部门包含未停用的子部门！");
+            return Rdto.error("该部门包含未停用的子部门！");
         }
 
         SysDeptXEntity entity = new SysDeptXEntity();
@@ -188,12 +188,12 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:remove')")
     @Log(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
-    public ResponseDTO remove(@PathVariable Long deptId) {
+    public Rdto remove(@PathVariable Long deptId) {
         if (deptService.hasChildDeptById(deptId)) {
-            return ResponseDTO.error("存在下级部门,不允许删除");
+            return Rdto.error("存在下级部门,不允许删除");
         }
         if (userService.checkDeptExistUser(deptId)) {
-            return ResponseDTO.error("部门存在用户,不允许删除");
+            return Rdto.error("部门存在用户,不允许删除");
         }
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.removeById(deptId));

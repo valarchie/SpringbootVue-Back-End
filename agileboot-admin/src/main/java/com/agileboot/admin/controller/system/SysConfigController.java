@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysConfig;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.cache.MapCache;
@@ -56,9 +56,9 @@ public class SysConfigController extends BaseController {
      * 换成用Enum
      */
     @GetMapping(value = "/dict/{dictType}")
-    public ResponseDTO dictType(@PathVariable String dictType) {
+    public Rdto dictType(@PathVariable String dictType) {
         List<DictionaryData> dictionaryData = MapCache.dictionaryCache().get(dictType);
-        return ResponseDTO.success(dictionaryData);
+        return Rdto.success(dictionaryData);
     }
 
 
@@ -82,8 +82,8 @@ public class SysConfigController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:config:query')")
     @GetMapping(value = "/{configId}")
-    public ResponseDTO getInfo(@PathVariable Long configId) {
-        return ResponseDTO.success(configService.getById(configId));
+    public Rdto getInfo(@PathVariable Long configId) {
+        return Rdto.success(configService.getById(configId));
     }
 
     /**
@@ -105,12 +105,12 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:edit')")
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysConfig config) {
+    public Rdto edit(@Validated @RequestBody SysConfig config) {
         // 键名 压根就不能修改
         SysConfigXEntity configEntity = configService.getById(config.getConfigId());
 
         if (configEntity == null) {
-            return ResponseDTO.error("config does not exist.");
+            return Rdto.error("config does not exist.");
         }
         configEntity.setConfigName(config.getConfigName());
         configEntity.setConfigValue(config.getConfigValue());
@@ -126,8 +126,8 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:remove')")
     @Log(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
-    public ResponseDTO refreshCache() {
+    public Rdto refreshCache() {
         // TODO 到时候看如何实现
-        return ResponseDTO.success();
+        return Rdto.success();
     }
 }

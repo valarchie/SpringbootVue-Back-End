@@ -3,7 +3,7 @@ package com.agileboot.infrastructure.security.handle;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.utils.ServletHolderUtil;
 import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +26,6 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) {
         int code = HttpStatus.HTTP_UNAUTHORIZED;
         String msg = StrUtil.format("请求访问：{}，认证失败，无法访问系统资源", request.getRequestURI());
-        ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(ResponseDTO.error(code, msg)));
+        ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(Rdto.error(code, msg)));
     }
 }

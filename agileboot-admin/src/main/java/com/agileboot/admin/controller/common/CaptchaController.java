@@ -1,7 +1,9 @@
 package com.agileboot.admin.controller.common;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.IdUtil;
+import com.agileboot.admin.request.CaptchaDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -9,10 +11,8 @@ import com.agileboot.infrastructure.cache.RedisCache;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -43,12 +43,13 @@ public class CaptchaController {
      * 生成验证码
      */
     @GetMapping("/captchaImage")
-    public ResponseDTO getCode(HttpServletResponse response) {
-        ResponseDTO ajax = ResponseDTO.success();
+    public ResponseDTO<CaptchaDTO> getCode(HttpServletResponse response) {
+        CaptchaDTO captchaDTO = new CaptchaDTO();
+
         boolean captchaOnOff = configService.isCaptchaOn();
-        ajax.put("captchaOnOff", captchaOnOff);
+        captchaDTO.setCaptchaOnOff(captchaOnOff);
         if (!captchaOnOff) {
-            return ajax;
+            return ResponseDTO.ok(captchaDTO);
         }
 
         // 保存验证码信息
@@ -70,17 +71,18 @@ public class CaptchaController {
             image = captchaProducer.createImage(capStr);
         }
 
-        redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
-        // 转换流信息写出
-        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
-        try {
-            ImageIO.write(image, "jpg", os);
-        } catch (IOException e) {
-            return ResponseDTO.error(e.getMessage());
+        if (image == null) {
+//            return ResponseDTO.fail("验证码生成失败");
         }
 
-        ajax.put("uuid", uuid);
-        ajax.put("img", Base64.encode(os.toByteArray()));
-        return ajax;
+        redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        // 转换流信息写出
+
+        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
+        ImgUtil.writeJpg(image, os);
+
+        captchaDTO.setUuid(uuid);
+        captchaDTO.setImg(Base64.encode(os.toByteArray()));
+        return ResponseDTO.ok(captchaDTO);
     }
 }

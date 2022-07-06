@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.system;
 
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.domain.model.LoginBody;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
@@ -45,8 +45,8 @@ public class SysLoginController {
      * @return 结果
      */
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody LoginBody loginBody) {
-        ResponseDTO ajax = ResponseDTO.success();
+    public Rdto login(@RequestBody LoginBody loginBody) {
+        Rdto ajax = Rdto.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
             loginBody.getUuid());
@@ -60,13 +60,13 @@ public class SysLoginController {
      * @return 用户信息
      */
     @GetMapping("getInfo")
-    public ResponseDTO getInfo() {
+    public Rdto getInfo() {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(loginUser.getUserId());
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(loginUser.getUserId());
-        ResponseDTO ajax = ResponseDTO.success();
+        Rdto ajax = Rdto.success();
         SysUserXEntity byId = userService.getById(loginUser.getUserId());
 
         ajax.put("user", new SysUser(byId));
@@ -81,8 +81,8 @@ public class SysLoginController {
      * @return 路由信息
      */
     @GetMapping("getRouters")
-    public ResponseDTO getRouters() {
+    public Rdto getRouters() {
         Long userId = AuthenticationUtils.getUserId();
-        return ResponseDTO.success(menuApplicationService.getRouterTree(userId));
+        return Rdto.success(menuApplicationService.getRouterTree(userId));
     }
 }

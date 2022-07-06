@@ -5,7 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.config.ServerConfig;
 import java.util.ArrayList;
@@ -68,21 +68,21 @@ public class CommonController {
      * 通用上传请求（单个）
      */
     @PostMapping("/upload")
-    public ResponseDTO uploadFile(MultipartFile file) throws Exception {
+    public Rdto uploadFile(MultipartFile file) throws Exception {
         try {
             // 上传文件路径
             String filePath = AgileBootConfig.getUploadPath();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
-            ResponseDTO ajax = ResponseDTO.success();
+            Rdto ajax = Rdto.success();
             ajax.put("url", url);
             ajax.put("fileName", fileName);
             ajax.put("newFileName", FileUploadUtils.getFileNameFromDirPath(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
         } catch (Exception e) {
-            return ResponseDTO.error(e.getMessage());
+            return Rdto.error(e.getMessage());
         }
     }
 
@@ -90,7 +90,7 @@ public class CommonController {
      * 通用上传请求（多个）
      */
     @PostMapping("/uploads")
-    public ResponseDTO uploadFiles(List<MultipartFile> files) throws Exception {
+    public Rdto uploadFiles(List<MultipartFile> files) throws Exception {
         try {
             // 上传文件路径
             String filePath = AgileBootConfig.getUploadPath();
@@ -107,14 +107,14 @@ public class CommonController {
                 newFileNames.add(FileUploadUtils.getFileNameFromDirPath(fileName));
                 originalFilenames.add(file.getOriginalFilename());
             }
-            ResponseDTO ajax = ResponseDTO.success();
+            Rdto ajax = Rdto.success();
             ajax.put("urls", StrUtil.join(FILE_DELIMITER, urls));
             ajax.put("fileNames", StrUtil.join(FILE_DELIMITER, fileNames));
             ajax.put("newFileNames", StrUtil.join(FILE_DELIMITER, newFileNames));
             ajax.put("originalFilenames", StrUtil.join(FILE_DELIMITER, originalFilenames));
             return ajax;
         } catch (Exception e) {
-            return ResponseDTO.error(e.getMessage());
+            return Rdto.error(e.getMessage());
         }
     }
 

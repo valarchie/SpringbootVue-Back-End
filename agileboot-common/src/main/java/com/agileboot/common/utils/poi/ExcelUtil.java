@@ -14,7 +14,7 @@ import com.agileboot.common.annotation.Excel.ColumnType;
 import com.agileboot.common.annotation.Excel.Type;
 import com.agileboot.common.annotation.Excels;
 import com.agileboot.common.config.AgileBootConfig;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.exception.UtilException;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import java.io.ByteArrayInputStream;
@@ -356,7 +356,7 @@ public class ExcelUtil<T> {
      * @param sheetName 工作表的名称
      * @return 结果
      */
-    public ResponseDTO exportExcel(List<T> list, String sheetName) {
+    public Rdto exportExcel(List<T> list, String sheetName) {
         return exportExcel(list, sheetName, StrUtil.EMPTY);
     }
 
@@ -368,7 +368,7 @@ public class ExcelUtil<T> {
      * @param title 标题
      * @return 结果
      */
-    public ResponseDTO exportExcel(List<T> list, String sheetName, String title) {
+    public Rdto exportExcel(List<T> list, String sheetName, String title) {
         this.init(list, sheetName, title, Type.EXPORT);
         return exportExcel();
     }
@@ -407,7 +407,7 @@ public class ExcelUtil<T> {
      * @param sheetName 工作表的名称
      * @return 结果
      */
-    public ResponseDTO importTemplateExcel(String sheetName) {
+    public Rdto importTemplateExcel(String sheetName) {
         return importTemplateExcel(sheetName, StrUtil.EMPTY);
     }
 
@@ -418,7 +418,7 @@ public class ExcelUtil<T> {
      * @param title 标题
      * @return 结果
      */
-    public ResponseDTO importTemplateExcel(String sheetName, String title) {
+    public Rdto importTemplateExcel(String sheetName, String title) {
         this.init(null, sheetName, title, Type.IMPORT);
         return exportExcel();
     }
@@ -468,14 +468,14 @@ public class ExcelUtil<T> {
      *
      * @return 结果
      */
-    public ResponseDTO exportExcel() {
+    public Rdto exportExcel() {
         OutputStream out = null;
         try {
             writeSheet();
             String filename = encodingFilename(sheetName);
             out = new FileOutputStream(getAbsoluteFile(filename));
             wb.write(out);
-            return ResponseDTO.success(filename);
+            return Rdto.success(filename);
         } catch (Exception e) {
             log.error("导出Excel异常{}", e.getMessage());
             throw new UtilException("导出Excel失败，请联系网站管理员！");

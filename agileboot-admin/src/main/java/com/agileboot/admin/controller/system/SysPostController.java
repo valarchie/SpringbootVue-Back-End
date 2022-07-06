@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
@@ -83,8 +83,8 @@ public class SysPostController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:post:query')")
     @GetMapping(value = "/{postId}")
-    public ResponseDTO getInfo(@PathVariable Long postId) {
-        return ResponseDTO.success(new SysPost(postService.getById(postId)));
+    public Rdto getInfo(@PathVariable Long postId) {
+        return Rdto.success(new SysPost(postService.getById(postId)));
     }
 
     /**
@@ -93,12 +93,12 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:add')")
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysPost post) {
+    public Rdto add(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(null, post.getPostName())) {
-            return ResponseDTO.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         }
         if (postService.checkPostCodeUnique(null, post.getPostCode())) {
-            return ResponseDTO.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
         SysPostXEntity entity = post.toEntity();
         entity.setCreatorId(getUserId());
@@ -113,12 +113,12 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysPost post) {
+    public Rdto edit(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(post.getPostId(), post.getPostName())) {
-            return ResponseDTO.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         }
         if (postService.checkPostCodeUnique(post.getPostId(), post.getPostCode())) {
-            return ResponseDTO.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
 
         SysPostXEntity entity = post.toEntity();
@@ -135,7 +135,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
     @Log(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
-    public ResponseDTO remove(@PathVariable Long[] postIds) {
+    public Rdto remove(@PathVariable Long[] postIds) {
 
         List<Long> postIdList = Arrays.stream(postIds).collect(Collectors.toList());
         return toAjax(postService.removeBatchByIds(postIdList));
@@ -145,10 +145,10 @@ public class SysPostController extends BaseController {
      * 获取岗位选择框列表
      */
     @GetMapping("/optionselect")
-    public ResponseDTO optionselect() {
+    public Rdto optionselect() {
         List<SysPostXEntity> list = postService.list();
         List<SysPost> posts =
             list != null ? list.stream().map(SysPost::new).collect(Collectors.toList()) : new ArrayList<>();
-        return ResponseDTO.success(posts);
+        return Rdto.success(posts);
     }
 }

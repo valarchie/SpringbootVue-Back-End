@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.HttpStatus;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.PageDomain;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.core.page.TableSupport;
@@ -159,29 +159,29 @@ public class BaseController {
     /**
      * 返回成功
      */
-    public ResponseDTO success() {
-        return ResponseDTO.success();
+    public Rdto success() {
+        return Rdto.success();
     }
 
     /**
      * 返回失败消息
      */
-    public ResponseDTO error() {
-        return ResponseDTO.error();
+    public Rdto error() {
+        return Rdto.error();
     }
 
     /**
      * 返回成功消息
      */
-    public ResponseDTO success(String message) {
-        return ResponseDTO.success(message);
+    public Rdto success(String message) {
+        return Rdto.success(message);
     }
 
     /**
      * 返回失败消息
      */
-    public ResponseDTO error(String message) {
-        return ResponseDTO.error(message);
+    public Rdto error(String message) {
+        return Rdto.error(message);
     }
 
     /**
@@ -190,8 +190,8 @@ public class BaseController {
      * @param rows 影响行数
      * @return 操作结果
      */
-    protected ResponseDTO toAjax(int rows) {
-        return rows > 0 ? ResponseDTO.success() : ResponseDTO.error();
+    protected Rdto toAjax(int rows) {
+        return rows > 0 ? Rdto.success() : Rdto.error();
     }
 
     /**
@@ -200,7 +200,7 @@ public class BaseController {
      * @param result 结果
      * @return 操作结果
      */
-    protected ResponseDTO toAjax(boolean result) {
+    protected Rdto toAjax(boolean result) {
         return result ? success() : error();
     }
 

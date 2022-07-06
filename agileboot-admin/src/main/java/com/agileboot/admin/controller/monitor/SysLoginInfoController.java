@@ -4,7 +4,7 @@ package com.agileboot.admin.controller.monitor;
 import com.agileboot.admin.deprecated.domain.SysLogininfor;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
@@ -69,7 +69,7 @@ public class SysLoginInfoController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
     @Log(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
-    public ResponseDTO remove(@PathVariable List<Long> infoIds) {
+    public Rdto remove(@PathVariable List<Long> infoIds) {
         QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("info_id", infoIds);
         return toAjax(loginInfoService.remove(queryWrapper));
@@ -78,7 +78,7 @@ public class SysLoginInfoController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
     @Log(title = "登录日志", businessType = BusinessType.CLEAN)
     @DeleteMapping("/clean")
-    public ResponseDTO clean() {
-        return ResponseDTO.error("不支持全表清空");
+    public Rdto clean() {
+        return Rdto.error("不支持全表清空");
     }
 }

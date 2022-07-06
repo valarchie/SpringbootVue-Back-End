@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysNotice;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.orm.entity.SysNoticeXEntity;
@@ -56,8 +56,8 @@ public class SysNoticeController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
-    public ResponseDTO getInfo(@PathVariable Long noticeId) {
-        return ResponseDTO.success(noticeService.getById(noticeId));
+    public Rdto getInfo(@PathVariable Long noticeId) {
+        return Rdto.success(noticeService.getById(noticeId));
     }
 
     /**
@@ -66,7 +66,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:add')")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
+    public Rdto add(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
         sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
@@ -82,7 +82,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:edit')")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
+    public Rdto edit(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
@@ -99,7 +99,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:remove')")
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
-    public ResponseDTO remove(@PathVariable Long[] noticeIds) {
+    public Rdto remove(@PathVariable Long[] noticeIds) {
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.in("notice_id", noticeIds);
         return toAjax(noticeService.remove(sysNoticeWrapper));
