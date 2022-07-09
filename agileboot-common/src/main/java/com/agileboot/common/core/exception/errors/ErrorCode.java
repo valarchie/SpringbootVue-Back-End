@@ -1,4 +1,4 @@
-package com.agileboot.common.exception.errors;
+package com.agileboot.common.core.exception.errors;
 
 /**
  * 常用错误码 以及 保留错误码
@@ -13,6 +13,7 @@ public enum ErrorCode implements ErrorCodeInterface{
      * 20000~29999 客户端错误码 （客户端异常调用之类的错误）
      * 30000~39999 为第三方错误码 （代码正常，但是第三方异常）
      * 40000~49999 为业务逻辑 错误码 （无异常，代码正常流转，并返回提示给用户）
+     * 由于系统内的错误码都是独一无二的，所以错误码应该放在common包集中管理
      */
     // -------------- 普通错误码 及保留错误码 ---------------
     SUCCESS(0,"操作成功"),
@@ -38,6 +39,11 @@ public enum ErrorCode implements ErrorCodeInterface{
     @Override
     public String message() {
         return this.msg;
+    }
+
+    @Override
+    public String i18n() {
+        return this.code + "_" + this.name();
     }
 
 }

@@ -1,9 +1,9 @@
 package com.agileboot.infrastructure.web.domain.server;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.constant.DatePatterns;
 import java.lang.management.ManagementFactory;
 import lombok.Data;
 
@@ -72,7 +72,7 @@ public class Jvm {
      */
     public String getStartTime() {
         return DateUtil.format(DateUtil.date(ManagementFactory.getRuntimeMXBean().getStartTime()),
-            DatePatterns.YYYY_MM_DD_HH_MM_SS);
+            DatePattern.NORM_DATETIME_PATTERN);
     }
 
     /**

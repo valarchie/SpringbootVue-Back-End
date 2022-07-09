@@ -48,6 +48,7 @@ public class PageDomain {
     }
 
     public void setIsAsc(String isAsc) {
+
         if (StrUtil.isNotEmpty(isAsc)) {
             // 兼容前端排序类型
             if ("ascending".equals(isAsc)) {

@@ -4,8 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.domain.model.RegisterBody;
-import com.agileboot.common.exception.user.CaptchaException;
-import com.agileboot.common.exception.user.CaptchaExpireException;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.infrastructure.cache.RedisCache;
@@ -88,10 +88,10 @@ public class SysRegisterService {
         String captcha = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (captcha == null) {
-            throw new CaptchaExpireException();
+            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_NULL);
         }
         if (!code.equalsIgnoreCase(captcha)) {
-            throw new CaptchaException();
+            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
         }
     }
 }

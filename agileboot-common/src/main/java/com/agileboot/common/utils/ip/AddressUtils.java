@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.utils.JacksonUtil;
+import com.agileboot.common.utils.jackson.JacksonUtil;
 import java.nio.charset.Charset;
 import lombok.extern.slf4j.Slf4j;
 

@@ -2,8 +2,7 @@ package com.agileboot.infrastructure.web.exception;
 
 import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.domain.Rdto;
-import com.agileboot.common.exception.DemoModeException;
-import com.agileboot.common.exception.ServiceException;
+import com.agileboot.common.core.exception.ApiException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -46,8 +45,8 @@ public class GlobalExceptionHandler {
     /**
      * 业务异常
      */
-    @ExceptionHandler(ServiceException.class)
-    public Rdto handleServiceException(ServiceException e, HttpServletRequest request) {
+    @ExceptionHandler(ApiException.class)
+    public Rdto handleServiceException(ApiException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         Integer code = e.getCode();
         return code != null ? Rdto.error(code, e.getMessage()) : Rdto.error(e.getMessage());
@@ -93,11 +92,5 @@ public class GlobalExceptionHandler {
         return Rdto.error(message);
     }
 
-    /**
-     * 演示模式异常
-     */
-    @ExceptionHandler(DemoModeException.class)
-    public Rdto handleDemoModeException(DemoModeException e) {
-        return Rdto.error("演示模式，不允许操作");
-    }
+
 }

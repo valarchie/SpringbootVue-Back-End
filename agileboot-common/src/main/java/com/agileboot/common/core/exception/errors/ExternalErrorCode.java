@@ -1,4 +1,4 @@
-package com.agileboot.common.exception.errors;
+package com.agileboot.common.core.exception.errors;
 
 /**
  * 30000~39999 为第三方错误码 （代码正常，但是第三方异常）
@@ -47,5 +47,10 @@ public enum ExternalErrorCode implements ErrorCodeInterface{
 
     @Override
     public String message() { return this.msg; }
+
+    @Override
+    public String i18n() {
+        return this.code + "_" + this.name();
+    }
 
 }

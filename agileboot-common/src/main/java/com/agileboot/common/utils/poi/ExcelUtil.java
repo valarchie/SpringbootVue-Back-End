@@ -5,7 +5,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -15,9 +14,8 @@ import com.agileboot.common.annotation.Excel.Type;
 import com.agileboot.common.annotation.Excels;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.Rdto;
-import com.agileboot.common.exception.UtilException;
-import com.agileboot.common.utils.file.FileUploadUtils;
-import java.io.ByteArrayInputStream;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -335,9 +333,9 @@ public class ExcelUtil<T> {
                             if (image == null) {
                                 val = "";
                             } else {
-                                ByteArrayInputStream byteArrayInputStream = IoUtil.toStream(image.getData());
+//                                ByteArrayInputStream byteArrayInputStream = IoUtil.toStream(image.getData());
 
-                                val = FileUploadUtils.storeFileToImportDir(byteArrayInputStream);
+//                                val = FileUploadUtils.storeFileToImportDir(byteArrayInputStream);
                             }
                         }
                         invokeSetter(entity, propertyName, val);
@@ -478,7 +476,7 @@ public class ExcelUtil<T> {
             return Rdto.success(filename);
         } catch (Exception e) {
             log.error("导出Excel异常{}", e.getMessage());
-            throw new UtilException("导出Excel失败，请联系网站管理员！");
+            throw new ApiException(BusinessErrorCode.UPLOAD_IMPORT_EXCEL_FAILED, e.getMessage());
         } finally {
             IOUtils.closeQuietly(wb);
             IOUtils.closeQuietly(out);

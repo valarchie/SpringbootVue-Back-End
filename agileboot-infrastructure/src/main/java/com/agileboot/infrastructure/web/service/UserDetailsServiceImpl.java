@@ -1,6 +1,7 @@
 package com.agileboot.infrastructure.web.service;
 
-import com.agileboot.common.exception.ServiceException;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.enums.common.UserStatusEnum;
@@ -34,11 +35,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysUserXEntity user = userService.getUserByUserName(username);
         if (user == null) {
             log.info("登录用户：{} 不存在.", username);
-            throw new ServiceException("登录用户：" + username + " 不存在");
+            throw new ApiException(BusinessErrorCode.USER_NON_EXIST, username);
         }
         if (!Objects.equals(UserStatusEnum.NORMAL.getValue(), user.getStatus())) {
             log.info("登录用户：{} 已被停用.", username);
-            throw new ServiceException("对不起，您的账号：" + username + " 已停用");
+            throw new ApiException(BusinessErrorCode.USER_IS_DISABLE, username);
         }
         Set<String> roleKeys = userService.selectRolePermissionByUserId(user.getUserId());
 

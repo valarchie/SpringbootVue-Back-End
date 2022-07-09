@@ -1,4 +1,4 @@
-package com.agileboot.common.exception;
+package com.agileboot.common.utils.jackson;
 
 /**
  * @author valarchie

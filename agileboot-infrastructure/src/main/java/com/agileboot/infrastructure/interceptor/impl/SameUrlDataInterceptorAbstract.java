@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.annotation.RepeatSubmit;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.utils.JacksonUtil;
+import com.agileboot.common.utils.jackson.JacksonUtil;
 import com.agileboot.infrastructure.cache.RedisCache;
 import com.agileboot.infrastructure.filter.RepeatedlyRequestWrapper;
 import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;

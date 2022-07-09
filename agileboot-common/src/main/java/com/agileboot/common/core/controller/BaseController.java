@@ -11,7 +11,6 @@ import com.agileboot.common.core.page.TableSupport;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.common.utils.sql.SqlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -65,7 +64,7 @@ public class BaseController {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();
-        String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
+        String orderBy = pageDomain.getOrderBy();
         Boolean reasonable = pageDomain.getReasonable();
         PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
     }
@@ -85,7 +84,7 @@ public class BaseController {
     protected void startOrderBy() {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         if (StrUtil.isNotEmpty(pageDomain.getOrderBy())) {
-            String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
+            String orderBy = pageDomain.getOrderBy();
             PageHelper.orderBy(orderBy);
         }
     }

@@ -1,6 +1,7 @@
 package com.agileboot.orm.service.impl;
 
-import com.agileboot.common.exception.ServiceException;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.mapper.SysRoleXMapper;
@@ -64,7 +65,7 @@ public class SysRoleXServiceImp extends ServiceImpl<SysRoleXMapper, SysRoleXEnti
     @Override
     public void checkRoleAllowed(Long roleId) {
         if (AuthenticationUtils.isAdminRole(roleId)) {
-            throw new ServiceException("不允许操作超级管理员角色");
+            throw new ApiException(BusinessErrorCode.FORBIDDEN_TO_MODIFY_ADMIN);
         }
     }
 

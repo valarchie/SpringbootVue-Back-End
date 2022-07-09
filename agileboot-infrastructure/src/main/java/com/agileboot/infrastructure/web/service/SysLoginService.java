@@ -4,10 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.exception.ServiceException;
-import com.agileboot.common.exception.user.CaptchaException;
-import com.agileboot.common.exception.user.CaptchaExpireException;
-import com.agileboot.common.exception.user.UserPasswordNotMatchException;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.common.utils.ServletHolderUtil;
@@ -18,6 +16,7 @@ import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;
 import javax.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,6 +30,7 @@ import org.springframework.stereotype.Component;
  * @author ruoyi
  */
 @Component
+@Slf4j
 public class SysLoginService {
 
     @Autowired
@@ -73,11 +73,11 @@ public class SysLoginService {
             if (e instanceof BadCredentialsException) {
                 AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
                     MessageUtils.message("user.password.not.match")));
-                throw new UserPasswordNotMatchException();
+                throw new ApiException(BusinessErrorCode.LOGIN_WRONG_USER_PASSWORD);
             } else {
                 AsyncManager.me()
                     .execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, e.getMessage()));
-                throw new ServiceException(e.getMessage());
+                throw new ApiException(e.getCause(), BusinessErrorCode.LOGIN_ERROR, e.getMessage());
             }
         }
         AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_SUCCESS,
@@ -102,14 +102,16 @@ public class SysLoginService {
         String captcha = redisCache.getCacheObject(verifyKey);
         redisCache.deleteObject(verifyKey);
         if (captcha == null) {
+            ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
-                MessageUtils.message("user.jcaptcha.expire")));
-            throw new CaptchaExpireException();
+                apiException.getLocalizedMessage()));
+            throw apiException;
         }
         if (!code.equalsIgnoreCase(captcha)) {
+            ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
-                MessageUtils.message("user.jcaptcha.error")));
-            throw new CaptchaException();
+                apiException.getLocalizedMessage()));
+            throw apiException;
         }
     }
 

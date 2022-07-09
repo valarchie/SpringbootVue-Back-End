@@ -2,8 +2,9 @@ package com.agileboot.infrastructure.aspectj;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.annotation.RateLimiter;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.ClientErrorCode;
 import com.agileboot.common.enums.LimitType;
-import com.agileboot.common.exception.ServiceException;
 import com.agileboot.common.utils.ServletHolderUtil;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -53,11 +54,9 @@ public class RateLimiterAspect {
         try {
             Long number = redisTemplate.execute(limitScript, keys, count, time);
             if (number == null || number.intValue() > count) {
-                throw new ServiceException("访问过于频繁，请稍候再试");
+                throw new ApiException(ClientErrorCode.COMMON_REQUEST_TO_OFTEN);
             }
             log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number.intValue(), key);
-        } catch (ServiceException e) {
-            throw e;
         } catch (Exception e) {
             throw new RuntimeException("服务器限流异常，请稍候再试");
         }

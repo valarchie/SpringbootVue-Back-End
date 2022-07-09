@@ -1,6 +1,7 @@
 package com.agileboot.domain.system.user;
 
-import com.agileboot.common.exception.ServiceException;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.orm.entity.SysUserXEntity;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ public class UserApplicationService {
 
     public String importUser(List<SysUserXEntity> userList, Boolean isUpdateSupport, String operName) {
         if (userList == null || userList.size() == 0) {
-            throw new ServiceException("导入用户数据不能为空！");
+            throw new ApiException(BusinessErrorCode.USER_IMPORT_DATA_IS_NULL);
         }
         int successNum = 0;
         int failureNum = 0;

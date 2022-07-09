@@ -1,7 +1,8 @@
 package com.agileboot.common.loginuser;
 
-import cn.hutool.http.HttpStatus;
-import com.agileboot.common.exception.ServiceException;
+
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +21,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getUserId();
         } catch (Exception e) {
-            throw new ServiceException("获取用户ID异常", HttpStatus.HTTP_UNAUTHORIZED);
+            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_USER_ID);
         }
     }
 
@@ -31,7 +32,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getDeptId();
         } catch (Exception e) {
-            throw new ServiceException("获取部门ID异常", HttpStatus.HTTP_UNAUTHORIZED);
+            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_DEPT_ID);
         }
     }
 
@@ -42,7 +43,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getUsername();
         } catch (Exception e) {
-            throw new ServiceException("获取用户账户异常", HttpStatus.HTTP_UNAUTHORIZED);
+            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_ACCOUNT);
         }
     }
 
@@ -53,7 +54,7 @@ public class AuthenticationUtils {
         try {
             return (LoginUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new ServiceException("获取用户信息异常", HttpStatus.HTTP_UNAUTHORIZED);
+            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_USER_INFO);
         }
     }
 

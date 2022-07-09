@@ -1,8 +1,8 @@
 package com.agileboot.common.utils.uuid;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.constant.DatePatterns;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -55,7 +55,7 @@ public class Seq {
      * @return 序列值
      */
     public static String getId(AtomicInteger atomicInt, int length) {
-        String result = DateUtil.format(DateUtil.date(), DatePatterns.YYYYMMDDHHMMSS);
+        String result = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
         result += machineCode;
         result += getSeq(atomicInt, length);
         return result;

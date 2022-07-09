@@ -1,7 +1,7 @@
 package com.agileboot.common.core.domain;
 
-import com.agileboot.common.exception.errors.ErrorCode;
-import com.agileboot.common.exception.errors.ErrorCodeInterface;
+import com.agileboot.common.core.exception.errors.ErrorCode;
+import com.agileboot.common.core.exception.errors.ErrorCodeInterface;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

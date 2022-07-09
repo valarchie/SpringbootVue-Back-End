@@ -1,8 +1,7 @@
-package com.agileboot.common.utils;
+package com.agileboot.common.utils.jackson;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.exception.JacksonException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;

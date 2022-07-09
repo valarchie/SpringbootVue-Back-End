@@ -2,6 +2,7 @@ package com.agileboot.admin.controller.common;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
@@ -46,7 +47,7 @@ public class CommonController {
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response,
         HttpServletRequest request) {
         try {
-            if (!FileUploadUtils.checkAllowDownload(fileName)) {
+            if (!FileUploadUtils.isAllowDownload(fileName)) {
                 throw new Exception(StrUtil.format("文件名称({})非法，不允许下载。 ", fileName));
             }
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
@@ -74,11 +75,12 @@ public class CommonController {
             String filePath = AgileBootConfig.getUploadPath();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
+
             String url = serverConfig.getUrl() + fileName;
             Rdto ajax = Rdto.success();
             ajax.put("url", url);
             ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileUploadUtils.getFileNameFromDirPath(fileName));
+            ajax.put("newFileName", FileNameUtil.getName(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
             return ajax;
         } catch (Exception e) {
@@ -104,7 +106,7 @@ public class CommonController {
                 String url = serverConfig.getUrl() + fileName;
                 urls.add(url);
                 fileNames.add(fileName);
-                newFileNames.add(FileUploadUtils.getFileNameFromDirPath(fileName));
+                newFileNames.add(FileNameUtil.getName(fileName));
                 originalFilenames.add(file.getOriginalFilename());
             }
             Rdto ajax = Rdto.success();
@@ -125,7 +127,7 @@ public class CommonController {
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
         throws Exception {
         try {
-            if (!FileUploadUtils.checkAllowDownload(resource)) {
+            if (!FileUploadUtils.isAllowDownload(resource)) {
                 throw new Exception(StrUtil.format("资源文件({})非法，不允许下载。 ", resource));
             }
             // 本地资源路径

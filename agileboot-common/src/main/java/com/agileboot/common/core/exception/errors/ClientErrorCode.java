@@ -1,18 +1,20 @@
-package com.agileboot.common.exception.errors;
+package com.agileboot.common.core.exception.errors;
 
 /**
- * 10000~19999 为内部错误码
+ * 20000~29999 客户端错误码 （客户端异常调用之类的错误）
  * @author valarchie
  */
-public enum InternalErrorCode implements ErrorCodeInterface{
+public enum ClientErrorCode implements ErrorCodeInterface{
 
     /**
-     * 内部错误码
+     * 客户端错误码
      */
-    INVALID_PARAMETER(Module.COMMON, 1,"参数异常"),
+    COMMON_FORBIDDEN_TO_CALL(Module.COMMON, 1,"禁止调用"),
+
+    COMMON_REQUEST_TO_OFTEN(Module.COMMON, 2, "调用太过频繁"),
 
 
-    INVALID_TOKEN(Module.PERMISSION, 1,"token异常");
+    ;
 
     enum Module {
         /**
@@ -22,7 +24,9 @@ public enum InternalErrorCode implements ErrorCodeInterface{
         /**
          * 权限模块
          */
-        PERMISSION(1);
+        PERMISSION(1),
+
+        ;
 
         private final int code;
 
@@ -35,9 +39,9 @@ public enum InternalErrorCode implements ErrorCodeInterface{
     private final int code;
     private final String msg;
 
-    private static final int BASE_CODE = 10000;
+    private static final int BASE_CODE = 20000;
 
-    InternalErrorCode(Module module, int code, String msg) {
+    ClientErrorCode(Module module, int code, String msg) {
         this.code = BASE_CODE + module.code() + code;
         this.msg = msg;
     }
@@ -50,6 +54,11 @@ public enum InternalErrorCode implements ErrorCodeInterface{
     @Override
     public String message() {
         return this.msg;
+    }
+
+    @Override
+    public String i18n() {
+        return this.code + "_" + this.name();
     }
 
 }
