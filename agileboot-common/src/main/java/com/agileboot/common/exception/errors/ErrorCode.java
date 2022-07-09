@@ -1,6 +1,7 @@
 package com.agileboot.common.exception.errors;
 
 /**
+ * 常用错误码 以及 保留错误码
  * @author valarchie
  */
 public enum ErrorCode implements ErrorCodeInterface{
@@ -30,12 +31,12 @@ public enum ErrorCode implements ErrorCodeInterface{
     }
 
     @Override
-    public int getCode() {
+    public int code() {
         return this.code;
     }
 
     @Override
-    public String getMsg() {
+    public String message() {
         return this.msg;
     }
 

@@ -54,11 +54,11 @@ public class ResponseDTO<T> {
 
 
     public static <T> ResponseDTO<T> build(ErrorCodeInterface code, T data) {
-        return new ResponseDTO<>(code.getCode(), code.getMsg(), data);
+        return new ResponseDTO<>(code.code(), code.message(), data);
     }
 
     public static <T> ResponseDTO<T> build(ErrorCodeInterface code, T data, String msg) {
-        return new ResponseDTO<>(code.getCode(), msg, data);
+        return new ResponseDTO<>(code.code(), msg, data);
     }
 }
 

@@ -2,8 +2,8 @@ package com.agileboot.common.exception.errors;
 
 public interface ErrorCodeInterface {
 
-    int getCode();
+    int code();
 
-    String getMsg();
+    String message();
 
 }

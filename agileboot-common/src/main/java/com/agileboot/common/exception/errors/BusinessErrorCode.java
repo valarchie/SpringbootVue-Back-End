@@ -1,55 +1,47 @@
 package com.agileboot.common.exception.errors;
 
 /**
+ * 40000~49999 为业务逻辑 错误码 （无异常，代码正常流转，并返回提示给用户）
  * @author valarchie
  */
-public enum BusinessErrorCode {
+public enum BusinessErrorCode implements ErrorCodeInterface{
 
     /**
-     * 错误码集合
-     * 1~9999 为保留错误码 或者常用错误码
-     * 10000~19999 为内部错误码
-     * 20000~29999 客户端错误码 （客户端异常调用之类的错误）
-     * 30000~39999 为第三方错误码 （代码正常，但是第三方异常）
-     * 40000~49999 为业务逻辑 错误码 （无异常，代码正常流转，并返回提示给用户）
+     * 业务错误码
      */
-    // -------------- 普通错误码 及保留错误码 ---------------
-    SUCCESS(0,"操作成功"),
-    FAIL(9999, "操作失败"),
-    FAI1L(BusinessModule.LOG.ordinal(), "操作失败"),
-    FAI2L(BusinessModule.LOG, 2, "操作失败"),
+    CAPTCHA_CODE_WRONG(Module.COMMON, 0,"操作成功");
 
+    enum Module {
+        /**
+         * 普通模块
+         */
+        COMMON(0);
 
-    UNKNOWN_ERROR(99999,"未知错误");
+        private final int code;
+
+        Module(int code) { this.code = code; }
+
+        int code() { return code * 100; }
+    }
 
     private final int code;
     private final String msg;
 
+    private static final int BASE_CODE = 40000;
 
-    BusinessErrorCode(int code, String msg) {
-        this.code = code;
+    BusinessErrorCode(Module module, int code, String msg) {
+        this.code = BASE_CODE + module.code() + code;
         this.msg = msg;
     }
 
-    BusinessErrorCode(BusinessModule module, int code, String msg) {
-
-        this.code = module.ordinal() * 100 + code;
-        this.msg = msg;
-    }
-
-    public int getCode() {
+    @Override
+    public int code() {
         return this.code;
     }
 
-    public String getMsg() {
+    @Override
+    public String message() {
         return this.msg;
-    }
-
-    enum BusinessModule {
-
-        LOG,
-        CAPCHAT;
-
     }
 
 }
