@@ -9,6 +9,7 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
     /**
      * 业务错误码
      */
+    OBJECT_NOT_FOUND(Module.COMMON, 1, "找不到ID为%s 的%s"),
 
     FORBIDDEN_TO_MODIFY_ADMIN(Module.DATA_SECURITY, 1, "不允许修改管理员的信息"),
 
@@ -42,7 +43,7 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     USER_FAIL_TO_GET_USER_INFO(Module.USER, 6, "获取用户信息失败"),
 
-    USER_IMPORT_DATA_IS_NULL(Module.USER, 6, "导入的用户为空"),
+    USER_IMPORT_DATA_IS_NULL(Module.USER, 7, "导入的用户为空"),
 
     ;
 

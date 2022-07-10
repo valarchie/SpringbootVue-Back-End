@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysOperLog;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
@@ -39,7 +39,7 @@ public class SysOperlogController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:operlog:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysOperLog operLog) {
+    public ResponseDTO<TableDataInfo> list(SysOperLog operLog) {
 
         Page<SysOperationLogXEntity> page = getPage();
         QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
@@ -58,7 +58,7 @@ public class SysOperlogController extends BaseController {
         List<SysOperLog> excelModels = page.getRecords().stream().map(SysOperLog::new)
             .collect(Collectors.toList());
 
-        return getDataTable(excelModels, page.getTotal());
+        return ResponseDTO.ok(getDataTable(excelModels, page.getTotal()));
     }
 
     @Log(title = "操作日志", businessType = BusinessType.EXPORT)
@@ -80,16 +80,17 @@ public class SysOperlogController extends BaseController {
     @Log(title = "操作日志", businessType = BusinessType.DELETE)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/{operIds}")
-    public Rdto remove(@PathVariable Long[] operIds) {
+    public ResponseDTO remove(@PathVariable Long[] operIds) {
         QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("operation_id", operIds);
-        return toAjax(operationLogService.remove(queryWrapper));
+        operationLogService.remove(queryWrapper);
+        return ResponseDTO.ok();
     }
 
     @Log(title = "操作日志", businessType = BusinessType.CLEAN)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/clean")
-    public Rdto clean() {
-        return Rdto.error("不支持全表清空");
+    public ResponseDTO clean() {
+        return ResponseDTO.fail();
     }
 }

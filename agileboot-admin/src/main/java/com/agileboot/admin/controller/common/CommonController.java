@@ -4,11 +4,13 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.admin.response.UploadDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.config.ServerConfig;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -69,55 +71,46 @@ public class CommonController {
      * 通用上传请求（单个）
      */
     @PostMapping("/upload")
-    public Rdto uploadFile(MultipartFile file) throws Exception {
-        try {
-            // 上传文件路径
-            String filePath = AgileBootConfig.getUploadPath();
-            // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(filePath, file);
+    public ResponseDTO<UploadDTO> uploadFile(MultipartFile file) throws IOException {
+        // 上传文件路径
+        String filePath = AgileBootConfig.getUploadPath();
+        // 上传并返回新文件名称
+        String fileName = FileUploadUtils.upload(filePath, file);
 
-            String url = serverConfig.getUrl() + fileName;
-            Rdto ajax = Rdto.success();
-            ajax.put("url", url);
-            ajax.put("fileName", fileName);
-            ajax.put("newFileName", FileNameUtil.getName(fileName));
-            ajax.put("originalFilename", file.getOriginalFilename());
-            return ajax;
-        } catch (Exception e) {
-            return Rdto.error(e.getMessage());
-        }
+        String url = serverConfig.getUrl() + fileName;
+
+        UploadDTO uploadDTO = UploadDTO.builder()
+            .url(url)
+            .fileName(fileName)
+            .newFileName(FileNameUtil.getName(fileName))
+            .originalFilename(file.getOriginalFilename()).build();
+
+        return ResponseDTO.ok(uploadDTO);
     }
 
     /**
      * 通用上传请求（多个）
      */
     @PostMapping("/uploads")
-    public Rdto uploadFiles(List<MultipartFile> files) throws Exception {
-        try {
-            // 上传文件路径
-            String filePath = AgileBootConfig.getUploadPath();
-            List<String> urls = new ArrayList<String>();
-            List<String> fileNames = new ArrayList<String>();
-            List<String> newFileNames = new ArrayList<String>();
-            List<String> originalFilenames = new ArrayList<String>();
-            for (MultipartFile file : files) {
-                // 上传并返回新文件名称
-                String fileName = FileUploadUtils.upload(filePath, file);
-                String url = serverConfig.getUrl() + fileName;
-                urls.add(url);
-                fileNames.add(fileName);
-                newFileNames.add(FileNameUtil.getName(fileName));
-                originalFilenames.add(file.getOriginalFilename());
-            }
-            Rdto ajax = Rdto.success();
-            ajax.put("urls", StrUtil.join(FILE_DELIMITER, urls));
-            ajax.put("fileNames", StrUtil.join(FILE_DELIMITER, fileNames));
-            ajax.put("newFileNames", StrUtil.join(FILE_DELIMITER, newFileNames));
-            ajax.put("originalFilenames", StrUtil.join(FILE_DELIMITER, originalFilenames));
-            return ajax;
-        } catch (Exception e) {
-            return Rdto.error(e.getMessage());
+    public ResponseDTO<List<UploadDTO>> uploadFiles(List<MultipartFile> files) throws Exception {
+        // 上传文件路径
+        String filePath = AgileBootConfig.getUploadPath();
+
+        List<UploadDTO> uploads = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            // 上传并返回新文件名称
+            String fileName = FileUploadUtils.upload(filePath, file);
+            String url = serverConfig.getUrl() + fileName;
+            UploadDTO uploadDTO = UploadDTO.builder()
+                .url(url)
+                .fileName(fileName)
+                .newFileName(FileNameUtil.getName(fileName))
+                .originalFilename(file.getOriginalFilename()).build();
+
+            uploads.add(uploadDTO);
         }
+        return ResponseDTO.ok(uploads);
     }
 
     /**

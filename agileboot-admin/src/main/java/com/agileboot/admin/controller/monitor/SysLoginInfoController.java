@@ -4,7 +4,7 @@ package com.agileboot.admin.controller.monitor;
 import com.agileboot.admin.deprecated.domain.SysLogininfor;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
@@ -40,13 +40,13 @@ public class SysLoginInfoController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:list')")
     @GetMapping("/list")
-    public TableDataInfo list(LoginInfoQuery loginInfoQuery) {
+    public ResponseDTO<TableDataInfo> list(LoginInfoQuery loginInfoQuery) {
 
         Page<SysLoginInfoXEntity> page = getPage();
         QueryWrapper queryWrapper = loginInfoQuery.generateQueryWrapper();
 
         loginInfoService.page(page, queryWrapper);
-        return getDataTable(page);
+        return ResponseDTO.ok(getDataTable(page));
     }
 
     @Log(title = "登录日志", businessType = BusinessType.EXPORT)
@@ -69,16 +69,16 @@ public class SysLoginInfoController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
     @Log(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
-    public Rdto remove(@PathVariable List<Long> infoIds) {
+    public ResponseDTO remove(@PathVariable List<Long> infoIds) {
         QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("info_id", infoIds);
-        return toAjax(loginInfoService.remove(queryWrapper));
+        return ResponseDTO.ok();
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
     @Log(title = "登录日志", businessType = BusinessType.CLEAN)
     @DeleteMapping("/clean")
-    public Rdto clean() {
-        return Rdto.error("不支持全表清空");
+    public ResponseDTO clean() {
+        return ResponseDTO.fail();
     }
 }

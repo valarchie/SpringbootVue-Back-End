@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.common;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.IdUtil;
-import com.agileboot.admin.request.CaptchaDTO;
+import com.agileboot.admin.response.CaptchaDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;

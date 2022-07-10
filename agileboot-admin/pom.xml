@@ -18,12 +18,12 @@
     <dependencies>
 
         <!-- spring-boot-devtools -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <!-- 表示依赖不会传递 -->
+            &lt;!&ndash; 表示依赖不会传递 &ndash;&gt;
             <optional>true</optional>
-        </dependency>
+        </dependency>-->
 
 
 
@@ -51,11 +51,6 @@
             <artifactId>agileboot-domain</artifactId>
         </dependency>
 
-        <!-- 核心模块-->
-        <dependency>
-            <groupId>com.agileboot</groupId>
-            <artifactId>agileboot-infrastructure</artifactId>
-        </dependency>
 
     </dependencies>
 

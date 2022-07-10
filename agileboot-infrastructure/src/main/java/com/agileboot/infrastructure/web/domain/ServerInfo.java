@@ -57,19 +57,19 @@ public class ServerInfo {
      */
     private List<SysFile> sysFiles = new LinkedList<SysFile>();
 
-    public void copyTo() throws Exception {
+    public static ServerInfo fillInfo() throws Exception {
+        ServerInfo serverInfo = new ServerInfo();
+
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hal = si.getHardware();
 
-        setCpuInfo(hal.getProcessor());
+        serverInfo.setCpuInfo(hal.getProcessor());
+        serverInfo.setMemInfo(hal.getMemory());
+        serverInfo.setSysInfo();
+        serverInfo.setJvmInfo();
+        serverInfo.setSysFiles(si.getOperatingSystem());
 
-        setMemInfo(hal.getMemory());
-
-        setSysInfo();
-
-        setJvmInfo();
-
-        setSysFiles(si.getOperatingSystem());
+        return serverInfo;
     }
 
     /**

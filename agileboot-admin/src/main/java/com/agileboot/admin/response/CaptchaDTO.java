@@ -1,4 +1,4 @@
-package com.agileboot.admin.request;
+package com.agileboot.admin.response;
 
 import lombok.Data;
 

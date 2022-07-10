@@ -3,14 +3,27 @@ package com.agileboot.domain.system.user;
 import com.agileboot.common.core.exception.ApiException;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.service.ISysConfigXService;
+import com.agileboot.orm.service.ISysUserXService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserApplicationService {
 
+    @Autowired
+    private ISysUserXService userService;
+
+    @Autowired
+    private ISysConfigXService configService;
+
+//    @Autowired
+//    private RedisCache redisCache;
+
 
     public String importUser(List<SysUserXEntity> userList, Boolean isUpdateSupport, String operName) {
+
         if (userList == null || userList.size() == 0) {
             throw new ApiException(BusinessErrorCode.USER_IMPORT_DATA_IS_NULL);
         }
@@ -68,6 +81,69 @@ public class UserApplicationService {
 //        }
         return successMsg.toString();
     }
+
+
+
+    /**
+     * 注册
+     */
+//    public String register(RegisterUserModel registerModel) {
+//        String msg = "", username = registerModel.getUsername(), password = registerModel.getPassword();
+//
+//        boolean captchaOnOff = configService.isCaptchaOn();
+//        // 验证码开关
+//        if (captchaOnOff) {
+//            validateCaptcha(username, registerModel.getCode(), registerModel.getUuid());
+//        }
+//
+//        if (StrUtil.isEmpty(username)) {
+//            msg = "用户名不能为空";
+//        } else if (StrUtil.isEmpty(password)) {
+//            msg = "用户密码不能为空";
+//        } else if (username.length() < UserConstants.USERNAME_MIN_LENGTH
+//            || username.length() > UserConstants.USERNAME_MAX_LENGTH) {
+//            msg = "账户长度必须在2到20个字符之间";
+//        } else if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
+//            || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {
+//            msg = "密码长度必须在5到20个字符之间";
+//        } else if (userService.checkUserNameUnique(username)) {
+//            msg = "保存用户'" + username + "'失败，注册账号已存在";
+//        } else {
+//            SysUserXEntity entity = new SysUserXEntity();
+//
+//            entity.setUsername(username);
+//            entity.setPassword(AuthenticationUtils.encryptPassword(registerModel.getPassword()));
+//
+//            boolean regFlag = entity.insert();
+//            if (!regFlag) {
+//                msg = "注册失败,请联系系统管理人员";
+//            } else {
+//                AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.REGISTER,
+//                    MessageUtils.message("user.register.success")));
+//            }
+//        }
+//        return msg;
+//    }
+
+    /**
+     * 校验验证码
+     *
+     * @param username 用户名
+     * @param code 验证码
+     * @param uuid 唯一标识
+     * @return 结果
+     */
+//    public void validateCaptcha(String username, String code, String uuid) {
+//        String verifyKey = Constants.CAPTCHA_CODE_KEY + StrUtil.emptyIfNull(uuid);
+//        String captcha = redisCache.getCacheObject(verifyKey);
+//        redisCache.deleteObject(verifyKey);
+//        if (captcha == null) {
+//            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_NULL);
+//        }
+//        if (!code.equalsIgnoreCase(captcha)) {
+//            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
+//        }
+//    }
 
 
 

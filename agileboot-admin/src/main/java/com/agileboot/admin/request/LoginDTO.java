@@ -1,4 +1,4 @@
-package com.agileboot.common.core.domain.model;
+package com.agileboot.admin.request;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @author ruoyi
  */
 @Data
-public class LoginBody {
+public class LoginDTO {
 
     /**
      * 用户名

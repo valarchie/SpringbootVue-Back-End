@@ -4,7 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysConfig;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.cache.MapCache;
@@ -43,12 +44,12 @@ public class SysConfigController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:config:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysConfig config) {
+    public ResponseDTO<TableDataInfo> list(SysConfig config) {
         Page<SysConfigXEntity> page = getPage();
         QueryWrapper<SysConfigXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.like(StrUtil.isNotEmpty(config.getConfigName()), "config_name", config.getConfigName());
         configService.page(page, sysNoticeWrapper);
-        return getDataTable(page);
+        return ResponseDTO.ok(getDataTable(page));
     }
 
     /**
@@ -56,9 +57,9 @@ public class SysConfigController extends BaseController {
      * 换成用Enum
      */
     @GetMapping(value = "/dict/{dictType}")
-    public Rdto dictType(@PathVariable String dictType) {
+    public ResponseDTO<List> dictType(@PathVariable String dictType) {
         List<DictionaryData> dictionaryData = MapCache.dictionaryCache().get(dictType);
-        return Rdto.success(dictionaryData);
+        return ResponseDTO.ok(dictionaryData);
     }
 
 
@@ -82,8 +83,9 @@ public class SysConfigController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:config:query')")
     @GetMapping(value = "/{configId}")
-    public Rdto getInfo(@PathVariable Long configId) {
-        return Rdto.success(configService.getById(configId));
+    public ResponseDTO getInfo(@PathVariable Long configId) {
+        SysConfigXEntity byId = configService.getById(configId);
+        return ResponseDTO.ok(byId);
     }
 
     /**
@@ -105,16 +107,17 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:edit')")
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public Rdto edit(@Validated @RequestBody SysConfig config) {
+    public ResponseDTO edit(@Validated @RequestBody SysConfig config) {
         // 键名 压根就不能修改
         SysConfigXEntity configEntity = configService.getById(config.getConfigId());
 
         if (configEntity == null) {
-            return Rdto.error("config does not exist.");
+            return ResponseDTO.fail(BusinessErrorCode.OBJECT_NOT_FOUND);
         }
         configEntity.setConfigName(config.getConfigName());
         configEntity.setConfigValue(config.getConfigValue());
-        return toAjax(configEntity.updateById());
+        configEntity.updateById();
+        return ResponseDTO.ok();
     }
 
 
@@ -126,8 +129,8 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:remove')")
     @Log(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
-    public Rdto refreshCache() {
+    public ResponseDTO refreshCache() {
         // TODO 到时候看如何实现
-        return Rdto.success();
+        return ResponseDTO.ok();
     }
 }

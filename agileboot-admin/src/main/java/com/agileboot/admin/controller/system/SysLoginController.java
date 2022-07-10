@@ -1,16 +1,19 @@
 package com.agileboot.admin.controller.system;
 
 import com.agileboot.admin.deprecated.entity.SysUser;
+import com.agileboot.admin.request.LoginDTO;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.Rdto;
-import com.agileboot.common.core.domain.model.LoginBody;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.domain.system.menu.MenuApplicationService;
+import com.agileboot.infrastructure.cache.RedisCache;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysUserXService;
+import java.util.HashMap;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,20 +41,24 @@ public class SysLoginController {
     @Autowired
     private MenuApplicationService menuApplicationService;
 
+    @Autowired
+    private RedisCache cache;
+
     /**
      * 登录方法
      *
-     * @param loginBody 登录信息
+     * @param loginDTO 登录信息
      * @return 结果
      */
     @PostMapping("/login")
-    public Rdto login(@RequestBody LoginBody loginBody) {
-        Rdto ajax = Rdto.success();
+    public ResponseDTO login(@RequestBody LoginDTO loginDTO) {
         // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-            loginBody.getUuid());
-        ajax.put(Constants.TOKEN, token);
-        return ajax;
+        String token = loginService.login(loginDTO.getUsername(), loginDTO.getPassword(), loginDTO.getCode(),
+            loginDTO.getUuid());
+
+        return ResponseDTO.ok(new HashMap<String, String>() {{
+            put(Constants.TOKEN, token);
+        }});
     }
 
     /**

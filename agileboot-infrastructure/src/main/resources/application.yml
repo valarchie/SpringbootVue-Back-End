@@ -41,7 +41,7 @@ logging:
   level:
     # 记得配置到包名
     com.agileboot: debug
-    org.springframework: warn
+    org.springframework: info
 
 # Spring配置
 spring:

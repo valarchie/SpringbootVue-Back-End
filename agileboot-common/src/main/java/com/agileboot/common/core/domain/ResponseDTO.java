@@ -21,44 +21,38 @@ public class ResponseDTO<T> {
     private T data;
 
     public static <T> ResponseDTO<T> ok() {
-        return build(ErrorCode.SUCCESS, null);
+        return build(null, ErrorCode.SUCCESS);
     }
 
     public static <T> ResponseDTO<T> ok(T data) {
         return build(ErrorCode.SUCCESS, data);
     }
 
-    public static <T> ResponseDTO<T> ok(T data, String msg) {
-        return build(ErrorCode.SUCCESS, data, msg);
-    }
-
     public static <T> ResponseDTO<T> fail() {
-        return build(ErrorCode.FAIL, null);
+        return build(null, ErrorCode.FAIL);
     }
 
-    public static <T> ResponseDTO<T> fail(String msg) {
-        return build(ErrorCode.FAIL, null, msg);
+    public static <T> ResponseDTO<T> fail(ErrorCodeInterface code) {
+        return build(null, code);
     }
 
-    public static <T> ResponseDTO<T> fail(ErrorCode code) {
-        return build(code, null);
+    public static <T> ResponseDTO<T> fail(ErrorCodeInterface code, Object... args) {
+        return build( code, args);
     }
 
-    public static <T> ResponseDTO<T> fail(T data) {
-        return build(ErrorCode.FAIL, data);
-    }
+    public static <T> ResponseDTO<T> fail(T data) { return build(ErrorCode.FAIL, data); }
 
-    public static <T> ResponseDTO<T> fail(T data, String msg) {
-        return build(ErrorCode.FAIL, data, msg);
-    }
-
-
-    public static <T> ResponseDTO<T> build(ErrorCodeInterface code, T data) {
+    public static <T> ResponseDTO<T> build(T data, ErrorCodeInterface code) {
         return new ResponseDTO<>(code.code(), code.message(), data);
     }
 
-    public static <T> ResponseDTO<T> build(ErrorCodeInterface code, T data, String msg) {
-        return new ResponseDTO<>(code.code(), msg, data);
+    public static <T> ResponseDTO<T> build(ErrorCodeInterface code, Object... args) {
+        return new ResponseDTO<>(code.code(), String.format(code.message(), args), null);
     }
+
+    public static <T> ResponseDTO<T> build(T data, ErrorCodeInterface code, Object... args) {
+        return new ResponseDTO<>(code.code(), String.format(code.message(), args), data);
+    }
+
 }
 
