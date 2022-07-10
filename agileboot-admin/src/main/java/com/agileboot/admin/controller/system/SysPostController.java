@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.ExcelUtil;
@@ -46,7 +46,7 @@ public class SysPostController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:post:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysPost post) {
+    public ResponseDTO<TableDataInfo> list(SysPost post) {
         Page<SysPostXEntity> page = getPage();
         QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -56,7 +56,7 @@ public class SysPostController extends BaseController {
             .like(StrUtil.isNotEmpty(post.getPostName()), "post_name", post.getPostName());
 
         postService.page(page, queryWrapper);
-        return getDataTable(page);
+        return ResponseDTO.ok(getDataTable(page));
     }
 
     @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
@@ -83,8 +83,8 @@ public class SysPostController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:post:query')")
     @GetMapping(value = "/{postId}")
-    public Rdto getInfo(@PathVariable Long postId) {
-        return Rdto.success(new SysPost(postService.getById(postId)));
+    public ResponseDTO getInfo(@PathVariable Long postId) {
+        return ResponseDTO.ok(new SysPost(postService.getById(postId)));
     }
 
     /**
@@ -93,18 +93,20 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:add')")
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public Rdto add(@Validated @RequestBody SysPost post) {
+    public ResponseDTO add(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(null, post.getPostName())) {
-            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+//            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return ResponseDTO.fail();
         }
         if (postService.checkPostCodeUnique(null, post.getPostCode())) {
-            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+//            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return ResponseDTO.fail();
         }
         SysPostXEntity entity = post.toEntity();
         entity.setCreatorId(getUserId());
         entity.setCreateName(getUsername());
-
-        return toAjax(entity.insert());
+        entity.insert();
+        return ResponseDTO.ok();
     }
 
     /**
@@ -113,20 +115,23 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public Rdto edit(@Validated @RequestBody SysPost post) {
+    public ResponseDTO edit(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(post.getPostId(), post.getPostName())) {
-            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+//            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return ResponseDTO.fail();
         }
         if (postService.checkPostCodeUnique(post.getPostId(), post.getPostCode())) {
-            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+//            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return ResponseDTO.fail();
         }
 
         SysPostXEntity entity = post.toEntity();
 
-
         entity.setUpdaterId(getUserId());
         entity.setUpdateName(getUsername());
-        return toAjax(entity.updateById());
+        entity.updateById();
+
+        return ResponseDTO.ok();
     }
 
     /**
@@ -135,20 +140,22 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
     @Log(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
-    public Rdto remove(@PathVariable Long[] postIds) {
+    public ResponseDTO remove(@PathVariable Long[] postIds) {
 
         List<Long> postIdList = Arrays.stream(postIds).collect(Collectors.toList());
-        return toAjax(postService.removeBatchByIds(postIdList));
+        postService.removeBatchByIds(postIdList);
+
+        return ResponseDTO.ok();
     }
 
     /**
      * 获取岗位选择框列表
      */
     @GetMapping("/optionselect")
-    public Rdto optionselect() {
+    public ResponseDTO optionselect() {
         List<SysPostXEntity> list = postService.list();
         List<SysPost> posts =
             list != null ? list.stream().map(SysPost::new).collect(Collectors.toList()) : new ArrayList<>();
-        return Rdto.success(posts);
+        return ResponseDTO.ok(posts);
     }
 }

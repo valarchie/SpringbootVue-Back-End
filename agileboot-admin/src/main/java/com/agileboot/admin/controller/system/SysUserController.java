@@ -8,7 +8,6 @@ import com.agileboot.admin.response.UserDetailDTO;
 import com.agileboot.admin.response.UserInfoDTO;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
@@ -231,7 +230,6 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:query')")
     @GetMapping("/authRole/{userId}")
     public ResponseDTO<UserInfoDTO> authRole(@PathVariable("userId") Long userId) {
-        Rdto ajax = Rdto.success();
 
         SysUser user = new SysUser(userService.getById(userId));
         List<SysRoleXEntity> roleXEntities = roleService.selectRolesByUserId(userId);

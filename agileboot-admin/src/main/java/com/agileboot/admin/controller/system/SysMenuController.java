@@ -1,12 +1,14 @@
 package com.agileboot.admin.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.admin.deprecated.entity.SysMenu;
+import com.agileboot.admin.response.TreeSelectedDTO;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
@@ -47,7 +49,7 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:menu:list')")
     @GetMapping("/list")
-    public Rdto list(SysMenu menu) {
+    public ResponseDTO<List> list(SysMenu menu) {
 
         QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -55,7 +57,7 @@ public class SysMenuController extends BaseController {
             .like(StrUtil.isNotEmpty(menu.getMenuName()), "menu_name", menu.getMenuName());
 
         List<SysMenuXEntity> list = menuService.list(queryWrapper);
-        return Rdto.success(list);
+        return ResponseDTO.ok(list);
     }
 
     /**
@@ -63,15 +65,16 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @GetMapping(value = "/{menuId}")
-    public Rdto getInfo(@PathVariable Long menuId) {
-        return Rdto.success(menuService.getById(menuId));
+    public ResponseDTO getInfo(@PathVariable Long menuId) {
+        menuService.getById(menuId);
+        return ResponseDTO.ok();
     }
 
     /**
      * 获取菜单下拉树列表
      */
     @GetMapping("/treeselect")
-    public Rdto treeselect(MenuQuery query) {
+    public ResponseDTO treeselect(MenuQuery query) {
 
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
@@ -82,21 +85,23 @@ public class SysMenuController extends BaseController {
         } else {
             sysMenuEntities = menuService.selectMenuListByUserId(getUserId());
         }
+        List<Tree<Long>> trees = menuApplicationService.buildMenuTreeSelect(sysMenuEntities);
 
-        return Rdto.success(menuApplicationService.buildMenuTreeSelect(sysMenuEntities));
+        return ResponseDTO.ok(trees);
     }
 
     /**
      * 加载对应角色菜单列表树
      */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public Rdto roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
+    public ResponseDTO roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
         List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(getUserId());
 
-        Rdto ajax = Rdto.success();
-        ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        ajax.put("menus", menuApplicationService.buildMenuTreeSelect(menus));
-        return ajax;
+        TreeSelectedDTO tree = new TreeSelectedDTO();
+        tree.setMenus(menuApplicationService.buildMenuTreeSelect(menus));
+        tree.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
+
+        return ResponseDTO.ok(tree);
     }
 
     /**
@@ -105,18 +110,22 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public Rdto add(@Validated @RequestBody SysMenu menu) {
+    public ResponseDTO add(@Validated @RequestBody SysMenu menu) {
         if (menuService.checkMenuNameUnique(menu.getMenuName(), null, menu.getParentId())) {
-            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+//            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+            return ResponseDTO.fail();
         }
         if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())
             && !HttpUtil.isHttps(menu.getPath())) {
-            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+//            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return ResponseDTO.fail();
         }
         SysMenuXEntity entity = menu.toEntity();
         entity.setCreatorId(getUserId());
         entity.setCreatorName(getUsername());
-        return toAjax(entity.insert());
+        entity.insert();
+
+        return ResponseDTO.ok();
     }
 
     /**
@@ -125,23 +134,26 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public Rdto edit(@Validated @RequestBody SysMenu menu) {
+    public ResponseDTO edit(@Validated @RequestBody SysMenu menu) {
         if (menuService.checkMenuNameUnique(menu.getMenuName(), menu.getMenuId(), menu.getParentId())) {
-            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
         if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())
             && !HttpUtil.isHttps(menu.getPath())) {
-            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
+            return ResponseDTO.fail();
         }
         if (menu.getMenuId().equals(menu.getParentId())) {
-            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
+//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
+            return ResponseDTO.fail();
         }
 
         SysMenuXEntity entity = menu.toEntity();
 
         entity.setUpdaterId(getUserId());
         entity.setUpdateName(getUsername());
-        return toAjax(entity.updateById());
+        entity.updateById();
+        return ResponseDTO.ok();
     }
 
     /**
@@ -150,14 +162,17 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
-    public Rdto remove(@PathVariable("menuId") Long menuId) {
+    public ResponseDTO remove(@PathVariable("menuId") Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
-            return Rdto.error("存在子菜单,不允许删除");
+//            return Rdto.error("存在子菜单,不允许删除");
+            return ResponseDTO.fail();
         }
         if (menuService.checkMenuExistRole(menuId)) {
-            return Rdto.error("菜单已分配,不允许删除");
+//            return Rdto.error("菜单已分配,不允许删除");
+            return ResponseDTO.fail();
         }
-        return toAjax(menuService.removeById(menuId));
+        menuService.removeById(menuId);
+        return ResponseDTO.ok();
     }
 
 

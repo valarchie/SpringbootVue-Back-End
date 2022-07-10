@@ -2,10 +2,11 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.entity.SysUser;
+import com.agileboot.admin.response.UserProfileDTO;
+import com.agileboot.admin.response.UserProfileDTO.UserProfileDTOBuilder;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
@@ -49,13 +50,13 @@ public class SysProfileController extends BaseController {
         LoginUser user = getLoginUser();
 
         SysUserXEntity userXEntity = userService.getById(user.getUserId());
-        Rdto ajax = Rdto.success(userXEntity);
         // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
-        ajax.put("roleGroup", );
-        ajax.put("postGroup", userService.selectUserPostGroup(user.getUserId()));
-        return ResponseDTO.ok(new HashMap<>({
-            put("roleGroup", userService.selectUserRoleGroup(user.getUserId()));
-        }));
+
+        UserProfileDTOBuilder profileDTO = UserProfileDTO.builder().user(new SysUser(userXEntity))
+            .postGroup(userService.selectUserPostGroup(user.getUserId()))
+            .roleGroup(userService.selectUserRoleGroup(user.getUserId()));
+
+        return ResponseDTO.ok(profileDTO);
     }
 
     /**
@@ -132,11 +133,11 @@ public class SysProfileController extends BaseController {
             entity.setAvatar(avatar);
 
             if (entity.updateById()) {
-                Rdto ajax = Rdto.success();
-                ajax.put("imgUrl", avatar);
                 // 更新缓存用户头像
                 tokenService.setLoginUser(loginUser);
-                return ResponseDTO.fail();
+                return ResponseDTO.ok(new HashMap<String, String>(){{
+                    put("imgUrl", avatar);
+                }});
             }
         }
 //        return Rdto.error("上传图片异常，请联系管理员");

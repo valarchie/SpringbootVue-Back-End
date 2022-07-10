@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysNotice;
 import com.agileboot.common.annotation.Log;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.Rdto;
+import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.orm.entity.SysNoticeXEntity;
@@ -41,14 +41,14 @@ public class SysNoticeController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SysNotice notice) {
+    public ResponseDTO<TableDataInfo> list(SysNotice notice) {
         Page<SysNoticeXEntity> page = getPage();
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.like(StrUtil.isNotEmpty(notice.getNoticeTitle()), "notice_title", notice.getNoticeTitle())
                 .eq(notice.getNoticeType()!=null, "notice_type" , notice.getNoticeType())
                     .like(notice.getCreateBy()!=null, "creator_name", notice.getCreateBy());
         noticeService.page(page, sysNoticeWrapper);
-        return getDataTable(page);
+        return ResponseDTO.ok(getDataTable(page));
     }
 
     /**
@@ -56,8 +56,8 @@ public class SysNoticeController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
-    public Rdto getInfo(@PathVariable Long noticeId) {
-        return Rdto.success(noticeService.getById(noticeId));
+    public ResponseDTO getInfo(@PathVariable Long noticeId) {
+        return ResponseDTO.ok(noticeService.getById(noticeId));
     }
 
     /**
@@ -66,14 +66,15 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:add')")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public Rdto add(@Validated @RequestBody SysNotice notice) {
+    public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
         sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
         sysNoticeXEntity.setCreatorId(getUserId());
         sysNoticeXEntity.setCreatorName(getUsername());
-        return toAjax(sysNoticeXEntity.insert());
+        sysNoticeXEntity.insert();
+        return ResponseDTO.ok();
     }
 
     /**
@@ -82,7 +83,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:edit')")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public Rdto edit(@Validated @RequestBody SysNotice notice) {
+    public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
@@ -90,7 +91,8 @@ public class SysNoticeController extends BaseController {
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
         sysNoticeXEntity.setUpdaterId(getUserId());
         sysNoticeXEntity.setUpdaterName(getUsername());
-        return toAjax(sysNoticeXEntity.updateById());
+        sysNoticeXEntity.updateById();
+        return ResponseDTO.ok();
     }
 
     /**
@@ -99,9 +101,10 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:remove')")
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
-    public Rdto remove(@PathVariable Long[] noticeIds) {
+    public ResponseDTO remove(@PathVariable Long[] noticeIds) {
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.in("notice_id", noticeIds);
-        return toAjax(noticeService.remove(sysNoticeWrapper));
+        noticeService.remove(sysNoticeWrapper);
+        return ResponseDTO.ok();
     }
 }

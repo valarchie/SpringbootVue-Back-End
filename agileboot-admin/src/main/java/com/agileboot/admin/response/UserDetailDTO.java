@@ -4,6 +4,7 @@ import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.admin.deprecated.entity.SysRole;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import java.util.List;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,7 @@ public class UserDetailDTO {
     private List<Long> postIds;
 
     private List<Long> roleIds;
+
+    private Set<String> permissions;
 
 }

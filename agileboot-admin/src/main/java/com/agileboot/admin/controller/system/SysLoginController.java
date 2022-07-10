@@ -2,8 +2,8 @@ package com.agileboot.admin.controller.system;
 
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.request.LoginDTO;
+import com.agileboot.admin.response.UserPermissionDTO;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
@@ -67,19 +67,20 @@ public class SysLoginController {
      * @return 用户信息
      */
     @GetMapping("getInfo")
-    public Rdto getInfo() {
+    public ResponseDTO getInfo() {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(loginUser.getUserId());
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(loginUser.getUserId());
-        Rdto ajax = Rdto.success();
         SysUserXEntity byId = userService.getById(loginUser.getUserId());
 
-        ajax.put("user", new SysUser(byId));
-        ajax.put("roles", roles);
-        ajax.put("permissions", permissions);
-        return ajax;
+        UserPermissionDTO permissionDTO = new UserPermissionDTO();
+        permissionDTO.setUser(new SysUser(byId));
+        permissionDTO.setRoles(roles);
+        permissionDTO.setPermissions(permissions);
+
+        return ResponseDTO.ok(permissionDTO);
     }
 
     /**
@@ -88,8 +89,9 @@ public class SysLoginController {
      * @return 路由信息
      */
     @GetMapping("getRouters")
-    public Rdto getRouters() {
+    public ResponseDTO getRouters() {
         Long userId = AuthenticationUtils.getUserId();
-        return Rdto.success(menuApplicationService.getRouterTree(userId));
+        menuApplicationService.getRouterTree(userId);
+        return ResponseDTO.ok();
     }
 }
