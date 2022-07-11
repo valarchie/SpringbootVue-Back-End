@@ -7,7 +7,7 @@ import com.agileboot.common.constant.Constants;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.AddressUtils;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.infrastructure.cache.RedisUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -49,7 +49,7 @@ public class TokenService {
     private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisUtil redisUtil;
 
     /**
      * 获取用户身份信息
@@ -68,7 +68,7 @@ public class TokenService {
                 if (userKey == null) {
                     return null;
                 }
-                LoginUser user = redisCache.getCacheObject(userKey);
+                LoginUser user = redisUtil.getCacheObject(userKey);
                 return user;
             } catch (Exception e) {
                 log.error("fail to get cached user from redis", e);
@@ -92,7 +92,7 @@ public class TokenService {
     public void delLoginUser(String token) {
         if (StrUtil.isNotEmpty(token)) {
             String userKey = getTokenKey(token);
-            redisCache.deleteObject(userKey);
+            redisUtil.deleteObject(userKey);
         }
     }
 
@@ -136,7 +136,7 @@ public class TokenService {
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
         String userKey = getTokenKey(loginUser.getToken());
-        redisCache.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
+        redisUtil.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
     }
 
     /**

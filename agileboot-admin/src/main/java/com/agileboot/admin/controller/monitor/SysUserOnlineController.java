@@ -8,7 +8,7 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.LoginUser;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.web.domain.SysUserOnline;
 import com.agileboot.infrastructure.web.service.SysUserOnlineServiceImpl;
 import java.util.ArrayList;
@@ -36,15 +36,15 @@ public class SysUserOnlineController extends BaseController {
     private SysUserOnlineServiceImpl userOnlineService;
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisUtil redisUtil;
 
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
     @GetMapping("/list")
     public ResponseDTO<TableDataInfo> list(String ipaddr, String userName) {
-        Collection<String> keys = redisCache.keys(Constants.LOGIN_TOKEN_KEY + "*");
+        Collection<String> keys = redisUtil.keys(Constants.LOGIN_TOKEN_KEY + "*");
         List<SysUserOnline> userOnlineList = new ArrayList<SysUserOnline>();
         for (String key : keys) {
-            LoginUser user = redisCache.getCacheObject(key);
+            LoginUser user = redisUtil.getCacheObject(key);
             if (StrUtil.isNotEmpty(ipaddr) && StrUtil.isNotEmpty(userName)) {
                 if (StrUtil.equals(ipaddr, user.getIpaddr()) && StrUtil.equals(userName, user.getUsername())) {
                     userOnlineList.add(userOnlineService.selectOnlineByInfo(ipaddr, userName, user));
@@ -73,7 +73,7 @@ public class SysUserOnlineController extends BaseController {
     @Log(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/{tokenId}")
     public ResponseDTO forceLogout(@PathVariable String tokenId) {
-        redisCache.deleteObject(Constants.LOGIN_TOKEN_KEY + tokenId);
+        redisUtil.deleteObject(Constants.LOGIN_TOKEN_KEY + tokenId);
         return ResponseDTO.ok();
     }
 }

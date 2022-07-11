@@ -11,6 +11,8 @@ public enum InternalErrorCode implements ErrorCodeInterface{
      */
     INVALID_PARAMETER(Module.COMMON, 1,"参数异常"),
 
+    LOGIN_CAPTCHA_GENERATE_FAIL(Module.LOGIN, 1,"验证码生成失败"),
+
     INVALID_TOKEN(Module.PERMISSION, 1,"token异常");
 
     enum Module {
@@ -21,7 +23,11 @@ public enum InternalErrorCode implements ErrorCodeInterface{
         /**
          * 权限模块
          */
-        PERMISSION(1);
+        PERMISSION(1),
+
+        LOGIN(2),
+
+        ;
 
         private final int code;
 

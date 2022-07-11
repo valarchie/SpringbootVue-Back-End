@@ -1,12 +1,11 @@
 package com.agileboot.common.utils.ip;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.config.AgileBootConfig;
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.utils.jackson.JacksonUtil;
-import java.nio.charset.Charset;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,7 +36,7 @@ public class AddressUtils {
             try {
 
                 String rspStr = HttpUtil.get(ADDRESS_QUERY_SITE + "ip=" + ip + "&json=true",
-                    Charset.forName(Constants.GBK));
+                    CharsetUtil.CHARSET_GBK);
                 if (StrUtil.isEmpty(rspStr)) {
                     log.error("获取地理位置异常 {}", ip);
                     geographyAddress = UNKNOWN_ADDRESS;

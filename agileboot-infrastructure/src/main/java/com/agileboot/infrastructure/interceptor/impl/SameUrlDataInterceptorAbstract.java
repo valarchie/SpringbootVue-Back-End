@@ -5,7 +5,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.annotation.RepeatSubmit;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.utils.jackson.JacksonUtil;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.filter.RepeatedlyRequestWrapper;
 import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
     private String header;
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisUtil redisUtil;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -62,7 +62,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
         // 唯一标识（指定key + url + 消息头）
         String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;
 
-        Object sessionObj = redisCache.getCacheObject(cacheRepeatKey);
+        Object sessionObj = redisUtil.getCacheObject(cacheRepeatKey);
         if (sessionObj != null) {
             Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
             if (sessionMap.containsKey(url)) {
@@ -75,7 +75,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
         }
         Map<String, Object> cacheMap = new HashMap<>();
         cacheMap.put(url, nowDataMap);
-        redisCache.setCacheObject(cacheRepeatKey, cacheMap, annotation.interval(), TimeUnit.MILLISECONDS);
+        redisUtil.setCacheObject(cacheRepeatKey, cacheMap, annotation.interval(), TimeUnit.MILLISECONDS);
         return false;
     }
 

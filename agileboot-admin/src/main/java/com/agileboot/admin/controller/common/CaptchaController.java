@@ -5,13 +5,13 @@ import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.IdUtil;
 import com.agileboot.admin.response.CaptchaDTO;
 import com.agileboot.common.config.AgileBootConfig;
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.domain.ResponseDTO;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.common.core.exception.errors.InternalErrorCode;
+import com.agileboot.infrastructure.cache.RedisUtil;
+import com.agileboot.infrastructure.cache.redis.RedisCacheManager;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,13 @@ public class CaptchaController {
     private Producer captchaProducerMath;
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisUtil redisUtil;
 
     @Autowired
     private ISysConfigXService configService;
+
+    @Autowired
+    private RedisCacheManager redisCacheManager;
 
     /**
      * 生成验证码
@@ -51,10 +54,6 @@ public class CaptchaController {
         if (!captchaOnOff) {
             return ResponseDTO.ok(captchaDTO);
         }
-
-        // 保存验证码信息
-        String uuid = IdUtil.simpleUUID();
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
 
         String capStr, code = null;
         BufferedImage image = null;
@@ -72,12 +71,14 @@ public class CaptchaController {
         }
 
         if (image == null) {
-//            return ResponseDTO.fail("验证码生成失败");
+            return ResponseDTO.fail(InternalErrorCode.LOGIN_CAPTCHA_GENERATE_FAIL);
         }
 
-        redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
-        // 转换流信息写出
+        // 保存验证码信息
+        String uuid = IdUtil.simpleUUID();
 
+        redisCacheManager.captchaCache.set(uuid, code);
+        // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         ImgUtil.writeJpg(image, os);
 

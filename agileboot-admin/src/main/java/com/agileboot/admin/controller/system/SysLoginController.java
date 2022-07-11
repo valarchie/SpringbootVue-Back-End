@@ -8,12 +8,14 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.domain.system.menu.MenuApplicationService;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.domain.system.menu.RouterVo;
+import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysUserXService;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +44,7 @@ public class SysLoginController {
     private MenuApplicationService menuApplicationService;
 
     @Autowired
-    private RedisCache cache;
+    private RedisUtil cache;
 
     /**
      * 登录方法
@@ -91,7 +93,7 @@ public class SysLoginController {
     @GetMapping("getRouters")
     public ResponseDTO getRouters() {
         Long userId = AuthenticationUtils.getUserId();
-        menuApplicationService.getRouterTree(userId);
-        return ResponseDTO.ok();
+        List<RouterVo> routerTree = menuApplicationService.getRouterTree(userId);
+        return ResponseDTO.ok(routerTree);
     }
 }

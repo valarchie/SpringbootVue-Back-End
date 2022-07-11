@@ -25,7 +25,7 @@ public class ResponseDTO<T> {
     }
 
     public static <T> ResponseDTO<T> ok(T data) {
-        return build(ErrorCode.SUCCESS, data);
+        return build(data, ErrorCode.SUCCESS);
     }
 
     public static <T> ResponseDTO<T> fail() {

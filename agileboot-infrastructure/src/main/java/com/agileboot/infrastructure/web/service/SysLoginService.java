@@ -9,7 +9,7 @@ import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.MessageUtils;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.infrastructure.cache.RedisCache;
+import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.manager.AsyncManager;
 import com.agileboot.infrastructure.manager.factory.AsyncFactory;
 import com.agileboot.orm.entity.SysUserXEntity;
@@ -40,7 +40,7 @@ public class SysLoginService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RedisCache redisCache;
+    private RedisUtil redisUtil;
 
     @Autowired
     private ISysUserXService userService;
@@ -99,8 +99,8 @@ public class SysLoginService {
     public void validateCaptcha(String username, String code, String uuid) {
 
         String verifyKey = Constants.CAPTCHA_CODE_KEY + StrUtil.emptyIfNull(uuid);
-        String captcha = redisCache.getCacheObject(verifyKey);
-        redisCache.deleteObject(verifyKey);
+        String captcha = redisUtil.getCacheObject(verifyKey);
+        redisUtil.deleteObject(verifyKey);
         if (captcha == null) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
             AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
