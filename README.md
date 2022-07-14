@@ -98,3 +98,6 @@ QQ群： [![加入QQ群](https://img.shields.io/badge/已满-937441-blue.svg)](h
 
 TODO 
 plan to do encrypt request and response. reference:https://github.com/ishuibo/rsa-encrypt-body-spring-boot
+
+
+### 如果老是出现项目中能找到包  但是编译的时候却找不到  可以运行 mvn clean install  

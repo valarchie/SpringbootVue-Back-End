@@ -1,6 +1,7 @@
 package com.agileboot.admin.controller.common;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.IdUtil;
 import com.agileboot.admin.response.CaptchaDTO;
@@ -8,10 +9,12 @@ import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.exception.errors.InternalErrorCode;
 import com.agileboot.infrastructure.cache.RedisUtil;
-import com.agileboot.infrastructure.cache.redis.RedisCacheManager;
+import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +40,24 @@ public class CaptchaController {
     private RedisUtil redisUtil;
 
     @Autowired
+    private GuavaCacheService guavaCacheService;
+
+    @Autowired
     private ISysConfigXService configService;
 
     @Autowired
-    private RedisCacheManager redisCacheManager;
+    private RedisCacheService redisCacheService;
 
     /**
      * 生成验证码
      */
     @GetMapping("/captchaImage")
-    public ResponseDTO<CaptchaDTO> getCode(HttpServletResponse response) {
+    public ResponseDTO<CaptchaDTO> getCode(HttpServletResponse response) throws ExecutionException {
         CaptchaDTO captchaDTO = new CaptchaDTO();
 
-        boolean captchaOnOff = configService.isCaptchaOn();
+        String configValue = guavaCacheService.configCache.get("sys.account.captchaOnOff");
+
+        boolean captchaOnOff = Convert.toBool(configValue);;
         captchaDTO.setCaptchaOnOff(captchaOnOff);
         if (!captchaOnOff) {
             return ResponseDTO.ok(captchaDTO);
@@ -77,7 +85,7 @@ public class CaptchaController {
         // 保存验证码信息
         String uuid = IdUtil.simpleUUID();
 
-        redisCacheManager.captchaCache.set(uuid, code);
+        redisCacheService.captchaCache.set(uuid, code);
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         ImgUtil.writeJpg(image, os);

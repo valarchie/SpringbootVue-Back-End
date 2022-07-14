@@ -1,5 +1,6 @@
 package com.agileboot.infrastructure.cache.redis;
 
+import com.agileboot.infrastructure.cache.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.RedisUtil;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @author valarchie
  */
 @Component
-public class RedisCacheManager {
+public class RedisCacheService {
 
     @Autowired
     private RedisUtil redisUtil;
@@ -18,7 +19,7 @@ public class RedisCacheManager {
 
     @PostConstruct
     public void init() {
-        captchaCache = new RedisCacheTemplate<>(redisUtil, RedisCacheEnum.CAPTCHAT);
+        captchaCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.CAPTCHAT);
     }
 
 

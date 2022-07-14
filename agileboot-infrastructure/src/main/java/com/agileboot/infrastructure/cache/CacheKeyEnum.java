@@ -1,11 +1,11 @@
-package com.agileboot.infrastructure.cache.redis;
+package com.agileboot.infrastructure.cache;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author valarchie
  */
-public enum RedisCacheEnum {
+public enum CacheKeyEnum {
 
     /**
      * Redis各类缓存集合
@@ -13,7 +13,7 @@ public enum RedisCacheEnum {
     CAPTCHAT("captcha_codes:", 2, TimeUnit.MINUTES);
 
 
-    RedisCacheEnum(String key, int expiration, TimeUnit timeUnit) {
+    CacheKeyEnum(String key, int expiration, TimeUnit timeUnit) {
         this.key = key;
         this.expiration = expiration;
         this.timeUnit = timeUnit;

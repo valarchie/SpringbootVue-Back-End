@@ -8,7 +8,7 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.infrastructure.cache.MapCache;
+import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.orm.entity.SysConfigXEntity;
 import com.agileboot.orm.enums.cache.DictionaryData;
 import com.agileboot.orm.service.ISysConfigXService;
@@ -88,19 +88,7 @@ public class SysConfigController extends BaseController {
         return ResponseDTO.ok(byId);
     }
 
-    /**
-     * 新增参数配置 TODO 根本不用需要添加功能
-     */
-//    @PreAuthorize("@ss.hasPermi('system:config:add')")
-//    @Log(title = "参数管理", businessType = BusinessType.INSERT)
-//    @PostMapping
-//    public ResponseDTO add(@Validated @RequestBody SysConfig config) {
-//        if (UserConstants.NOT_UNIQUE.equals(configService.checkConfigKeyUnique(config))) {
-//            return ResponseDTO.error("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
-//        }
-//        config.setCreateBy(getUsername());
-//        return toAjax(configService.insertConfig(config));
-//    }
+
     /**
      * 修改参数配置
      */

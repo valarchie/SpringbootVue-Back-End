@@ -1,5 +1,6 @@
 package com.agileboot.infrastructure.cache.redis;
 
+import com.agileboot.infrastructure.cache.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.RedisUtil;
 
 /**
@@ -8,9 +9,9 @@ import com.agileboot.infrastructure.cache.RedisUtil;
 public class RedisCacheTemplate<T> {
 
     public RedisUtil redisUtil;
-    public RedisCacheEnum redisRedisEnum;
+    public CacheKeyEnum redisRedisEnum;
 
-    public RedisCacheTemplate(RedisUtil redisUtil, RedisCacheEnum redisRedisEnum) {
+    public RedisCacheTemplate(RedisUtil redisUtil, CacheKeyEnum redisRedisEnum) {
         this.redisUtil = redisUtil;
         this.redisRedisEnum = redisRedisEnum;
     }
