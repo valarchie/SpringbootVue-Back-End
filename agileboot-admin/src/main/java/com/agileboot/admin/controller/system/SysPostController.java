@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
@@ -59,7 +59,7 @@ public class SysPostController extends BaseController {
         return ResponseDTO.ok(getDataTable(page));
     }
 
-    @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
+    @AccessLog(title = "岗位管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:post:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysPost post) {
@@ -91,7 +91,7 @@ public class SysPostController extends BaseController {
      * 新增岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:add')")
-    @Log(title = "岗位管理", businessType = BusinessType.INSERT)
+    @AccessLog(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(null, post.getPostName())) {
@@ -113,7 +113,7 @@ public class SysPostController extends BaseController {
      * 修改岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
-    @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysPost post) {
         if (postService.checkPostNameUnique(post.getPostId(), post.getPostName())) {
@@ -138,7 +138,7 @@ public class SysPostController extends BaseController {
      * 删除岗位
      */
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
-    @Log(title = "岗位管理", businessType = BusinessType.DELETE)
+    @AccessLog(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
     public ResponseDTO remove(@PathVariable Long[] postIds) {
 

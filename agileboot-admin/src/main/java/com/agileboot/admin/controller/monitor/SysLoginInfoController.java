@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.monitor;
 
 
 import com.agileboot.admin.deprecated.domain.SysLogininfor;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
@@ -49,7 +49,7 @@ public class SysLoginInfoController extends BaseController {
         return ResponseDTO.ok(getDataTable(page));
     }
 
-    @Log(title = "登录日志", businessType = BusinessType.EXPORT)
+    @AccessLog(title = "登录日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, LoginInfoQuery loginInfoQuery) {
@@ -67,7 +67,7 @@ public class SysLoginInfoController extends BaseController {
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
-    @Log(title = "登录日志", businessType = BusinessType.DELETE)
+    @AccessLog(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
     public ResponseDTO remove(@PathVariable List<Long> infoIds) {
         QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
@@ -76,7 +76,7 @@ public class SysLoginInfoController extends BaseController {
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
-    @Log(title = "登录日志", businessType = BusinessType.CLEAN)
+    @AccessLog(title = "登录日志", businessType = BusinessType.CLEAN)
     @DeleteMapping("/clean")
     public ResponseDTO clean() {
         return ResponseDTO.fail();

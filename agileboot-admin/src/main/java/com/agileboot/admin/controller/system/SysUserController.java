@@ -6,7 +6,7 @@ import com.agileboot.admin.deprecated.entity.SysRole;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.response.UserDetailDTO;
 import com.agileboot.admin.response.UserInfoDTO;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
@@ -70,7 +70,7 @@ public class SysUserController extends BaseController {
         return ResponseDTO.ok(getDataTable(page));
     }
 
-    @Log(title = "用户管理", businessType = BusinessType.EXPORT)
+    @AccessLog(title = "用户管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:user:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SearchUserQuery query) {
@@ -81,7 +81,7 @@ public class SysUserController extends BaseController {
         util.exportExcel(response, list, "用户数据");
     }
 
-    @Log(title = "用户管理", businessType = BusinessType.IMPORT)
+    @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:user:import')")
     @PostMapping("/importData")
     public ResponseDTO importData(MultipartFile file, boolean updateSupport) throws Exception {
@@ -126,7 +126,7 @@ public class SysUserController extends BaseController {
      * 新增用户
      */
     @PreAuthorize("@ss.hasPermi('system:user:add')")
-    @Log(title = "用户管理", businessType = BusinessType.INSERT)
+    @AccessLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysUser user) {
         if (userService.checkUserNameUnique(user.getUserName())) {
@@ -156,7 +156,7 @@ public class SysUserController extends BaseController {
      * 修改用户
      */
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
-    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
@@ -180,7 +180,7 @@ public class SysUserController extends BaseController {
      * 删除用户
      */
     @PreAuthorize("@ss.hasPermi('system:user:remove')")
-    @Log(title = "用户管理", businessType = BusinessType.DELETE)
+    @AccessLog(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public ResponseDTO remove(@PathVariable Long[] userIds) {
         if (ArrayUtils.contains(userIds, getUserId())) {
@@ -196,7 +196,7 @@ public class SysUserController extends BaseController {
      * 重置密码
      */
     @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
-    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
     public ResponseDTO resetPwd(@RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
@@ -213,7 +213,7 @@ public class SysUserController extends BaseController {
      * 状态修改
      */
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
-    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public ResponseDTO changeStatus(@RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
@@ -247,7 +247,7 @@ public class SysUserController extends BaseController {
      * 用户授权角色
      */
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
-    @Log(title = "用户管理", businessType = BusinessType.GRANT)
+    @AccessLog(title = "用户管理", businessType = BusinessType.GRANT)
     @PutMapping("/authRole")
     public ResponseDTO insertAuthRole(Long userId, Long[] roleIds) {
         userService.checkUserDataScope(userId);

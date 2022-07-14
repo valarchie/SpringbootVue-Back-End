@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysNotice;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
@@ -64,7 +64,7 @@ public class SysNoticeController extends BaseController {
      * 新增通知公告
      */
     @PreAuthorize("@ss.hasPermi('system:notice:add')")
-    @Log(title = "通知公告", businessType = BusinessType.INSERT)
+    @AccessLog(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
@@ -81,7 +81,7 @@ public class SysNoticeController extends BaseController {
      * 修改通知公告
      */
     @PreAuthorize("@ss.hasPermi('system:notice:edit')")
-    @Log(title = "通知公告", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
@@ -99,7 +99,7 @@ public class SysNoticeController extends BaseController {
      * 删除通知公告
      */
     @PreAuthorize("@ss.hasPermi('system:notice:remove')")
-    @Log(title = "通知公告", businessType = BusinessType.DELETE)
+    @AccessLog(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
     public ResponseDTO remove(@PathVariable Long[] noticeIds) {
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();

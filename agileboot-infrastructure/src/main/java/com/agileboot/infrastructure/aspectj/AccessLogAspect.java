@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.enums.BusinessStatus;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
@@ -34,7 +34,7 @@ import org.springframework.web.servlet.HandlerMapping;
 @Aspect
 @Component
 @Slf4j
-public class LogAspect {
+public class AccessLogAspect {
 
 
     /**
@@ -44,7 +44,7 @@ public class LogAspect {
      * @param joinPoint 切点
      */
     @AfterReturning(pointcut = "@annotation(controllerLog)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, Log controllerLog, Object jsonResult) {
+    public void doAfterReturning(JoinPoint joinPoint, AccessLog controllerLog, Object jsonResult) {
         handleLog(joinPoint, controllerLog, null, jsonResult);
     }
 
@@ -55,11 +55,11 @@ public class LogAspect {
      * @param e 异常
      */
     @AfterThrowing(value = "@annotation(controllerLog)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
+    public void doAfterThrowing(JoinPoint joinPoint, AccessLog controllerLog, Exception e) {
         handleLog(joinPoint, controllerLog, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult) {
+    protected void handleLog(final JoinPoint joinPoint, AccessLog controllerLog, final Exception e, Object jsonResult) {
         try {
             // 获取当前的用户
             LoginUser loginUser = AuthenticationUtils.getLoginUser();
@@ -107,7 +107,7 @@ public class LogAspect {
      * @param log 日志
      * @param operationLog 操作日志
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, SysOperationLogXEntity operationLog, Object jsonResult)
+    public void getControllerMethodDescription(JoinPoint joinPoint, AccessLog log, SysOperationLogXEntity operationLog, Object jsonResult)
         throws Exception {
         // 设置action动作
         operationLog.setBusinessType(log.businessType().ordinal());

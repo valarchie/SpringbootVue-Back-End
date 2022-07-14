@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -70,7 +70,7 @@ public class SysUserOnlineController extends BaseController {
      * 强退用户
      */
     @PreAuthorize("@ss.hasPermi('monitor:online:forceLogout')")
-    @Log(title = "在线用户", businessType = BusinessType.FORCE)
+    @AccessLog(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/{tokenId}")
     public ResponseDTO forceLogout(@PathVariable String tokenId) {
         redisUtil.deleteObject(Constants.LOGIN_TOKEN_KEY + tokenId);

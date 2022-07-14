@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysOperLog;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
@@ -61,7 +61,7 @@ public class SysOperlogController extends BaseController {
         return ResponseDTO.ok(getDataTable(excelModels, page.getTotal()));
     }
 
-    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
+    @AccessLog(title = "操作日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysOperLog operLog) {
@@ -77,7 +77,7 @@ public class SysOperlogController extends BaseController {
         util.exportExcel(response, excelModels, "操作日志");
     }
 
-    @Log(title = "操作日志", businessType = BusinessType.DELETE)
+    @AccessLog(title = "操作日志", businessType = BusinessType.DELETE)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/{operIds}")
     public ResponseDTO remove(@PathVariable Long[] operIds) {
@@ -87,7 +87,7 @@ public class SysOperlogController extends BaseController {
         return ResponseDTO.ok();
     }
 
-    @Log(title = "操作日志", businessType = BusinessType.CLEAN)
+    @AccessLog(title = "操作日志", businessType = BusinessType.CLEAN)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/clean")
     public ResponseDTO clean() {

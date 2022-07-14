@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.entity.SysDept;
 import com.agileboot.admin.response.TreeSelectedDTO;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -128,7 +128,7 @@ public class SysDeptController extends BaseController {
      * 新增部门
      */
     @PreAuthorize("@ss.hasPermi('system:dept:add')")
-    @Log(title = "部门管理", businessType = BusinessType.INSERT)
+    @AccessLog(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysDept dept) {
         if (deptService.checkDeptNameUnique(dept.getDeptName(), null, dept.getParentId())) {
@@ -156,7 +156,7 @@ public class SysDeptController extends BaseController {
      * 修改部门
      */
     @PreAuthorize("@ss.hasPermi('system:dept:edit')")
-    @Log(title = "部门管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysDept dept) {
         Long deptId = dept.getDeptId();
@@ -195,7 +195,7 @@ public class SysDeptController extends BaseController {
      * 删除部门
      */
     @PreAuthorize("@ss.hasPermi('system:dept:remove')")
-    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @AccessLog(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
     public ResponseDTO remove(@PathVariable Long deptId) {
         if (deptService.hasChildDeptById(deptId)) {

@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysConfig;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
@@ -93,7 +93,7 @@ public class SysConfigController extends BaseController {
      * 修改参数配置
      */
     @PreAuthorize("@ss.hasPermi('system:config:edit')")
-    @Log(title = "参数管理", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysConfig config) {
         // 键名 压根就不能修改
@@ -115,7 +115,7 @@ public class SysConfigController extends BaseController {
      * 刷新参数缓存
      */
     @PreAuthorize("@ss.hasPermi('system:config:remove')")
-    @Log(title = "参数管理", businessType = BusinessType.CLEAN)
+    @AccessLog(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
     public ResponseDTO refreshCache() {
         // TODO 到时候看如何实现

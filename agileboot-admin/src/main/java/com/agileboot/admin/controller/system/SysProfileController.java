@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.response.UserProfileDTO;
 import com.agileboot.admin.response.UserProfileDTO.UserProfileDTOBuilder;
-import com.agileboot.common.annotation.Log;
+import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
@@ -62,7 +62,7 @@ public class SysProfileController extends BaseController {
     /**
      * 修改用户
      */
-    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO updateProfile(@RequestBody SysUser user) {
         LoginUser loginUser = getLoginUser();
@@ -91,7 +91,7 @@ public class SysProfileController extends BaseController {
     /**
      * 重置密码
      */
-    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePwd")
     public ResponseDTO updatePwd(String oldPassword, String newPassword) {
         LoginUser loginUser = getLoginUser();
@@ -121,7 +121,7 @@ public class SysProfileController extends BaseController {
     /**
      * 头像上传
      */
-    @Log(title = "用户头像", businessType = BusinessType.UPDATE)
+    @AccessLog(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping("/avatar")
     public ResponseDTO avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
