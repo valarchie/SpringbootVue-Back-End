@@ -3,8 +3,10 @@ package com.agileboot.infrastructure.web.exception;
 import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.core.exception.ApiException;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -51,6 +53,27 @@ public class GlobalExceptionHandler {
         Integer code = e.getCode();
         return code != null ? Rdto.error(code, e.getMessage()) : Rdto.error(e.getMessage());
     }
+
+    /**
+     * 捕获缓存类当中的错误
+     */
+    @ExceptionHandler(UncheckedExecutionException.class)
+    public Rdto handleServiceException(UncheckedExecutionException e, HttpServletRequest request) {
+        log.error(e.getMessage(), e);
+        return Rdto.error(e.getMessage());
+    }
+
+
+    /**
+     * 捕获DB层当中的错误
+     */
+//    @ExceptionHandler(BadSqlGrammarException.class)
+    public Rdto handleServiceException(BadSqlGrammarException e, HttpServletRequest request) {
+        log.error(e.getMessage(), e);
+        // TODO 抛出数据库错误
+        return Rdto.error(e.getMessage());
+    }
+
 
     /**
      * 拦截未知的运行时异常

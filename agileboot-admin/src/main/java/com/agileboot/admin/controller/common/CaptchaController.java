@@ -8,12 +8,16 @@ import com.agileboot.admin.response.CaptchaDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.exception.errors.InternalErrorCode;
+import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -48,12 +52,27 @@ public class CaptchaController {
     @Autowired
     private RedisCacheService redisCacheService;
 
+    @Autowired
+    private UserApplicationService userApplicationService;
+
+
     /**
      * 生成验证码
      */
     @GetMapping("/captchaImage")
     public ResponseDTO<CaptchaDTO> getCode(HttpServletResponse response) throws ExecutionException {
         CaptchaDTO captchaDTO = new CaptchaDTO();
+
+        List<SysUserXEntity> userList = new ArrayList<>();
+        SysUserXEntity entity = new SysUserXEntity();
+        entity.setUserId(1L);
+        entity.setUsername("hajj ");
+        userList.add(entity);
+
+        configService.getConfigValueByKey("sys.account.captchaOnOff");
+
+
+        String s = userApplicationService.importUser(userList, true, "dd");
 
         String configValue = guavaCacheService.configCache.get("sys.account.captchaOnOff");
 

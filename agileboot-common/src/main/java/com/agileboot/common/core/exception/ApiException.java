@@ -1,11 +1,13 @@
 package com.agileboot.common.core.exception;
 
 import com.agileboot.common.core.exception.errors.ErrorCodeInterface;
-import com.agileboot.common.utils.MessageUtils;
+import com.agileboot.common.utils.i18n.MessageUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author valarchie
  */
+@Slf4j
 public class ApiException extends RuntimeException{
 
     protected ErrorCodeInterface errorCode;
@@ -14,39 +16,55 @@ public class ApiException extends RuntimeException{
 
     protected Object[] args;
 
+    protected String formattedMessage;
+    protected String i18nFormattedMessage;
+
     public ApiException(Throwable e, ErrorCodeInterface errorCode, Object... args) {
         super(e);
-        this.message = errorCode.message();
-        this.args = args;
+        fillErrorCode(errorCode, args);
     }
 
     public ApiException(Throwable e, ErrorCodeInterface errorCode) {
         super(e);
-        this.message = errorCode.message();
-        this.errorCode = errorCode;
-    }
-
-    public ApiException(ErrorCodeInterface errorCode) {
-        this.errorCode = errorCode;
+        fillErrorCode(errorCode);
     }
 
     public ApiException(ErrorCodeInterface errorCode, Object... args) {
-        this.errorCode = errorCode;
-        this.args = args;
+        fillErrorCode(errorCode, args);
     }
+
+    public ApiException(ErrorCodeInterface errorCode) {
+        fillErrorCode(errorCode);
+    }
+
+    private void fillErrorCode(ErrorCodeInterface errorCode, Object... args) {
+        this.errorCode = errorCode;
+        this.message = errorCode.message();
+        this.args = args;
+
+        this.formattedMessage = String.format(this.message, args);
+
+        try {
+            this.i18nFormattedMessage = MessageUtils.message(errorCode.i18n(), args);
+        } catch (Exception e) {
+            log.error("could not found i18n error i18nMessage entry : " + e.getMessage());
+        }
+
+    }
+
 
     public int getCode() { return errorCode.code(); }
 
     @Override
     public String getMessage() {
-        return String.format(message, args);
+        return i18nFormattedMessage != null ? i18nFormattedMessage : formattedMessage;
     }
 
     @Override
     public String getLocalizedMessage() {
-        if (errorCode != null) {
-            return MessageUtils.message(errorCode.i18n(), args);
-        }
-        return super.getMessage();
+        return i18nFormattedMessage;
     }
+
+
+
 }

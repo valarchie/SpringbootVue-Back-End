@@ -27,7 +27,7 @@ public class SysConfigXServiceImp extends ServiceImpl<SysConfigXMapper, SysConfi
             return StrUtil.EMPTY;
         }
         QueryWrapper<SysConfigXEntity> sysNoticeWrapper = new QueryWrapper<>();
-        sysNoticeWrapper.eq("config_key", key);
+        sysNoticeWrapper.eq("config_key1", key);
         SysConfigXEntity one = this.getOne(sysNoticeWrapper);
         if (one == null || one.getConfigValue() == null) {
             return StrUtil.EMPTY;

@@ -24,6 +24,10 @@ public class UserApplicationService {
 
     public String importUser(List<SysUserXEntity> userList, Boolean isUpdateSupport, String operName) {
 
+        if (1 == 1) {
+            return "jackson";
+        }
+
         if (userList == null || userList.size() == 0) {
             throw new ApiException(BusinessErrorCode.USER_IMPORT_DATA_IS_NULL);
         }

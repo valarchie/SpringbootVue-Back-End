@@ -1,4 +1,4 @@
-package com.agileboot.common.utils;
+package com.agileboot.common.utils.i18n;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.context.MessageSource;
