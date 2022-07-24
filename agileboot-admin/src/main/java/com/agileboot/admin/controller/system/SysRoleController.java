@@ -12,7 +12,6 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
-import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.domain.system.role.RoleApplicationService;
 import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
@@ -92,8 +91,8 @@ public class SysRoleController extends BaseController {
         roleService.page(page, queryWrapper);
 
         List<SysRole> list = page.getRecords().stream().map(SysRole::new).collect(Collectors.toList());
-        ExcelUtil<SysRole> util = new ExcelUtil<>(SysRole.class);
-        util.exportExcel(response, list, "角色数据");
+//        ExcelUtil<SysRole> util = new ExcelUtil<>(SysRole.class);
+//        util.exportExcel(response, list, "角色数据");
     }
 
     /**

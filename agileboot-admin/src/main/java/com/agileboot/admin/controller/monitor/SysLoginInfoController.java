@@ -7,7 +7,6 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
 import com.agileboot.orm.query.system.LoginInfoQuery;
 import com.agileboot.orm.service.ISysLoginInfoXService;
@@ -62,8 +61,8 @@ public class SysLoginInfoController extends BaseController {
         List<SysLogininfor> excelModels = page.getRecords().stream().map(SysLogininfor::new)
             .collect(Collectors.toList());
 
-        ExcelUtil<SysLogininfor> util = new ExcelUtil<SysLogininfor>(SysLogininfor.class);
-        util.exportExcel(response, excelModels, "登录日志");
+//        ExcelUtil<SysLogininfor> util = new ExcelUtil<SysLogininfor>(SysLogininfor.class);
+//        util.exportExcel(response, excelModels, "登录日志");
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")

@@ -13,7 +13,6 @@ import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
-import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
@@ -100,8 +99,8 @@ public class SysUserController extends BaseController {
 
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response) {
-        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-        util.importTemplateExcel(response, "用户数据");
+//        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+//        util.importTemplateExcel(response, "用户数据");
     }
 
     /**

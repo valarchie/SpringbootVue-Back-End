@@ -7,7 +7,6 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.common.utils.time.DatePicker;
 import com.agileboot.orm.entity.SysOperationLogXEntity;
 import com.agileboot.orm.service.ISysOperationLogXService;
@@ -73,8 +72,8 @@ public class SysOperlogController extends BaseController {
         List<SysOperationLogXEntity> list = operationLogService.list(queryWrapper);
 
         List<SysOperLog> excelModels = list.stream().map(SysOperLog::new).collect(Collectors.toList());
-        ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
-        util.exportExcel(response, excelModels, "操作日志");
+//        ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
+//        util.exportExcel(response, excelModels, "操作日志");
     }
 
     @AccessLog(title = "操作日志", businessType = BusinessType.DELETE)

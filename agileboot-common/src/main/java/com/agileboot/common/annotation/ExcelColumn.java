@@ -1,6 +1,5 @@
 package com.agileboot.common.annotation;
 
-import com.agileboot.common.utils.poi.ExcelHandlerAdapter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -117,11 +116,6 @@ public @interface ExcelColumn {
      * 导出字段对齐方式
      */
     HorizontalAlignment align() default HorizontalAlignment.CENTER;
-
-    /**
-     * 自定义数据处理器
-     */
-    Class<?> handler() default ExcelHandlerAdapter.class;
 
     /**
      * 自定义数据处理器参数

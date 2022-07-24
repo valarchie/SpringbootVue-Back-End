@@ -7,7 +7,6 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -74,8 +73,8 @@ public class SysPostController extends BaseController {
         postService.page(page, queryWrapper);
 
         List<SysPost> list = page.getRecords().stream().map(SysPost::new).collect(Collectors.toList());
-        ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-        util.exportExcel(response, list, "岗位数据");
+//        ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
+//        util.exportExcel(response, list, "岗位数据");
     }
 
     /**
