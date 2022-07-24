@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Excel {
+public @interface ExcelColumn {
 
     /**
      * 导出时在excel中排序

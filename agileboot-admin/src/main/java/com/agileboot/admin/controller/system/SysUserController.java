@@ -12,6 +12,7 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.common.utils.poi.ExcelUtil;
 import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.orm.entity.SysRoleXEntity;
@@ -21,6 +22,7 @@ import com.agileboot.orm.service.ISysPostXService;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,21 +79,23 @@ public class SysUserController extends BaseController {
         Page page = getPage();
         userService.selectUserList(page, query);
         List<SysUser> list = page.getRecords();
-        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-        util.exportExcel(response, list, "用户数据");
+
+        CustomExcelUtil.writeToResponse(list, SysUser.class, response);
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:user:import')")
     @PostMapping("/importData")
     public ResponseDTO importData(MultipartFile file, boolean updateSupport) throws Exception {
-        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-        List<SysUser> userList = util.importExcel(file.getInputStream());
-        String operName = getUsername();
-        List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
+        List<Object> objects = new ArrayList<>();
 
-        String message = userApplicationService.importUser(collect, updateSupport, operName);
-        return ResponseDTO.ok(message);
+        CustomExcelUtil.readFromResponse(objects, SysUser.class, file);
+
+        String operName = getUsername();
+//        List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
+
+//        String message = userApplicationService.importUser(null, updateSupport, operName);
+        return ResponseDTO.ok("message");
     }
 
     @PostMapping("/importTemplate")

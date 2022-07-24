@@ -6,13 +6,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Excel注解集
- *
- * @author ruoyi
+ * @author valarchie
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Excels {
+@Target(ElementType.TYPE)
+public @interface ExcelSheet {
 
-    ExcelColumn[] value();
+    /**
+     * sheet名称
+     */
+    String name() default "";
+
 }

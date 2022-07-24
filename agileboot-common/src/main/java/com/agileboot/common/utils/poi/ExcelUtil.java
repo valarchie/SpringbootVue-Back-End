@@ -8,9 +8,9 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.annotation.Excel;
-import com.agileboot.common.annotation.Excel.ColumnType;
-import com.agileboot.common.annotation.Excel.Type;
+import com.agileboot.common.annotation.ExcelColumn;
+import com.agileboot.common.annotation.ExcelColumn.ColumnType;
+import com.agileboot.common.annotation.ExcelColumn.Type;
 import com.agileboot.common.annotation.Excels;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.Rdto;
@@ -261,7 +261,7 @@ public class ExcelUtil<T> {
             List<Object[]> fields = this.getFields();
             Map<Integer, Object[]> fieldsMap = new HashMap<>();
             for (Object[] objects : fields) {
-                Excel attr = (Excel) objects[1];
+                ExcelColumn attr = (ExcelColumn) objects[1];
                 Integer column = cellMap.get(attr.name());
                 if (column != null) {
                     fieldsMap.put(column, objects);
@@ -282,7 +282,7 @@ public class ExcelUtil<T> {
                     entity = (entity == null ? clazz.newInstance() : entity);
                     // 从map中得到对应列的field.
                     Field field = (Field) entry.getValue()[0];
-                    Excel attr = (Excel) entry.getValue()[1];
+                    ExcelColumn attr = (ExcelColumn) entry.getValue()[1];
                     // 取得类型,并根据对象类型设置值.
                     Class<?> fieldType = field.getType();
                     if (String.class == fieldType) {
@@ -290,7 +290,7 @@ public class ExcelUtil<T> {
                         if (StringUtils.endsWith(s, ".0")) {
                             val = StringUtils.substringBefore(s, ".0");
                         } else {
-                            String dateFormat = field.getAnnotation(Excel.class).dateFormat();
+                            String dateFormat = field.getAnnotation(ExcelColumn.class).dateFormat();
                             if (StrUtil.isNotEmpty(dateFormat)) {
                                 val = parseDateToStr(dateFormat, val);
                             } else {
@@ -497,7 +497,7 @@ public class ExcelUtil<T> {
             int column = 0;
             // 写入各个字段的列头名称
             for (Object[] os : fields) {
-                Excel excel = (Excel) os[1];
+                ExcelColumn excel = (ExcelColumn) os[1];
                 this.createCell(excel, row, column++);
             }
             if (Type.EXPORT.equals(type)) {
@@ -523,7 +523,7 @@ public class ExcelUtil<T> {
             int column = 0;
             for (Object[] os : fields) {
                 Field field = (Field) os[0];
-                Excel excel = (Excel) os[1];
+                ExcelColumn excel = (ExcelColumn) os[1];
                 this.addCell(excel, row, vo, field, column++);
             }
         }
@@ -602,7 +602,7 @@ public class ExcelUtil<T> {
     private Map<String, CellStyle> annotationStyles(Workbook wb) {
         Map<String, CellStyle> styles = new HashMap<>();
         for (Object[] os : fields) {
-            Excel excel = (Excel) os[1];
+            ExcelColumn excel = (ExcelColumn) os[1];
             String key = "data_" + excel.align() + "_" + excel.color();
             if (!styles.containsKey(key)) {
                 CellStyle style = wb.createCellStyle();
@@ -631,7 +631,7 @@ public class ExcelUtil<T> {
     /**
      * 创建单元格
      */
-    public Cell createCell(Excel attr, Row row, int column) {
+    public Cell createCell(ExcelColumn attr, Row row, int column) {
         // 创建列
         Cell cell = row.createCell(column);
         // 写入列信息
@@ -648,7 +648,7 @@ public class ExcelUtil<T> {
      * @param attr 注解相关
      * @param cell 单元格信息
      */
-    public void setCellVo(Object value, Excel attr, Cell cell) {
+    public void setCellVo(Object value, ExcelColumn attr, Cell cell) {
         if (ColumnType.STRING == attr.cellType()) {
             String cellValue = Convert.toStr(value);
             // 对于任何以表达式触发字符 =-+@开头的单元格，直接使用tab字符作为前缀，防止CSV注入。
@@ -699,7 +699,7 @@ public class ExcelUtil<T> {
     /**
      * 创建表格样式
      */
-    public void setDataValidation(Excel attr, Row row, int column) {
+    public void setDataValidation(ExcelColumn attr, Row row, int column) {
         if (attr.name().indexOf("注：") >= 0) {
             sheet.setColumnWidth(column, 6000);
         } else {
@@ -715,7 +715,7 @@ public class ExcelUtil<T> {
     /**
      * 添加单元格
      */
-    public Cell addCell(Excel attr, Row row, T vo, Field field, int column) {
+    public Cell addCell(ExcelColumn attr, Row row, T vo, Field field, int column) {
         Cell cell = null;
         try {
             // 设置行高
@@ -877,7 +877,7 @@ public class ExcelUtil<T> {
      * @param value 数据值
      * @param excel 数据注解
      */
-    public String dataFormatHandlerAdapter(Object value, Excel excel) {
+    public String dataFormatHandlerAdapter(Object value, ExcelColumn excel) {
         try {
             Object instance = excel.handler().newInstance();
             Method formatMethod = excel.handler().getMethod("format", new Class[]{Object.class, String[].class});
@@ -891,7 +891,7 @@ public class ExcelUtil<T> {
     /**
      * 合计统计信息
      */
-    private void addStatisticsData(Integer index, String text, Excel entity) {
+    private void addStatisticsData(Integer index, String text, ExcelColumn entity) {
         if (entity != null && entity.isStatistics()) {
             Double temp = 0D;
             if (!statistics.containsKey(index)) {
@@ -955,7 +955,7 @@ public class ExcelUtil<T> {
      * @param excel 注解
      * @return 最终的属性值
      */
-    private Object getTargetValue(T vo, Field field, Excel excel) throws Exception {
+    private Object getTargetValue(T vo, Field field, ExcelColumn excel) throws Exception {
         Object o = field.get(vo);
         if (StrUtil.isNotEmpty(excel.targetAttr())) {
             String target = excel.targetAttr();
@@ -991,7 +991,7 @@ public class ExcelUtil<T> {
      */
     private void createExcelField() {
         this.fields = getFields();
-        this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((Excel) objects[1]).sort()))
+        this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((ExcelColumn) objects[1]).sort()))
             .collect(Collectors.toList());
         this.maxHeight = getRowHeight();
     }
@@ -1006,8 +1006,8 @@ public class ExcelUtil<T> {
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         for (Field field : tempFields) {
             // 单注解
-            if (field.isAnnotationPresent(Excel.class)) {
-                Excel attr = field.getAnnotation(Excel.class);
+            if (field.isAnnotationPresent(ExcelColumn.class)) {
+                ExcelColumn attr = field.getAnnotation(ExcelColumn.class);
                 if (attr != null && (attr.type() == Type.ALL || attr.type() == type)) {
                     field.setAccessible(true);
                     fields.add(new Object[]{field, attr});
@@ -1017,8 +1017,8 @@ public class ExcelUtil<T> {
             // 多注解
             if (field.isAnnotationPresent(Excels.class)) {
                 Excels attrs = field.getAnnotation(Excels.class);
-                Excel[] excels = attrs.value();
-                for (Excel attr : excels) {
+                ExcelColumn[] excels = attrs.value();
+                for (ExcelColumn attr : excels) {
                     if (attr != null && (attr.type() == Type.ALL || attr.type() == type)) {
                         field.setAccessible(true);
                         fields.add(new Object[]{field, attr});
@@ -1035,7 +1035,7 @@ public class ExcelUtil<T> {
     public short getRowHeight() {
         double maxHeight = 0;
         for (Object[] os : this.fields) {
-            Excel excel = (Excel) os[1];
+            ExcelColumn excel = (ExcelColumn) os[1];
             maxHeight = Math.max(maxHeight, excel.height());
         }
         return (short) (maxHeight * 20);

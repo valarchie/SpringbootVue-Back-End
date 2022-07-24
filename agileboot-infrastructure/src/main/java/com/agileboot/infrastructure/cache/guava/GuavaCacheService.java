@@ -6,6 +6,7 @@ import com.google.common.base.Ticker;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class GuavaCacheService {
     @Autowired
     private ISysConfigXService configXService;
 
-    public LoadingCache<String, String> configCache = CacheBuilder.newBuilder()
+    public LoadingCache<String, Optional<String>> configCache = CacheBuilder.newBuilder()
         // 基于容量回收。缓存的最大数量。超过就取MAXIMUM_CAPACITY = 1 << 30。依靠LRU队列recencyQueue来进行容量淘汰
         .maximumSize(1024)
         // 基于容量回收。但这是统计占用内存大小，maximumWeight与maximumSize不能同时使用。设置最大总权重
@@ -57,13 +58,13 @@ public class GuavaCacheService {
                 return 0;
             }
         })
-        .build(new CacheLoader<String, String>() {
+        .build(new CacheLoader<String, Optional<String>>() {
             @Override
-            public String load(String configKey) {
+            public Optional<String> load(String configKey) {
                 // 在cache找不到就取数据
                 String configValueByKey = configXService.getConfigValueByKey(configKey);
                 log.debug("find the config cache of key{} : is {}", configKey, configValueByKey);
-                return configValueByKey;
+                return Optional.ofNullable(configValueByKey);
             }
         });
 

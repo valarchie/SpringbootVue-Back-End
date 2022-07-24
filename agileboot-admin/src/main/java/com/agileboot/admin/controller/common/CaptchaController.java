@@ -7,6 +7,7 @@ import cn.hutool.core.util.IdUtil;
 import com.agileboot.admin.response.CaptchaDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.exception.ApiException;
 import com.agileboot.common.core.exception.errors.InternalErrorCode;
 import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.infrastructure.cache.RedisUtil;
@@ -69,12 +70,8 @@ public class CaptchaController {
         entity.setUsername("hajj ");
         userList.add(entity);
 
-        configService.getConfigValueByKey("sys.account.captchaOnOff");
-
-
-        String s = userApplicationService.importUser(userList, true, "dd");
-
-        String configValue = guavaCacheService.configCache.get("sys.account.captchaOnOff");
+        String configValue = guavaCacheService.configCache.get("sys.account.captchaOnOff").orElseThrow(
+            () -> new ApiException(InternalErrorCode.INVALID_PARAMETER));
 
         boolean captchaOnOff = Convert.toBool(configValue);;
         captchaDTO.setCaptchaOnOff(captchaOnOff);

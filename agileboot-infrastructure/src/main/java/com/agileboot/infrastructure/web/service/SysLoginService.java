@@ -1,7 +1,6 @@
 package com.agileboot.infrastructure.web.service;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.exception.ApiException;
@@ -10,8 +9,9 @@ import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import com.agileboot.infrastructure.cache.RedisUtil;
-import com.agileboot.infrastructure.manager.AsyncManager;
-import com.agileboot.infrastructure.manager.factory.AsyncFactory;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
+import com.agileboot.infrastructure.thread.AsyncTaskFactory;
+import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;
@@ -48,6 +48,9 @@ public class SysLoginService {
     @Autowired
     private ISysConfigXService configService;
 
+    @Autowired
+    private RedisCacheService redisCacheService;
+
     /**
      * 登录验证
      *
@@ -71,16 +74,16 @@ public class SysLoginService {
                 .authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
-                AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+
+                ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
                     MessageUtils.message("user.password.not.match")));
                 throw new ApiException(BusinessErrorCode.LOGIN_WRONG_USER_PASSWORD);
             } else {
-                AsyncManager.me()
-                    .execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, e.getMessage()));
+                ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, e.getMessage()));
                 throw new ApiException(e.getCause(), BusinessErrorCode.LOGIN_ERROR, e.getMessage());
             }
         }
-        AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_SUCCESS,
+        ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_SUCCESS,
             MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
@@ -98,18 +101,22 @@ public class SysLoginService {
      */
     public void validateCaptcha(String username, String code, String uuid) {
 
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + StrUtil.emptyIfNull(uuid);
-        String captcha = redisUtil.getCacheObject(verifyKey);
-        redisUtil.deleteObject(verifyKey);
+//        String verifyKey = Constants.CAPTCHA_CODE_KEY + StrUtil.emptyIfNull(uuid);
+
+//        String captcha = redisUtil.getCacheObject(verifyKey);
+        String captcha = redisCacheService.captchaCache.getById(uuid);
+        redisCacheService.captchaCache.delete(uuid);
+
+//        redisUtil.deleteObject(verifyKey);
         if (captcha == null) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }
         if (!code.equalsIgnoreCase(captcha)) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }

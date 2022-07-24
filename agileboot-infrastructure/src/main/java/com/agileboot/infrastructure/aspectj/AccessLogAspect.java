@@ -9,8 +9,8 @@ import com.agileboot.common.enums.BusinessStatus;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.infrastructure.manager.AsyncManager;
-import com.agileboot.infrastructure.manager.factory.AsyncFactory;
+import com.agileboot.infrastructure.thread.AsyncTaskFactory;
+import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.orm.entity.SysOperationLogXEntity;
 import java.util.Collection;
 import java.util.Map;
@@ -92,7 +92,7 @@ public class AccessLogAspect {
             getControllerMethodDescription(joinPoint, controllerLog, operationLog, jsonResult);
             operationLog.setOperationTime(DateUtil.date());
             // 保存数据库
-            AsyncManager.me().execute(AsyncFactory.recordOperationLog(operationLog));
+            ThreadPoolManager.execute(AsyncTaskFactory.recordOperationLog(operationLog));
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("==前置通知异常==");
