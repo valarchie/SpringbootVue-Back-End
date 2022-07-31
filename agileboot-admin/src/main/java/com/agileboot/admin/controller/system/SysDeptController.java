@@ -4,16 +4,17 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.entity.SysDept;
 import com.agileboot.admin.response.TreeSelectedDTO;
 import com.agileboot.common.annotation.AccessLog;
-import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.orm.entity.SysDeptXEntity;
+import com.agileboot.orm.enums.dict.CommonStatusEnum;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -169,7 +170,7 @@ public class SysDeptController extends BaseController {
 //            return Rdto.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
             return ResponseDTO.fail();
         }
-        if (StrUtil.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
+        if (Objects.equals(CommonStatusEnum.DISABLE.getValue(), dept.getStatus())
             && deptService.existEnabledChildrenDeptById(deptId)) {
 //            return Rdto.error("该部门包含未停用的子部门！");
             return ResponseDTO.fail();

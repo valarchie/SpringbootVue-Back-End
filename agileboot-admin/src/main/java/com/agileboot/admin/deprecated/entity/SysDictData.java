@@ -2,7 +2,6 @@ package com.agileboot.admin.deprecated.entity;
 
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelColumn.ColumnType;
-import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.domain.BaseEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -81,9 +80,6 @@ public class SysDictData extends BaseEntity {
     private String status;
 
 
-    public boolean isDefault() {
-        return UserConstants.YES.equals(this.isDefault);
-    }
 
 
 

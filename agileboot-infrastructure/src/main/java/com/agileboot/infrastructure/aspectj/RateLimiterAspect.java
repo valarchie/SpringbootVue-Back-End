@@ -44,7 +44,7 @@ public class RateLimiterAspect {
     }
 
     @Before("@annotation(rateLimiter)")
-    public void doBefore(JoinPoint point, RateLimiter rateLimiter) throws Throwable {
+    public void doBefore(JoinPoint point, RateLimiter rateLimiter) {
         String key = rateLimiter.key();
         int time = rateLimiter.time();
         int count = rateLimiter.count();

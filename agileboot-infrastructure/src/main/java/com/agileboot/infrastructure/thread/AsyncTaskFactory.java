@@ -31,7 +31,7 @@ public class AsyncTaskFactory {
      * @param message 消息
      * @return 任务task
      */
-    public static Runnable recordLoginInfo(final String username, final String status, final String message) {
+    public static Runnable loginInfoTask(final String username, final String status, final String message) {
         // 优化一下这个类
         final UserAgent userAgent = UserAgent.parseUserAgentString(
             ServletHolderUtil.getRequest().getHeader("User-Agent"));

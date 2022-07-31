@@ -6,7 +6,6 @@ import cn.hutool.http.HttpUtil;
 import com.agileboot.admin.deprecated.entity.SysMenu;
 import com.agileboot.admin.response.TreeSelectedDTO;
 import com.agileboot.common.annotation.AccessLog;
-import com.agileboot.common.constant.UserConstants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
@@ -115,7 +114,7 @@ public class SysMenuController extends BaseController {
 //            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
             return ResponseDTO.fail();
         }
-        if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())
+        if (menu.getIsFrame().equals("0") && !HttpUtil.isHttp(menu.getPath())
             && !HttpUtil.isHttps(menu.getPath())) {
 //            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
             return ResponseDTO.fail();
@@ -138,7 +137,7 @@ public class SysMenuController extends BaseController {
         if (menuService.checkMenuNameUnique(menu.getMenuName(), menu.getMenuId(), menu.getParentId())) {
 //            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
-        if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !HttpUtil.isHttp(menu.getPath())
+        if (menu.getIsFrame().equals("0") && !HttpUtil.isHttp(menu.getPath())
             && !HttpUtil.isHttps(menu.getPath())) {
 //            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
             return ResponseDTO.fail();

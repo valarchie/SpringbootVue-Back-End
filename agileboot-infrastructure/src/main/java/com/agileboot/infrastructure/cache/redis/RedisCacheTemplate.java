@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisCacheTemplate<T> {
 
-    private RedisUtil redisUtil;
-    private CacheKeyEnum redisRedisEnum;
-    private LoadingCache<String, Optional<T>> guavaCache = CacheBuilder.newBuilder()
+    private final RedisUtil redisUtil;
+    private final CacheKeyEnum redisRedisEnum;
+    private final LoadingCache<String, Optional<T>> guavaCache = CacheBuilder.newBuilder()
         // 基于容量回收。缓存的最大数量。超过就取MAXIMUM_CAPACITY = 1 << 30。依靠LRU队列recencyQueue来进行容量淘汰
         .maximumSize(1024)
         .softValues()

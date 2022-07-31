@@ -5,7 +5,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.constant.UserConstants;
 import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.enums.common.MenuComponentEnum;
 import com.agileboot.orm.enums.common.MenuTypeEnum;
@@ -63,7 +62,7 @@ public class RouterModel extends SysMenuXEntity {
         RouterVo children = new RouterVo();
         String routerPath = trimHttpPrefixForInnerLink(getPath());
         children.setPath(routerPath);
-        children.setComponent(UserConstants.INNER_LINK);
+        children.setComponent(MenuComponentEnum.INNER_LINK.description());
         children.setName(StrUtil.upperFirst(routerPath));
         children.setMeta(new MetaVo(getMenuName(), getIcon(), getPath()));
         childrenList.add(children);

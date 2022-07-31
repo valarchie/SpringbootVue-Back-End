@@ -75,15 +75,15 @@ public class SysLoginService {
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
 
-                ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
                     MessageUtils.message("user.password.not.match")));
                 throw new ApiException(BusinessErrorCode.LOGIN_WRONG_USER_PASSWORD);
             } else {
-                ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, e.getMessage()));
+                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL, e.getMessage()));
                 throw new ApiException(e.getCause(), BusinessErrorCode.LOGIN_ERROR, e.getMessage());
             }
         }
-        ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_SUCCESS,
+        ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_SUCCESS,
             MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
@@ -110,13 +110,13 @@ public class SysLoginService {
 //        redisUtil.deleteObject(verifyKey);
         if (captcha == null) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
-            ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }
         if (!code.equalsIgnoreCase(captcha)) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
-            ThreadPoolManager.execute(AsyncTaskFactory.recordLoginInfo(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }

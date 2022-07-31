@@ -1,5 +1,6 @@
 package com.agileboot.admin.controller.system;
 
+import cn.hutool.core.map.MapUtil;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.request.LoginDTO;
 import com.agileboot.admin.response.UserPermissionDTO;
@@ -14,7 +15,6 @@ import com.agileboot.infrastructure.web.service.SysLoginService;
 import com.agileboot.infrastructure.web.service.SysPermissionService;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysUserXService;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +58,7 @@ public class SysLoginController {
         String token = loginService.login(loginDTO.getUsername(), loginDTO.getPassword(), loginDTO.getCode(),
             loginDTO.getUuid());
 
-        return ResponseDTO.ok(new HashMap<String, String>() {{
-            put(Constants.TOKEN, token);
-        }});
+        return ResponseDTO.ok(MapUtil.of(Constants.TOKEN, token));
     }
 
     /**

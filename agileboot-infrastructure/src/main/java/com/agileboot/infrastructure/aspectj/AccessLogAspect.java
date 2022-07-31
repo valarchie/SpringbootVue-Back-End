@@ -107,7 +107,8 @@ public class AccessLogAspect {
      * @param log 日志
      * @param operationLog 操作日志
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, AccessLog log, SysOperationLogXEntity operationLog, Object jsonResult)
+    public void getControllerMethodDescription(JoinPoint joinPoint, AccessLog log,
+        SysOperationLogXEntity operationLog, Object jsonResult)
         throws Exception {
         // 设置action动作
         operationLog.setBusinessType(log.businessType().ordinal());

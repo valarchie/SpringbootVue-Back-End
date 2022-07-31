@@ -26,9 +26,9 @@ public class PermissionService {
      */
     private static final String SUPER_ADMIN = "admin";
 
-    private static final String ROLE_DELIMETER = ",";
+    private static final String ROLE_DELIMITER = ",";
 
-    private static final String PERMISSION_DELIMETER = ",";
+    private static final String PERMISSION_DELIMITER = ",";
 
     /**
      * 验证用户是否具备某权限
@@ -72,7 +72,7 @@ public class PermissionService {
             return false;
         }
         Set<String> authorities = loginUser.getMenuPermissions();
-        for (String permission : permissions.split(PERMISSION_DELIMETER)) {
+        for (String permission : permissions.split(PERMISSION_DELIMITER)) {
             if (permission != null && hasPermissions(authorities, permission)) {
                 return true;
             }
@@ -112,7 +112,7 @@ public class PermissionService {
     /**
      * 验证用户是否具有以下任意一个角色
      *
-     * @param roles 以 ROLE_NAMES_DELIMETER 为分隔符的角色列表
+     * @param targetRoleKeys 以 ROLE_NAMES_DELIMETER 为分隔符的角色列表
      * @return 用户是否具有以下任意一个角色
      */
     public boolean hasAnyRoles(String targetRoleKeys) {
@@ -124,7 +124,7 @@ public class PermissionService {
             return false;
         }
         Set<String> roleKeys = loginUser.getRoleKeys();
-        for (String targetKey : targetRoleKeys.split(ROLE_DELIMETER)) {
+        for (String targetKey : targetRoleKeys.split(ROLE_DELIMITER)) {
             if (roleKeys.contains(targetKey)) {
                 return true;
             }

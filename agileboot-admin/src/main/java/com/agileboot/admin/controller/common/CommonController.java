@@ -49,6 +49,7 @@ public class CommonController {
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response,
         HttpServletRequest request) {
         try {
+            // TODO 直接把文件分隔符去掉  就可以     文件名要随机   不然都能随便下载了
             if (!FileUploadUtils.isAllowDownload(fileName)) {
                 throw new Exception(StrUtil.format("文件名称({})非法，不允许下载。 ", fileName));
             }
