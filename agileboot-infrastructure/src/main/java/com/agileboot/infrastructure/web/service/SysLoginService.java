@@ -2,9 +2,9 @@ package com.agileboot.infrastructure.web.service;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.exception.ApiException;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
+import com.agileboot.common.enums.LoginStatusEnum;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.i18n.MessageUtils;
@@ -75,16 +75,16 @@ public class SysLoginService {
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
 
-                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
+                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
                     MessageUtils.message("user.password.not.match")));
                 throw new ApiException(BusinessErrorCode.LOGIN_WRONG_USER_PASSWORD);
             } else {
-                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL, e.getMessage()));
+                ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL, e.getMessage()));
                 throw new ApiException(e.getCause(), BusinessErrorCode.LOGIN_ERROR, e.getMessage());
             }
         }
-        ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_SUCCESS,
-            MessageUtils.message("user.login.success")));
+        ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_SUCCESS,
+            LoginStatusEnum.LOGIN_SUCCESS.getMsg()));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
         // 生成token
@@ -110,13 +110,13 @@ public class SysLoginService {
 //        redisUtil.deleteObject(verifyKey);
         if (captcha == null) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
-            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }
         if (!code.equalsIgnoreCase(captcha)) {
             ApiException apiException = new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
-            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, Constants.LOGIN_FAIL,
+            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
                 apiException.getLocalizedMessage()));
             throw apiException;
         }

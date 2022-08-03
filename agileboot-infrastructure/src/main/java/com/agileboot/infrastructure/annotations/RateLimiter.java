@@ -1,6 +1,5 @@
-package com.agileboot.common.annotation;
+package com.agileboot.infrastructure.annotations;
 
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.enums.LimitType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,7 +20,7 @@ public @interface RateLimiter {
     /**
      * 限流key
      */
-    String key() default Constants.RATE_LIMIT_KEY;
+    String key() default "none";
 
     /**
      * 限流时间,单位秒
@@ -37,4 +36,6 @@ public @interface RateLimiter {
      * 限流类型
      */
     LimitType limitType() default LimitType.DEFAULT;
+
+
 }

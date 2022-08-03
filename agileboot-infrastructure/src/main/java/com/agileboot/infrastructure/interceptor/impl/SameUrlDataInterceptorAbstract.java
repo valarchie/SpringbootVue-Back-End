@@ -2,15 +2,13 @@ package com.agileboot.infrastructure.interceptor.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import com.agileboot.common.annotation.RepeatSubmit;
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.utils.jackson.JacksonUtil;
-import com.agileboot.infrastructure.cache.RedisUtil;
+import com.agileboot.infrastructure.annotations.RepeatSubmit;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.filter.RepeatedlyRequestWrapper;
 import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +31,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
     private String header;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisCacheService redisCacheService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -60,9 +58,9 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
         String submitKey = StrUtil.trimToEmpty(request.getHeader(header));
 
         // 唯一标识（指定key + url + 消息头）
-        String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;
+//        String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;
 
-        Object sessionObj = redisUtil.getCacheObject(cacheRepeatKey);
+        Map sessionObj = redisCacheService.repeatSubmitCache.getById(url + submitKey);
         if (sessionObj != null) {
             Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
             if (sessionMap.containsKey(url)) {
@@ -75,7 +73,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
         }
         Map<String, Object> cacheMap = new HashMap<>();
         cacheMap.put(url, nowDataMap);
-        redisUtil.setCacheObject(cacheRepeatKey, cacheMap, annotation.interval(), TimeUnit.MILLISECONDS);
+        redisCacheService.repeatSubmitCache.set(url+submitKey, cacheMap);
         return false;
     }
 

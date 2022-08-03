@@ -1,14 +1,15 @@
 package com.agileboot.admin.controller.monitor;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.annotation.AccessLog;
-import com.agileboot.common.constant.Constants;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.RedisUtil;
+import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.web.domain.SysUserOnline;
 import com.agileboot.infrastructure.web.service.SysUserOnlineServiceImpl;
 import java.util.ArrayList;
@@ -38,10 +39,13 @@ public class SysUserOnlineController extends BaseController {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private RedisCacheService redisCacheService;
+
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
     @GetMapping("/list")
     public ResponseDTO<TableDataInfo> list(String ipaddr, String userName) {
-        Collection<String> keys = redisUtil.keys(Constants.LOGIN_TOKEN_KEY + "*");
+        Collection<String> keys = redisUtil.keys(CacheKeyEnum.LOGIN_USER_KEY.key() + "*");
         List<SysUserOnline> userOnlineList = new ArrayList<SysUserOnline>();
         for (String key : keys) {
             LoginUser user = redisUtil.getCacheObject(key);
@@ -73,7 +77,7 @@ public class SysUserOnlineController extends BaseController {
     @AccessLog(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/{tokenId}")
     public ResponseDTO forceLogout(@PathVariable String tokenId) {
-        redisUtil.deleteObject(Constants.LOGIN_TOKEN_KEY + tokenId);
+        redisCacheService.loginUserCache.delete(tokenId);
         return ResponseDTO.ok();
     }
 }

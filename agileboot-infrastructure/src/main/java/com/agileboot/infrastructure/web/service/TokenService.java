@@ -8,13 +8,14 @@ import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.AddressUtils;
 import com.agileboot.infrastructure.cache.RedisUtil;
+import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class TokenService {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private RedisCacheService redisCacheService;
+
     /**
      * 获取用户身份信息
      *
@@ -63,12 +67,9 @@ public class TokenService {
             try {
                 Claims claims = parseToken(token);
                 // 解析对应的权限以及用户信息
-                String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
-                String userKey = getTokenKey(uuid);
-                if (userKey == null) {
-                    return null;
-                }
-                LoginUser user = redisUtil.getCacheObject(userKey);
+                String uuid = (String) claims.get(Constants.TokenConstants.LOGIN_USER_KEY);
+
+                LoginUser user = redisCacheService.loginUserCache.getById(uuid);
                 return user;
             } catch (Exception e) {
                 log.error("fail to get cached user from redis", e);
@@ -91,8 +92,7 @@ public class TokenService {
      */
     public void delLoginUser(String token) {
         if (StrUtil.isNotEmpty(token)) {
-            String userKey = getTokenKey(token);
-            redisUtil.deleteObject(userKey);
+            redisCacheService.loginUserCache.delete(token);
         }
     }
 
@@ -109,7 +109,7 @@ public class TokenService {
         refreshToken(loginUser);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put(Constants.LOGIN_USER_KEY, token);
+        claims.put(Constants.TokenConstants.LOGIN_USER_KEY, token);
         return createToken(claims);
     }
 
@@ -133,10 +133,12 @@ public class TokenService {
      */
     public void refreshToken(LoginUser loginUser) {
         loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
+        loginUser.setExpireTime(loginUser.getLoginTime() +
+            CacheKeyEnum.LOGIN_USER_KEY.expiration() * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
-        String userKey = getTokenKey(loginUser.getToken());
-        redisUtil.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
+        redisCacheService.loginUserCache.set(loginUser.getToken(), loginUser);
+//        String userKey = getTokenKey(loginUser.getToken());
+//        redisUtil.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
     }
 
     /**
@@ -197,13 +199,13 @@ public class TokenService {
      */
     private String getToken(HttpServletRequest request) {
         String token = request.getHeader(header);
-        if (StrUtil.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX)) {
-            token = token.replace(Constants.TOKEN_PREFIX, "");
+        if (StrUtil.isNotEmpty(token) && token.startsWith(Constants.TokenConstants.TOKEN_PREFIX)) {
+            token = token.replace(Constants.TokenConstants.TOKEN_PREFIX, "");
         }
         return token;
     }
 
-    private String getTokenKey(String uuid) {
-        return Constants.LOGIN_TOKEN_KEY + uuid;
-    }
+//    private String getTokenKey(String uuid) {
+//        return Constants.LOGIN_TOKEN_KEY + uuid;
+//    }
 }

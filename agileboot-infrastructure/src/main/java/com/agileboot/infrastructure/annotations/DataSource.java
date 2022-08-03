@@ -1,4 +1,4 @@
-package com.agileboot.common.annotation;
+package com.agileboot.infrastructure.annotations;
 
 import com.agileboot.common.enums.DataSourceType;
 import java.lang.annotation.Documented;

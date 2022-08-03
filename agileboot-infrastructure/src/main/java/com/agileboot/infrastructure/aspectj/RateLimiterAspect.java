@@ -1,11 +1,11 @@
 package com.agileboot.infrastructure.aspectj;
 
 import cn.hutool.extra.servlet.ServletUtil;
-import com.agileboot.common.annotation.RateLimiter;
 import com.agileboot.common.core.exception.ApiException;
 import com.agileboot.common.core.exception.errors.ClientErrorCode;
 import com.agileboot.common.enums.LimitType;
 import com.agileboot.common.utils.ServletHolderUtil;
+import com.agileboot.infrastructure.annotations.RateLimiter;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -65,6 +65,7 @@ public class RateLimiterAspect {
     public String getCombineKey(RateLimiter rateLimiter, JoinPoint point) {
         StringBuffer stringBuffer = new StringBuffer(rateLimiter.key());
         if (rateLimiter.limitType() == LimitType.IP) {
+            // TODO 换成从user拿Ip
             stringBuffer.append(ServletUtil.getClientIP(ServletHolderUtil.getRequest())).append("-");
         }
         MethodSignature signature = (MethodSignature) point.getSignature();

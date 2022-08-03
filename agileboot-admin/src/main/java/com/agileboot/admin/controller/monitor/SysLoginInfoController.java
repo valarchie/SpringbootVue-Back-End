@@ -2,11 +2,11 @@ package com.agileboot.admin.controller.monitor;
 
 
 import com.agileboot.admin.deprecated.domain.SysLogininfor;
-import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
 import com.agileboot.orm.query.system.LoginInfoQuery;
 import com.agileboot.orm.service.ISysLoginInfoXService;

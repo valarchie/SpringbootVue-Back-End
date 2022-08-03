@@ -1,9 +1,9 @@
 package com.agileboot.infrastructure.interceptor;
 
 import cn.hutool.json.JSONUtil;
-import com.agileboot.common.annotation.RepeatSubmit;
 import com.agileboot.common.core.domain.Rdto;
 import com.agileboot.common.utils.ServletHolderUtil;
+import com.agileboot.infrastructure.annotations.RepeatSubmit;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

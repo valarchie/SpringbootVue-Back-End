@@ -2,11 +2,11 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
-import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

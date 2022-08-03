@@ -1,6 +1,6 @@
 package com.agileboot.infrastructure.aspectj;
 
-import com.agileboot.common.annotation.DataSource;
+import com.agileboot.infrastructure.annotations.DataSource;
 import com.agileboot.infrastructure.datasource.DynamicDataSourceContextHolder;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class DataSourceAspect {
 
-    @Pointcut("@annotation(com.agileboot.common.annotation.DataSource)"
-        + "|| @within(com.agileboot.common.annotation.DataSource)")
+    @Pointcut("@annotation(com.agileboot.infrastructure.annotations.DataSource)"
+        + "|| @within(com.agileboot.infrastructure.annotations.DataSource)")
     public void dsPointCut() {
 
     }

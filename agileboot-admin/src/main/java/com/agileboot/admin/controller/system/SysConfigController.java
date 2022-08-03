@@ -2,12 +2,12 @@ package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysConfig;
-import com.agileboot.common.annotation.AccessLog;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.orm.entity.SysConfigXEntity;
 import com.agileboot.orm.enums.cache.DictionaryData;

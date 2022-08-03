@@ -1,4 +1,4 @@
-package com.agileboot.common.annotation;
+package com.agileboot.infrastructure.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

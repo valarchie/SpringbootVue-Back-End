@@ -58,7 +58,7 @@ public class SysLoginController {
         String token = loginService.login(loginDTO.getUsername(), loginDTO.getPassword(), loginDTO.getCode(),
             loginDTO.getUuid());
 
-        return ResponseDTO.ok(MapUtil.of(Constants.TOKEN, token));
+        return ResponseDTO.ok(MapUtil.of(Constants.TokenConstants.TOKEN, token));
     }
 
     /**

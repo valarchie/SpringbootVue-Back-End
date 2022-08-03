@@ -1,6 +1,5 @@
 package com.agileboot.infrastructure.cache.redis;
 
-import com.agileboot.infrastructure.cache.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.RedisUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
