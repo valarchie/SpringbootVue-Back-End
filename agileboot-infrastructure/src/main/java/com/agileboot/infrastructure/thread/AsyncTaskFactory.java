@@ -5,7 +5,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.enums.LoginStatusEnum;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.common.utils.ip.AddressUtils;
+import com.agileboot.common.utils.ip.IpRegionUtil;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
 import com.agileboot.orm.entity.SysOperationLogXEntity;
 import com.agileboot.orm.service.ISysLoginInfoXService;
@@ -37,7 +37,7 @@ public class AsyncTaskFactory {
         // 获取客户端浏览器
         final String browser = userAgent.getBrowser() != null ? userAgent.getBrowser().getName() : "";
         final String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
-        final String address = AddressUtils.getRealAddressByIp(ip);
+        final String address = IpRegionUtil.getBriefLocationByIp(ip);
         // 获取客户端操作系统
         final String os = userAgent.getOperatingSystem() != null ? userAgent.getOperatingSystem().getName() : "";
 
@@ -69,7 +69,7 @@ public class AsyncTaskFactory {
     public static Runnable recordOperationLog(final SysOperationLogXEntity operLog) {
         return () -> {
             // 远程查询操作地点
-            operLog.setOperatorLocation(AddressUtils.getRealAddressByIp(operLog.getOperatorIp()));
+            operLog.setOperatorLocation(IpRegionUtil.getBriefLocationByIp(operLog.getOperatorIp()));
             SpringUtil.getBean(ISysOperationLogXService.class).save(operLog);
         };
     }

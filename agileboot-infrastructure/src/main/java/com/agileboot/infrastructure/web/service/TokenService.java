@@ -6,7 +6,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
-import com.agileboot.common.utils.ip.AddressUtils;
+import com.agileboot.common.utils.ip.IpRegionUtil;
 import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
@@ -150,7 +150,7 @@ public class TokenService {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletHolderUtil.getRequest().getHeader("User-Agent"));
         String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
         loginUser.setIpaddr(ip);
-        loginUser.setLoginLocation(AddressUtils.getRealAddressByIp(ip));
+        loginUser.setLoginLocation(IpRegionUtil.getBriefLocationByIp(ip));
         loginUser.setBrowser(userAgent.getBrowser().getName());
         loginUser.setOs(userAgent.getOperatingSystem().getName());
     }
