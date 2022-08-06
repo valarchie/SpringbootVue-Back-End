@@ -2,7 +2,7 @@ package com.agileboot.infrastructure.cache.redis;
 
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.infrastructure.cache.RedisUtil;
-import java.util.Map;
+import com.agileboot.infrastructure.interceptor.impl.RepeatRequest;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class RedisCacheService {
 
     public RedisCacheTemplate<String> captchaCache;
     public RedisCacheTemplate<LoginUser> loginUserCache;
-    public RedisCacheTemplate<Map> repeatSubmitCache;
+    public RedisCacheTemplate<RepeatRequest> repeatSubmitCache;
 
     @PostConstruct
     public void init() {

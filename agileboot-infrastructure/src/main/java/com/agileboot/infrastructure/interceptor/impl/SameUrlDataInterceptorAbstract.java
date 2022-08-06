@@ -7,8 +7,6 @@ import com.agileboot.infrastructure.annotations.RepeatSubmit;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.filter.RepeatedlyRequestWrapper;
 import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +15,10 @@ import org.springframework.stereotype.Component;
 /**
  * 判断请求url和数据是否和上一次相同， 如果和上次相同，则是重复提交表单。 有效时间为10秒内。
  *
- * @author ruoyi
+ * @author valarchie
  */
 @Component
 public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitInterceptor {
-
-    public final String REPEAT_PARAMS = "repeatParams";
-
-    public final String REPEAT_TIME = "repeatTime";
 
     // 令牌自定义标识
     @Value("${token.header}")
@@ -47,9 +41,10 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
             // use jackson util to parse is more safe
             nowParams = JacksonUtil.to(request.getParameterMap());
         }
-        Map<String, Object> nowDataMap = new HashMap<>();
-        nowDataMap.put(REPEAT_PARAMS, nowParams);
-        nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
+
+        RepeatRequest currentRequest = new RepeatRequest();
+        currentRequest.setRepeatParams(nowParams);
+        currentRequest.setRepeatTime(System.currentTimeMillis());
 
         // 请求地址（作为存放cache的key值）
         String url = request.getRequestURI();
@@ -59,39 +54,17 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
 
         // 唯一标识（指定key + url + 消息头）
 //        String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;
-
-        Map sessionObj = redisCacheService.repeatSubmitCache.getById(url + submitKey);
-        if (sessionObj != null) {
-            Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
-            if (sessionMap.containsKey(url)) {
-                Map<String, Object> preDataMap = (Map<String, Object>) sessionMap.get(url);
-                if (compareParams(nowDataMap, preDataMap) && compareTime(nowDataMap, preDataMap,
-                    annotation.interval())) {
-                    return true;
-                }
+        RepeatRequest preRequest = redisCacheService.repeatSubmitCache.getById(url + submitKey);
+        if (preRequest != null) {
+            if (currentRequest.compareParams(preRequest) &&
+                currentRequest.compareTime(preRequest, annotation.interval())) {
+                return true;
             }
         }
-        Map<String, Object> cacheMap = new HashMap<>();
-        cacheMap.put(url, nowDataMap);
-        redisCacheService.repeatSubmitCache.set(url+submitKey, cacheMap);
+
+        redisCacheService.repeatSubmitCache.set(url + submitKey, currentRequest);
         return false;
     }
 
-    /**
-     * 判断参数是否相同
-     */
-    private boolean compareParams(Map<String, Object> nowMap, Map<String, Object> preMap) {
-        String nowParams = (String) nowMap.get(REPEAT_PARAMS);
-        String preParams = (String) preMap.get(REPEAT_PARAMS);
-        return nowParams.equals(preParams);
-    }
 
-    /**
-     * 判断两次间隔时间
-     */
-    private boolean compareTime(Map<String, Object> nowMap, Map<String, Object> preMap, int interval) {
-        long time1 = (Long) nowMap.get(REPEAT_TIME);
-        long time2 = (Long) preMap.get(REPEAT_TIME);
-        return (time1 - time2) < interval;
-    }
 }
