@@ -1,7 +1,12 @@
 package com.agileboot.infrastructure.web.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.exception.ApiException;
 import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.enums.LoginStatusEnum;
@@ -17,6 +22,7 @@ import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -69,9 +75,15 @@ public class SysLoginService {
         // 用户验证
         Authentication authentication = null;
         try {
+
+            byte[] decrypt = SecureUtil.rsa(AgileBootConfig.getRsaPrivateKey(), null)
+                .decrypt(Base64.decodeBase64(password), KeyType.PrivateKey);
+
+            String passwordDecrypt = StrUtil.str(decrypt, CharsetUtil.CHARSET_UTF_8);
+
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+                .authenticate(new UsernamePasswordAuthenticationToken(username, passwordDecrypt));
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
 

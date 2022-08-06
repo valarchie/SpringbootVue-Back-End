@@ -47,6 +47,11 @@ public class AgileBootConfig {
      */
     private static String captchaType;
 
+    /**
+     * rsa private key  静态属性的注入！！ set方法一定不能是static 方法
+     */
+    private static String rsaPrivateKey;
+
     public String getName() {
         return name;
     }
@@ -101,6 +106,14 @@ public class AgileBootConfig {
 
     public void setCaptchaType(String captchaType) {
         AgileBootConfig.captchaType = captchaType;
+    }
+
+    public static String getRsaPrivateKey() {
+        return rsaPrivateKey;
+    }
+
+    public void setRsaPrivateKey(String rsaPrivateKey) {
+        AgileBootConfig.rsaPrivateKey = rsaPrivateKey;
     }
 
     /**

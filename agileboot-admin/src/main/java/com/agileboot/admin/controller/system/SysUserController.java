@@ -234,6 +234,8 @@ public class SysUserController extends BaseController {
     @GetMapping("/authRole/{userId}")
     public ResponseDTO<UserInfoDTO> authRole(@PathVariable("userId") Long userId) {
 
+
+
         SysUser user = new SysUser(userService.getById(userId));
         List<SysRoleXEntity> roleXEntities = roleService.selectRolesByUserId(userId);
         List<SysRole> roles = roleXEntities.stream().map(SysRole::new).collect(Collectors.toList());
