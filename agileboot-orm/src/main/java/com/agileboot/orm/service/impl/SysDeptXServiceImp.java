@@ -34,7 +34,6 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
      */
     @Override
     public List<Tree<Long>> buildDeptTree(List<SysDeptXEntity> depts) {
-
         return TreeUtil.build(depts, 0L, (dept, tree) -> {
             tree.setId(dept.getDeptId());
             tree.setParentId(dept.getParentId());
@@ -73,11 +72,18 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
     }
 
     @Override
-    public boolean existEnabledChildrenDeptById(Long deptId) {
+    public boolean existChildrenDeptById(Long deptId, Boolean enabled) {
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq( "dept_id", deptId)
-            .eq("status", 1)
+            .eq(enabled != null, "status", 1)
             .apply( "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
+        return this.baseMapper.exists(queryWrapper);
+    }
+
+    @Override
+    public boolean isChildOfTargetDeptId(Long ancestorId, Long childId) {
+        QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.apply("dept_id = '" + childId + "' or FIND_IN_SET ( " + ancestorId + " , ancestors)");
         return this.baseMapper.exists(queryWrapper);
     }
 

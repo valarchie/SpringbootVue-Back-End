@@ -47,7 +47,9 @@ public interface ISysDeptXService extends IService<SysDeptXEntity> {
      * @param deptId
      * @return
      */
-    boolean existEnabledChildrenDeptById(Long deptId);
+    boolean existChildrenDeptById(Long deptId, Boolean enabled);
+
+    boolean isChildOfTargetDeptId(Long ancestorId, Long childId);
 
     boolean hasChildDeptById(Long deptId);
 

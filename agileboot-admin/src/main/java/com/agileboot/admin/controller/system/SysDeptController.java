@@ -156,7 +156,7 @@ public class SysDeptController extends BaseController {
     /**
      * 修改部门
      */
-    @PreAuthorize("@ss.hasPermi('system:dept:edit')")
+    @PreAuthorize("@ss.hasPermi('system:dept:edit') AND @ss.checkDataScopeWithDeptId(#dept.deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysDept dept) {
@@ -171,7 +171,7 @@ public class SysDeptController extends BaseController {
             return ResponseDTO.fail();
         }
         if (Objects.equals(CommonStatusEnum.DISABLE.getValue(), dept.getStatus())
-            && deptService.existEnabledChildrenDeptById(deptId)) {
+            && deptService.existChildrenDeptById(deptId, true)) {
 //            return Rdto.error("该部门包含未停用的子部门！");
             return ResponseDTO.fail();
         }
@@ -195,7 +195,7 @@ public class SysDeptController extends BaseController {
     /**
      * 删除部门
      */
-    @PreAuthorize("@ss.hasPermi('system:dept:remove')")
+    @PreAuthorize("@ss.hasPermi('system:dept:remove') AND @ss.checkDataScopeWithDeptId(#deptId)")
     @AccessLog(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
     public ResponseDTO remove(@PathVariable Long deptId) {

@@ -75,18 +75,21 @@ public class LoginUser implements UserDetails {
 
     private Set<String> roleKeys;
 
+    private Role role;
+
     public LoginUser(Set<String> permissions) {
         this.menuPermissions = permissions;
     }
 
     public LoginUser(Long userId, String username, Long deptId, Set<String> roleKeys, Set<String> permissions,
-        String password) {
+        String password, Role role) {
         this.username = username;
         this.userId = userId;
         this.deptId = deptId;
         this.menuPermissions = permissions;
         this.roleKeys = roleKeys;
         this.password = password;
+        this.role = role;
     }
 
     @JsonIgnore

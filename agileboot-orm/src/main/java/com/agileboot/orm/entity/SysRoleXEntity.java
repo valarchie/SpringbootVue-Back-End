@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-03
+ * @since 2022-08-09
  */
 @Getter
 @Setter
@@ -46,9 +46,13 @@ public class SysRoleXEntity extends Model<SysRoleXEntity> {
     @TableField("role_sort")
     private Integer roleSort;
 
-    @ApiModelProperty("数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）")
+    @ApiModelProperty("数据范围（1：全部数据权限 2：自定数据权限 3: 本部门及以下数据权限）")
     @TableField("data_scope")
     private Integer dataScope;
+
+    @ApiModelProperty("角色所拥有的部门数据权限")
+    @TableField("dept_id_set")
+    private String deptIdSet;
 
     @ApiModelProperty("角色状态（1正常 0停用）")
     @TableField("`status`")

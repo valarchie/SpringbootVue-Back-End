@@ -4,7 +4,13 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.common.loginuser.Role;
+import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.enums.common.DataScopeEnum;
+import com.agileboot.orm.service.ISysDeptXService;
+import com.agileboot.orm.service.ISysUserXService;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -15,6 +21,12 @@ import org.springframework.util.CollectionUtils;
  */
 @Service("ss")
 public class PermissionService {
+
+    @Autowired
+    private ISysDeptXService deptService;
+
+    @Autowired
+    private ISysUserXService userService;
 
     /**
      * 所有权限标识
@@ -47,6 +59,65 @@ public class PermissionService {
         return hasPermissions(loginUser.getMenuPermissions(), permission);
     }
 
+
+    /**
+     * 通过userId 校验当前用户 对 目标用户是否有操作权限
+     * @param userId
+     * @return
+     */
+    public boolean checkDataScopeWithUserId(Long userId) {
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        if (loginUser == null) {
+            return false;
+        }
+        Role role = loginUser.getRole();
+
+        SysUserXEntity targetUser = userService.getById(userId);
+
+        if(role.getDataScope() == DataScopeEnum.ALL.getValue()) {
+            return true;
+        }
+
+        if (role.getDataScope() == DataScopeEnum.SELF_DEFINE.getValue() &&
+            CollUtil.safeContains(role.getDeptIdSet(), targetUser.getDeptId())) {
+            return true;
+        }
+
+        if(role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
+            deptService.isChildOfTargetDeptId(loginUser.getDeptId(), targetUser.getDeptId())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean checkDataScopeWithDeptId(Long deptId) {
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        if (loginUser == null) {
+            return false;
+        }
+        Role role = loginUser.getRole();
+
+        if(role.getDataScope() == DataScopeEnum.ALL.getValue()) {
+            return true;
+        }
+
+        if (role.getDataScope() == DataScopeEnum.SELF_DEFINE.getValue() &&
+            CollUtil.safeContains(role.getDeptIdSet(), deptId)) {
+            return true;
+        }
+
+        if(role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
+            deptService.isChildOfTargetDeptId(loginUser.getDeptId(), deptId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * 验证用户是否不具备某权限，与 hasPermi逻辑相反
      *
@@ -54,7 +125,7 @@ public class PermissionService {
      * @return 用户是否不具备某权限
      */
     public boolean lacksPerm(String permission) {
-        return hasPermi(permission) != true;
+        return !hasPermi(permission);
     }
 
     /**

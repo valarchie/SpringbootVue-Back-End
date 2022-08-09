@@ -20,7 +20,7 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-06-29
+ * @since 2022-08-09
  */
 @Getter
 @Setter
@@ -33,6 +33,14 @@ public class SysUserXEntity extends Model<SysUserXEntity> {
     @ApiModelProperty("用户ID")
     @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
+
+    @ApiModelProperty("职位id")
+    @TableField("post_id")
+    private Long postId;
+
+    @ApiModelProperty("角色id")
+    @TableField("role_id")
+    private Long roleId;
 
     @ApiModelProperty("部门ID")
     @TableField("dept_id")
@@ -70,7 +78,7 @@ public class SysUserXEntity extends Model<SysUserXEntity> {
     @TableField("`password`")
     private String password;
 
-    @ApiModelProperty("帐号状态（0正常 1停用）")
+    @ApiModelProperty("帐号状态（1正常 2停用 3冻结）")
     @TableField("`status`")
     private Integer status;
 
@@ -110,7 +118,7 @@ public class SysUserXEntity extends Model<SysUserXEntity> {
     @TableField("remark")
     private String remark;
 
-    @ApiModelProperty("删除标志（0代表存在 2代表删除）")
+    @ApiModelProperty("删除标志（0代表存在 1代表删除）")
     @TableField("deleted")
     @TableLogic
     private Boolean deleted;
