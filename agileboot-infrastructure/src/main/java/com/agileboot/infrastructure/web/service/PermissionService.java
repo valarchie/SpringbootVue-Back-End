@@ -6,7 +6,7 @@ import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.loginuser.Role;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.enums.common.DataScopeEnum;
+import com.agileboot.orm.enums.DataScopeEnum;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.agileboot.orm.service.ISysUserXService;
 import java.util.Set;

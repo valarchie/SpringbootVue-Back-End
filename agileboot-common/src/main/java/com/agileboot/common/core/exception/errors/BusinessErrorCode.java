@@ -35,6 +35,8 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     USER_IS_DISABLE(Module.USER, 2, "对不起， 您张的账号：%s 已停用"),
 
+    USER_CACHE_IS_EXPIRE(Module.USER, 3, "用户缓存信息已经过期"),
+
     USER_FAIL_TO_GET_USER_ID(Module.USER, 3, "获取用户ID失败"),
 
     USER_FAIL_TO_GET_DEPT_ID(Module.USER, 4, "获取用户部门ID失败"),

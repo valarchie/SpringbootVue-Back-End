@@ -11,7 +11,6 @@ import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -147,14 +146,14 @@ public class SysPostController extends BaseController {
         return ResponseDTO.ok();
     }
 
-    /**
+    /**  找不到调用
      * 获取岗位选择框列表
      */
-    @GetMapping("/optionselect")
-    public ResponseDTO optionselect() {
-        List<SysPostXEntity> list = postService.list();
-        List<SysPost> posts =
-            list != null ? list.stream().map(SysPost::new).collect(Collectors.toList()) : new ArrayList<>();
-        return ResponseDTO.ok(posts);
-    }
+//    @GetMapping("/optionselect")
+//    public ResponseDTO optionselect() {
+//        List<SysPostXEntity> list = postService.list();
+//        List<SysPost> posts =
+//            list != null ? list.stream().map(SysPost::new).collect(Collectors.toList()) : new ArrayList<>();
+//        return ResponseDTO.ok(posts);
+//    }
 }

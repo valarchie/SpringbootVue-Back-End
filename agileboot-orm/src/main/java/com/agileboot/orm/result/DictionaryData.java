@@ -1,4 +1,4 @@
-package com.agileboot.orm.enums.cache;
+package com.agileboot.orm.result;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;

@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 // TODO 记得改这个logininfor的命名
-@RequestMapping("/monitor/logininfor")
+@RequestMapping("/loginInfo")
 public class SysLoginInfoController extends BaseController {
 
     @Autowired

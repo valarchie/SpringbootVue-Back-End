@@ -200,8 +200,8 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/resetPwd")
-    public ResponseDTO resetPwd(@RequestBody SysUser user) {
+    @PutMapping("/{userId}/password/reset")
+    public ResponseDTO resetPwd(@PathVariable Long userId, @RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
@@ -217,8 +217,8 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus")
-    public ResponseDTO changeStatus(@RequestBody SysUser user) {
+    @PutMapping("/{userId}/status")
+    public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody SysUser user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setUpdateBy(getUsername());
@@ -231,7 +231,7 @@ public class SysUserController extends BaseController {
      * 根据用户编号获取授权角色
      */
     @PreAuthorize("@ss.hasPermi('system:user:query')")
-    @GetMapping("/authRole/{userId}")
+    @GetMapping("/{userId}/role")
     public ResponseDTO<UserInfoDTO> authRole(@PathVariable("userId") Long userId) {
 
 
@@ -253,8 +253,8 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @AccessLog(title = "用户管理", businessType = BusinessType.GRANT)
-    @PutMapping("/authRole")
-    public ResponseDTO insertAuthRole(Long userId, Long[] roleIds) {
+    @PutMapping("/{userId}/role")
+    public ResponseDTO insertAuthRole(@PathVariable("userId") Long userId, Long[] roleIds) {
         userService.checkUserDataScope(userId);
         userService.insertUserAuth(userId, roleIds);
         return ResponseDTO.ok();

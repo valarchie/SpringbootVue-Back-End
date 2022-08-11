@@ -8,7 +8,7 @@ import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.loginuser.Role;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.enums.common.UserStatusEnum;
+import com.agileboot.orm.enums.UserStatusEnum;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import java.util.Objects;

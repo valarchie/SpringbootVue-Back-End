@@ -22,9 +22,17 @@ public class RedisCacheService {
 
     @PostConstruct
     public void init() {
+
         captchaCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.CAPTCHAT);
-        loginUserCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.LOGIN_USER_KEY);
-        loginUserCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.REPEAT_SUBMIT_KEY);
+
+        loginUserCache = new RedisCacheTemplate<LoginUser>(redisUtil, CacheKeyEnum.LOGIN_USER_KEY) {
+            @Override
+            public LoginUser getCachedObjectById(Object id) {
+                return null;
+            }
+        };
+
+        repeatSubmitCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.REPEAT_SUBMIT_KEY);
     }
 
 

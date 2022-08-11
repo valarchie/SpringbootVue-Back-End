@@ -1,4 +1,4 @@
-package com.agileboot.orm.enums.dict;
+package com.agileboot.orm.enums.dictionary;
 
 /**
  * Css 样式

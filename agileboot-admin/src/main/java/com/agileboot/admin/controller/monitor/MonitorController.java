@@ -53,7 +53,7 @@ public class MonitorController extends BaseController {
     private RedisCacheService redisCacheService;
 
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
-    @GetMapping("/cache")
+    @GetMapping("/cacheInfo")
     public ResponseDTO<RedisCacheInfoDTO> getRedisCacheInfo() throws Exception {
         Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) RedisServerCommands::info);
         Properties commandStats = (Properties) redisTemplate.execute(
@@ -85,14 +85,14 @@ public class MonitorController extends BaseController {
 
 
     @PreAuthorize("@ss.hasPermi('monitor:server:list')")
-    @GetMapping("/server")
+    @GetMapping("/serverInfo")
     public ResponseDTO<ServerInfo> getServerInfo() throws Exception {
         ServerInfo serverInfo = ServerInfo.fillInfo();
         return ResponseDTO.ok(serverInfo);
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
-    @GetMapping("/online/list")
+    @GetMapping("/onlineUser/list")
     public ResponseDTO<TableDataInfo> list(String ipaddr, String userName) {
         Collection<String> keys = redisUtil.keys(CacheKeyEnum.LOGIN_USER_KEY.key() + "*");
         List<SysUserOnline> userOnlineList = new ArrayList<SysUserOnline>();
@@ -124,7 +124,7 @@ public class MonitorController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('monitor:online:forceLogout')")
     @AccessLog(title = "在线用户", businessType = BusinessType.FORCE)
-    @DeleteMapping("/online/{tokenId}")
+    @DeleteMapping("/onlineUser/{tokenId}")
     public ResponseDTO forceLogout(@PathVariable String tokenId) {
         redisCacheService.loginUserCache.delete(tokenId);
         return ResponseDTO.ok();

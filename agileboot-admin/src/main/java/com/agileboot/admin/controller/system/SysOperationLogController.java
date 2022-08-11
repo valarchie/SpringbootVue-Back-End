@@ -30,8 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/monitor/operlog")
-public class SysOperlogController extends BaseController {
+@RequestMapping("/operationLog")
+public class SysOperationLogController extends BaseController {
 
     @Autowired
     private ISysOperationLogXService operationLogService;

@@ -2,7 +2,7 @@ package com.agileboot.orm.service.impl;
 
 import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.entity.SysRoleMenuXEntity;
-import com.agileboot.orm.enums.common.MenuTypeEnum;
+import com.agileboot.orm.enums.MenuTypeEnum;
 import com.agileboot.orm.mapper.SysMenuXMapper;
 import com.agileboot.orm.mapper.SysRoleMenuXMapper;
 import com.agileboot.orm.mapper.SysRoleXMapper;

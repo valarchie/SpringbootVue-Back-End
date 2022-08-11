@@ -179,8 +179,8 @@ public class LoginController {
      *
      * @return 用户信息
      */
-    @GetMapping("/getInfo")
-    public ResponseDTO getInfo() {
+    @GetMapping("/getLoginUserInfo")
+    public ResponseDTO getLoginUserInfo() {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(loginUser.getUserId());

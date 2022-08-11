@@ -168,8 +168,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/dataScope")
-    public ResponseDTO dataScope(@RequestBody SysRole role) {
+    @PutMapping("/{roleId}/dataScope")
+    public ResponseDTO dataScope(@PathVariable("roleId")Long roleId, @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
         RoleModel roleModel = role.toModel();
@@ -183,8 +183,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus")
-    public ResponseDTO changeStatus(@RequestBody SysRole role) {
+    @PutMapping("/{roleId}/status")
+    public ResponseDTO changeStatus(@PathVariable("roleId")Long roleId, @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
         role.setUpdateBy(getUsername());
@@ -197,33 +197,35 @@ public class SysRoleController extends BaseController {
     }
 
     /**
+     * 没找到 调用的地方
      * 删除角色
      */
-    @PreAuthorize("@ss.hasPermi('system:role:remove')")
-    @AccessLog(title = "角色管理", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{roleIds}")
-    public ResponseDTO remove(@PathVariable Long[] roleIds) {
-        List<Long> idList = Arrays.stream(roleIds).collect(Collectors.toList());
-        roleService.removeByIds(idList);
-        return ResponseDTO.ok();
-    }
+//    @PreAuthorize("@ss.hasPermi('system:role:remove')")
+//    @AccessLog(title = "角色管理", businessType = BusinessType.DELETE)
+//    @DeleteMapping("/{roleIds}")
+//    public ResponseDTO remove(@PathVariable Long[] roleIds) {
+//        List<Long> idList = Arrays.stream(roleIds).collect(Collectors.toList());
+//        roleService.removeByIds(idList);
+//        return ResponseDTO.ok();
+//    }
 
     /**
+     * 没在前端找到调用的地方
      * 获取角色选择框列表
      */
-    @PreAuthorize("@ss.hasPermi('system:role:query')")
-    @GetMapping("/optionselect")
-    public ResponseDTO optionselect() {
-        List<SysRole> collect = roleService.list().stream().map(SysRole::new).collect(Collectors.toList());
-        return ResponseDTO.ok(collect);
-    }
+//    @PreAuthorize("@ss.hasPermi('system:role:query')")
+//    @GetMapping("/optionselect")
+//    public ResponseDTO optionselect() {
+//        List<SysRole> collect = roleService.list().stream().map(SysRole::new).collect(Collectors.toList());
+//        return ResponseDTO.ok(collect);
+//    }
 
     /**
      * 查询已分配用户角色列表
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
-    @GetMapping("/authUser/allocatedList")
-    public ResponseDTO<TableDataInfo> allocatedList(SysUser user) {
+    @GetMapping("/{roleId}/allocated/list")
+    public ResponseDTO<TableDataInfo> allocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
         Page page = getPage();
         userService.selectAllocatedList(user.getRoleId(), user.getUserName(), user.getPhonenumber(), page);
         return ResponseDTO.ok(getDataTable(page));
@@ -233,8 +235,8 @@ public class SysRoleController extends BaseController {
      * 查询未分配用户角色列表
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
-    @GetMapping("/authUser/unallocatedList")
-    public ResponseDTO<TableDataInfo> unallocatedList(SysUser user) {
+    @GetMapping("/{roleId}/unallocated/list")
+    public ResponseDTO<TableDataInfo> unallocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
         Page page = getPage();
         userService.selectUnallocatedList(user.getRoleId(), user.getUserName(), user.getPhonenumber(), page);
         return ResponseDTO.ok(getDataTable(page));
@@ -245,8 +247,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
-    @PutMapping("/authUser/cancel")
-    public ResponseDTO cancelAuthUser(@RequestBody SysUserRole userRole) {
+    @DeleteMapping("/{roleId}/user/grant")
+    public ResponseDTO cancelAuthUser(@PathVariable("roleId")Long roleId, @RequestBody SysUserRole userRole) {
         roleApplicationService.deleteAuthUser(userRole.getRoleId(), userRole.getUserId());
         return ResponseDTO.ok();
     }
@@ -256,8 +258,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
-    @PutMapping("/authUser/cancelAll")
-    public ResponseDTO cancelAuthUserAll(Long roleId, Long[] userIds) {
+    @DeleteMapping("/{roleId}/user/grant/bulk")
+    public ResponseDTO cancelAuthUserAll(@PathVariable("roleId")Long roleId, Long[] userIds) {
         List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
         roleApplicationService.deleteAuthUsers(roleId, userIdList);
 
@@ -269,8 +271,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
-    @PutMapping("/authUser/selectAll")
-    public ResponseDTO selectAuthUserAll(Long roleId, Long[] userIds) {
+    @PostMapping("/{roleId}/user/grant/bulk")
+    public ResponseDTO selectAuthUserAll(@PathVariable("roleId") Long roleId, Long[] userIds) {
         List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
         roleService.checkRoleDataScope(roleId);
         roleApplicationService.insertAuthUsers(roleId, userIdList);

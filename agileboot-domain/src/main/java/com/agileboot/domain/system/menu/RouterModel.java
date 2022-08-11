@@ -6,8 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.enums.common.MenuComponentEnum;
-import com.agileboot.orm.enums.common.MenuTypeEnum;
+import com.agileboot.orm.enums.MenuComponentEnum;
+import com.agileboot.orm.enums.MenuTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 

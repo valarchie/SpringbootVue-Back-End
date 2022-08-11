@@ -8,7 +8,7 @@ import com.agileboot.common.core.domain.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.orm.entity.SysDeptXEntity;
-import com.agileboot.orm.enums.dict.CommonStatusEnum;
+import com.agileboot.orm.enums.dictionary.CommonStatusEnum;
 import com.agileboot.orm.service.ISysDeptXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -97,8 +97,8 @@ public class SysDeptController extends BaseController {
     /**
      * 获取部门下拉树列表
      */
-    @GetMapping("/treeselect")
-    public ResponseDTO treeSelect(SysDept dept) {
+    @GetMapping("/dropdownList")
+    public ResponseDTO dropdownList(SysDept dept) {
 
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -115,8 +115,8 @@ public class SysDeptController extends BaseController {
     /**
      * 加载对应角色部门列表树
      */
-    @GetMapping(value = "/roleDeptTreeselect/{roleId}")
-    public ResponseDTO roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
+    @GetMapping(value = "/dropdownList/role/{roleId}")
+    public ResponseDTO dropdownListForRole(@PathVariable("roleId") Long roleId) {
         List<SysDeptXEntity> list = deptService.list();
 
         TreeSelectedDTO tree = new TreeSelectedDTO();

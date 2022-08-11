@@ -92,8 +92,8 @@ public class SysProfileController extends BaseController {
      * 重置密码
      */
     @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
-    @PutMapping("/updatePwd")
-    public ResponseDTO updatePwd(String oldPassword, String newPassword) {
+    @PutMapping("/password")
+    public ResponseDTO updatePassword(String oldPassword, String newPassword) {
         LoginUser loginUser = getLoginUser();
         String password = loginUser.getPassword();
         if (!AuthenticationUtils.matchesPassword(oldPassword, password)) {

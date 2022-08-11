@@ -1,4 +1,4 @@
-package com.agileboot.orm.enums.dict;
+package com.agileboot.orm.enums.dictionary;
 
 import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
 

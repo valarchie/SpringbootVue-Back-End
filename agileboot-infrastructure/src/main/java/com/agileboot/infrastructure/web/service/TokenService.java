@@ -4,6 +4,8 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants;
+import com.agileboot.common.core.exception.ApiException;
+import com.agileboot.common.core.exception.errors.BusinessErrorCode;
 import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
@@ -69,7 +71,12 @@ public class TokenService {
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.TokenConstants.LOGIN_USER_KEY);
 
-                LoginUser user = redisCacheService.loginUserCache.getById(uuid);
+                LoginUser user = redisCacheService.loginUserCache.getCachedObjectById(uuid);
+
+                if (user == null) {
+                    throw new ApiException(BusinessErrorCode.USER_CACHE_IS_EXPIRE);
+                }
+
                 return user;
             } catch (Exception e) {
                 log.error("fail to get cached user from redis", e);

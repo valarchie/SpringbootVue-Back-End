@@ -72,8 +72,8 @@ public class SysMenuController extends BaseController {
     /**
      * 获取菜单下拉树列表
      */
-    @GetMapping("/treeselect")
-    public ResponseDTO treeselect(MenuQuery query) {
+    @GetMapping("/dropdownList")
+    public ResponseDTO dropdownList(MenuQuery query) {
 
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 

@@ -42,7 +42,30 @@ public class RedisCacheTemplate<T> {
         this.redisRedisEnum = redisRedisEnum;
     }
 
-    public T getById(Object id) {
+    public T getObjectById(Object id) {
+        String cachedKey = generateKey(id);
+        try {
+            Optional<T> optional = guavaCache.get(cachedKey);
+
+            if (!optional.isPresent()) {
+                T objectFromDb = getObjectFromDb(id);
+                set(id, objectFromDb);
+                return objectFromDb;
+            }
+
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 从缓存中获取 对象， 即使找不到的话 也不从DB中找
+     * @param id
+     * @return
+     */
+    public T getCachedObjectById(Object id) {
         String cachedKey = generateKey(id);
         try {
             Optional<T> optional = guavaCache.get(cachedKey);
@@ -52,6 +75,7 @@ public class RedisCacheTemplate<T> {
             return null;
         }
     }
+
 
     public void set(Object id, T obj) {
         redisUtil.setCacheObject(generateKey(id), obj, redisRedisEnum.expiration(), redisRedisEnum.timeUnit());
@@ -70,6 +94,10 @@ public class RedisCacheTemplate<T> {
 
     public String generateKey(Object id) {
         return redisRedisEnum.key() + id;
+    }
+
+    public T getObjectFromDb(Object id) {
+        return null;
     }
 
 }

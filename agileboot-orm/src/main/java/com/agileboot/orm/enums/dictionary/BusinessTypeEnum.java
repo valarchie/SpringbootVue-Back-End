@@ -1,23 +1,29 @@
-package com.agileboot.orm.enums.dict;
+package com.agileboot.orm.enums.dictionary;
 
 import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
 
 /**
- * 系统内代表是与否的枚举
+ * 对应sys_operation_log的business_type
  * @author valarchie
  */
-public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
+public enum BusinessTypeEnum implements DictionaryEnumInterface<Integer> {
+
     /**
-     * 是与否
+     * 操作类型
      */
-    YES(1, "是", CssTag.PRIMARY),
-    NO(0, "否", CssTag.DANGER);
+    ADD(1, "添加", CssTag.INFO),
+    MODIFY(2, "修改", CssTag.INFO),
+    DELETE(3, "删除", CssTag.DANGER),
+    GRANT(4, "授权", CssTag.PRIMARY),
+    EXPORT(5, "导出", CssTag.WARNING),
+    IMPORT(6, "导入", CssTag.WARNING),
+    FORCE_LOGOUT(7, "强退", CssTag.DANGER);
 
     private final int value;
     private final String description;
     private final String cssTag;
 
-    CommonAnswerEnum(int value, String description, String cssTag) {
+    BusinessTypeEnum(int value, String description, String cssTag) {
         this.value = value;
         this.description = description;
         this.cssTag = cssTag;
@@ -38,13 +44,8 @@ public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
         return cssTag;
     }
 
-    public static CommonAnswerEnum getDefault() {
-        return YES;
-    }
-
     public static String getDictName() {
-        return "sys_yes_no";
+        return "sys_oper_type";
     }
-
 
 }

@@ -116,7 +116,7 @@ public class SysLoginService {
 //        String verifyKey = Constants.CAPTCHA_CODE_KEY + StrUtil.emptyIfNull(uuid);
 
 //        String captcha = redisUtil.getCacheObject(verifyKey);
-        String captcha = redisCacheService.captchaCache.getById(uuid);
+        String captcha = redisCacheService.captchaCache.getObjectById(uuid);
         redisCacheService.captchaCache.delete(uuid);
 
 //        redisUtil.deleteObject(verifyKey);

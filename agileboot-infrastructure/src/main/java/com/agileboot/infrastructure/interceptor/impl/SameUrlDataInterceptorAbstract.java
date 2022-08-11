@@ -54,7 +54,7 @@ public class SameUrlDataInterceptorAbstract extends AbstractRepeatSubmitIntercep
 
         // 唯一标识（指定key + url + 消息头）
 //        String cacheRepeatKey = Constants.REPEAT_SUBMIT_KEY + url + submitKey;
-        RepeatRequest preRequest = redisCacheService.repeatSubmitCache.getById(url + submitKey);
+        RepeatRequest preRequest = redisCacheService.repeatSubmitCache.getObjectById(url + submitKey);
         if (preRequest != null) {
             if (currentRequest.compareParams(preRequest) &&
                 currentRequest.compareTime(preRequest, annotation.interval())) {

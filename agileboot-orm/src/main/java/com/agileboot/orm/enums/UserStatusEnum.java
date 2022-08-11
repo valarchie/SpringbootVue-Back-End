@@ -1,4 +1,4 @@
-package com.agileboot.orm.enums.common;
+package com.agileboot.orm.enums;
 
 /**
  * 对应sys_user的status字段

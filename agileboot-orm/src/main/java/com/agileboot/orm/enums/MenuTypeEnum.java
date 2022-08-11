@@ -1,23 +1,24 @@
-package com.agileboot.orm.enums.common;
+package com.agileboot.orm.enums;
 
 import com.agileboot.orm.enums.interfaces.BasicEnum;
 
 /**
  * @author valarchie
+ * 对应 sys_menu表的menu_type字段
  */
-public enum MenuComponentEnum implements BasicEnum<Integer> {
+public enum MenuTypeEnum implements BasicEnum<Integer> {
 
     /**
-     * 菜单组件类型
+     * 菜单类型
      */
-    LAYOUT(1,"Layout"),
-    PARENT_VIEW(2,"ParentView"),
-    INNER_LINK(3,"InnerLink");
+    DIRECTORY(1, "目录"),
+    MENU(2, "菜单"),
+    BUTTON(3, "按钮");
 
     private final int value;
     private final String description;
 
-    MenuComponentEnum(int value, String description) {
+    MenuTypeEnum(int value, String description) {
         this.value = value;
         this.description = description;
     }
@@ -31,4 +32,6 @@ public enum MenuComponentEnum implements BasicEnum<Integer> {
     public String description() {
         return description;
     }
+
+
 }

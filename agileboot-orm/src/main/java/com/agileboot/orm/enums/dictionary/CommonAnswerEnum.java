@@ -1,24 +1,23 @@
-package com.agileboot.orm.enums.dict;
+package com.agileboot.orm.enums.dictionary;
 
 import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
 
 /**
- * 对应sys_operation_log的status字段
+ * 系统内代表是与否的枚举
  * @author valarchie
  */
-public enum OperationStatusEnum implements DictionaryEnumInterface<Integer> {
-
+public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
     /**
-     * 操作状态
+     * 是与否
      */
-    SUCCESS(1, "成功", CssTag.PRIMARY),
-    FAIL(0, "失败", CssTag.DANGER);
+    YES(1, "是", CssTag.PRIMARY),
+    NO(0, "否", CssTag.DANGER);
 
     private final int value;
     private final String description;
     private final String cssTag;
 
-    OperationStatusEnum(int value, String description, String cssTag) {
+    CommonAnswerEnum(int value, String description, String cssTag) {
         this.value = value;
         this.description = description;
         this.cssTag = cssTag;
@@ -39,8 +38,13 @@ public enum OperationStatusEnum implements DictionaryEnumInterface<Integer> {
         return cssTag;
     }
 
-    public static String getDictName() {
-        return "sys_common_status";
+    public static CommonAnswerEnum getDefault() {
+        return YES;
     }
+
+    public static String getDictName() {
+        return "sys_yes_no";
+    }
+
 
 }

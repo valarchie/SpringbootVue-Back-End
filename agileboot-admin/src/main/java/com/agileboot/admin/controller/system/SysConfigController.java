@@ -10,7 +10,7 @@ import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.orm.entity.SysConfigXEntity;
-import com.agileboot.orm.enums.cache.DictionaryData;
+import com.agileboot.orm.result.DictionaryData;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

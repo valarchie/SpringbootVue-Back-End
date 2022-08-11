@@ -1,23 +1,24 @@
-package com.agileboot.orm.enums.dict;
+package com.agileboot.orm.enums.dictionary;
 
 import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
 
 /**
- * 除非表有特殊指明的话，一般用这个枚举代表 status字段
+ * 对应sys_notice的 notice_type字段
  * @author valarchie
  */
-public enum CommonStatusEnum implements DictionaryEnumInterface<Integer> {
+public enum NoticeTypeEnum implements DictionaryEnumInterface<Integer> {
+
     /**
-     * 开关状态
+     * 通知类型
      */
-    ENABLE(1, "正常", CssTag.PRIMARY),
-    DISABLE(0, "停用", CssTag.DANGER);
+    NOTIFICATION(1, "通知", CssTag.WARNING),
+    ANNOUNCEMENT(2, "公告", CssTag.SUCCESS);
 
     private final int value;
     private final String description;
     private final String cssTag;
 
-    CommonStatusEnum(int value, String description, String cssTag) {
+    NoticeTypeEnum(int value, String description, String cssTag) {
         this.value = value;
         this.description = description;
         this.cssTag = cssTag;
@@ -38,11 +39,11 @@ public enum CommonStatusEnum implements DictionaryEnumInterface<Integer> {
         return cssTag;
     }
 
-    public static CommonStatusEnum getDefault() {
-        return ENABLE;
+    public static NoticeTypeEnum getDefault() {
+        return NOTIFICATION;
     }
 
     public static String getDictName() {
-        return "sys_normal_disable";
+        return "sys_notice_type";
     }
 }
