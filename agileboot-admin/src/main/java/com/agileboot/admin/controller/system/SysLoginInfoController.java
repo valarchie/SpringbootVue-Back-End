@@ -1,4 +1,4 @@
-package com.agileboot.admin.controller.monitor;
+package com.agileboot.admin.controller.system;
 
 
 import com.agileboot.admin.deprecated.domain.SysLogininfor;

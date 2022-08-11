@@ -22,18 +22,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+// @RestController
+// @RequestMapping("/test/user")
 /**
  * swagger 用户测试方法
  *
- * @author ruoyi
+ * @author valarchie
  */
 @Api("用户信息管理")
-@RestController
-@RequestMapping("/test/user")
-public class TestController extends BaseController {
+public class SwaggerTemplateController extends BaseController {
 
     private final static Map<Integer, UserEntity> USER_ENTITY_MAP = new LinkedHashMap<>();
 
@@ -50,7 +48,8 @@ public class TestController extends BaseController {
     }
 
     @ApiOperation("获取用户详细")
-    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path",
+        dataTypeClass = Integer.class)
     @GetMapping("/{userId}")
     public ResponseDTO<UserEntity> getUser(@PathVariable Integer userId) {
         if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
@@ -91,7 +90,8 @@ public class TestController extends BaseController {
     }
 
     @ApiOperation("删除用户信息")
-    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path",
+        dataTypeClass = Integer.class)
     @DeleteMapping("/{userId}")
     public ResponseDTO<String> delete(@PathVariable Integer userId) {
         if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
@@ -101,23 +101,24 @@ public class TestController extends BaseController {
             return ResponseDTO.fail("用户不存在");
         }
     }
+
+    @ApiModel(value = "UserEntity", description = "用户实体")
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class UserEntity {
+
+        @ApiModelProperty("用户ID")
+        private Integer userId;
+
+        @ApiModelProperty("用户名称")
+        private String username;
+
+        @ApiModelProperty("用户密码")
+        private String password;
+
+        @ApiModelProperty("用户手机")
+        private String mobile;
+    }
 }
 
-@ApiModel(value = "UserEntity", description = "用户实体")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class UserEntity {
-
-    @ApiModelProperty("用户ID")
-    private Integer userId;
-
-    @ApiModelProperty("用户名称")
-    private String username;
-
-    @ApiModelProperty("用户密码")
-    private String password;
-
-    @ApiModelProperty("用户手机")
-    private String mobile;
-}

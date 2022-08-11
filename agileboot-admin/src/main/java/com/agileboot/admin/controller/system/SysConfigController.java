@@ -63,21 +63,6 @@ public class SysConfigController extends BaseController {
     }
 
 
-
-    /**
-     * 完全没必要做导出
-     * @param response
-     * @param config
-     */
-//    @Log(title = "参数管理", businessType = BusinessType.EXPORT)
-//    @PreAuthorize("@ss.hasPermi('system:config:export')")
-//    @PostMapping("/export")
-//    public void export(HttpServletResponse response, SysConfig config) {
-//        List<SysConfig> list = configService.selectConfigList(config);
-//        ExcelUtil<SysConfig> util = new ExcelUtil<SysConfig>(SysConfig.class);
-//        util.exportExcel(response, list, "参数数据");
-//    }
-
     /**
      * 根据参数编号获取详细信息
      */
@@ -107,7 +92,6 @@ public class SysConfigController extends BaseController {
         configEntity.updateById();
         return ResponseDTO.ok();
     }
-
 
 
     /**

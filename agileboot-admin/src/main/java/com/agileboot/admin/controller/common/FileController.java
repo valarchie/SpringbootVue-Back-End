@@ -30,9 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/common")
+@RequestMapping("/file")
 @Slf4j
-public class CommonController {
+public class FileController {
 
     @Autowired
     private ServerConfig serverConfig;
