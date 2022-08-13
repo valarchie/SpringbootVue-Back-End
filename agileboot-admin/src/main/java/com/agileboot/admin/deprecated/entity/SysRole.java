@@ -3,7 +3,7 @@ package com.agileboot.admin.deprecated.entity;
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelColumn.ColumnType;
-import com.agileboot.common.core.domain.BaseEntity;
+import com.agileboot.common.core.dto.BaseEntity;
 import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import javax.validation.constraints.NotBlank;

@@ -7,13 +7,14 @@ import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.response.UserDetailDTO;
 import com.agileboot.admin.response.UserInfoDTO;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.loginuser.AuthenticationUtils;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.system.user.UserApplicationService;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.query.system.SearchUserQuery;
@@ -90,7 +91,9 @@ public class SysUserController extends BaseController {
 
         CustomExcelUtil.readFromResponse(objects, SysUser.class, file);
 
-        String operName = getUsername();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        String operName = loginUser.getUsername();
 //        List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
 
 //        String message = userApplicationService.importUser(null, updateSupport, operName);
@@ -147,7 +150,9 @@ public class SysUserController extends BaseController {
 //            return Rdto.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
             return ResponseDTO.fail();
         }
-        user.setCreateBy(getUsername());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        user.setCreateBy(loginUser.getUsername());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
         SysUserXEntity entity = user.toEntity();
         entity.insert();
@@ -173,7 +178,10 @@ public class SysUserController extends BaseController {
 //            return Rdto.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
             return ResponseDTO.fail();
         }
-        user.setUpdateBy(getUsername());
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        user.setUpdateBy(loginUser.getUsername());
         SysUserXEntity entity = user.toEntity();
         entity.updateById();
         return ResponseDTO.ok();
@@ -186,7 +194,10 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public ResponseDTO remove(@PathVariable Long[] userIds) {
-        if (ArrayUtils.contains(userIds, getUserId())) {
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        if (ArrayUtils.contains(userIds, loginUser.getUserId())) {
 //            return error("当前用户不能删除");
             return ResponseDTO.fail();
         }
@@ -202,10 +213,13 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/password/reset")
     public ResponseDTO resetPwd(@PathVariable Long userId, @RequestBody SysUser user) {
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
         user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
-        user.setUpdateBy(getUsername());
+        user.setUpdateBy(loginUser.getUsername());
         SysUserXEntity entity = user.toEntity();
         entity.updateById();
 
@@ -219,9 +233,12 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/status")
     public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody SysUser user) {
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
-        user.setUpdateBy(getUsername());
+        user.setUpdateBy(loginUser.getUsername());
         SysUserXEntity entity = user.toEntity();
         entity.updateById();
         return ResponseDTO.ok();

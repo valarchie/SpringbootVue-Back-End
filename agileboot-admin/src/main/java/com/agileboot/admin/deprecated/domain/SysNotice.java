@@ -1,6 +1,6 @@
 package com.agileboot.admin.deprecated.domain;
 
-import com.agileboot.common.core.domain.BaseEntity;
+import com.agileboot.common.core.dto.BaseEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;

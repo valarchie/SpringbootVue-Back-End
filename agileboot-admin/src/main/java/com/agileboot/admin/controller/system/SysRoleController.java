@@ -6,16 +6,16 @@ import com.agileboot.admin.deprecated.domain.SysUserRole;
 import com.agileboot.admin.deprecated.entity.SysRole;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.loginuser.AuthenticationUtils;
-import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.domain.system.role.RoleApplicationService;
 import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.infrastructure.annotations.AccessLog;
-import com.agileboot.infrastructure.web.service.SysPermissionService;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.infrastructure.web.service.UserDetailsServiceImpl;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
@@ -53,7 +53,7 @@ public class SysRoleController extends BaseController {
     private TokenService tokenService;
 
     @Autowired
-    private SysPermissionService permissionService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private ISysUserXService userService;
@@ -120,7 +120,8 @@ public class SysRoleController extends BaseController {
 //            return Rdto.error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
             return ResponseDTO.fail();
         }
-        role.setCreateBy(getUsername());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+        role.setCreateBy(loginUser.getUsername());
 
         RoleModel roleModel = role.toModel();
         roleApplicationService.createRole(roleModel);
@@ -146,15 +147,15 @@ public class SysRoleController extends BaseController {
 //            return Rdto.error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
             return ResponseDTO.fail();
         }
-        role.setUpdateBy(getUsername());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+        role.setUpdateBy(loginUser.getUsername());
 
         RoleModel roleModel = role.toModel();
 
         if (roleApplicationService.updateRole(roleModel)) {
             // 更新缓存用户权限
-            LoginUser loginUser = getLoginUser();
             if (loginUser != null && AuthenticationUtils.isAdmin(loginUser.getUserId())) {
-                loginUser.setMenuPermissions(permissionService.getMenuPermission(loginUser.getUserId()));
+                loginUser.setMenuPermissions(userDetailsService.getMenuPermissions(loginUser.getUserId()));
                 tokenService.setLoginUser(loginUser);
             }
             return ResponseDTO.ok();
@@ -187,7 +188,9 @@ public class SysRoleController extends BaseController {
     public ResponseDTO changeStatus(@PathVariable("roleId")Long roleId, @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
-        role.setUpdateBy(getUsername());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        role.setUpdateBy(loginUser.getUsername());
 
         SysRoleXEntity roleEntity = roleService.getById(role.getRoleId());
         roleEntity.setStatus(Convert.toInt(role.getStatus()));

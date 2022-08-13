@@ -86,6 +86,8 @@ token:
     secret: sdhfkjshBN6rr32df38
     # 令牌有效期（默认30分钟）
     expireTime: 30
+    # 自动刷新token的时间
+    autoRefreshTime: 20
 
 # MyBatis配置
 mybatis-plus:

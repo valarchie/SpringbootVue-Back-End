@@ -1,7 +1,7 @@
 package com.agileboot.infrastructure.aspectj;
 
-import com.agileboot.common.core.exception.ApiException;
-import com.agileboot.common.core.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.InternalErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

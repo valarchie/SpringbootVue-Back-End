@@ -3,7 +3,7 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysOperLog;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.time.DatePicker;

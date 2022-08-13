@@ -5,7 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import com.agileboot.common.loginuser.AuthenticationUtils;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.service.ISysMenuXService;
 import java.util.LinkedList;

@@ -1,8 +1,8 @@
 package com.agileboot.infrastructure.cache.redis;
 
-import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.infrastructure.cache.RedisUtil;
-import com.agileboot.infrastructure.interceptor.impl.RepeatRequest;
+import com.agileboot.infrastructure.interceptor.repeatSubmit.RepeatRequest;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

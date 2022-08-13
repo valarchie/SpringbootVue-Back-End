@@ -3,7 +3,7 @@ package com.agileboot.admin.deprecated.domain;
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelColumn.ColumnType;
-import com.agileboot.common.core.domain.BaseEntity;
+import com.agileboot.common.core.dto.BaseEntity;
 import com.agileboot.orm.entity.SysPostXEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

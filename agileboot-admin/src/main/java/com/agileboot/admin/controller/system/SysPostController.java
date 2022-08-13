@@ -3,10 +3,12 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.service.ISysPostXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -100,9 +102,12 @@ public class SysPostController extends BaseController {
 //            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
             return ResponseDTO.fail();
         }
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         SysPostXEntity entity = post.toEntity();
-        entity.setCreatorId(getUserId());
-        entity.setCreateName(getUsername());
+        entity.setCreatorId(loginUser.getUserId());
+        entity.setCreateName(loginUser.getUsername());
         entity.insert();
         return ResponseDTO.ok();
     }
@@ -123,10 +128,12 @@ public class SysPostController extends BaseController {
             return ResponseDTO.fail();
         }
 
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         SysPostXEntity entity = post.toEntity();
 
-        entity.setUpdaterId(getUserId());
-        entity.setUpdateName(getUsername());
+        entity.setUpdaterId(loginUser.getUserId());
+        entity.setUpdateName(loginUser.getUsername());
         entity.updateById();
 
         return ResponseDTO.ok();

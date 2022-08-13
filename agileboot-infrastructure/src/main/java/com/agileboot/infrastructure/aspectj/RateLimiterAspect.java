@@ -1,9 +1,9 @@
 package com.agileboot.infrastructure.aspectj;
 
 import cn.hutool.extra.servlet.ServletUtil;
-import com.agileboot.common.core.exception.ApiException;
-import com.agileboot.common.core.exception.errors.ClientErrorCode;
 import com.agileboot.common.enums.LimitType;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.ClientErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.annotations.RateLimiter;
 import java.lang.reflect.Method;

@@ -1,11 +1,11 @@
 package com.agileboot.infrastructure.i18n;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.agileboot.common.core.exception.errors.BusinessErrorCode;
-import com.agileboot.common.core.exception.errors.ClientErrorCode;
-import com.agileboot.common.core.exception.errors.ErrorCodeInterface;
-import com.agileboot.common.core.exception.errors.ExternalErrorCode;
-import com.agileboot.common.core.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.errors.ClientErrorCode;
+import com.agileboot.common.exception.errors.ErrorCodeInterface;
+import com.agileboot.common.exception.errors.ExternalErrorCode;
+import com.agileboot.common.exception.errors.InternalErrorCode;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

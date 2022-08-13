@@ -5,7 +5,8 @@ import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelColumn.Type;
 import com.agileboot.common.annotation.ExcelSheet;
 import com.agileboot.common.annotation.Excels;
-import com.agileboot.common.core.domain.BaseEntity;
+import com.agileboot.common.core.dto.BaseEntity;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysUserXEntity;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,7 @@ public class SysUser extends BaseEntity {
         entity.setPhoneNumber(this.phonenumber);
         entity.setSex(Convert.toInt(this.sex));
         entity.setAvatar(this.avatar);
-        entity.setPassword(this.password);
+        entity.setPassword(AuthenticationUtils.encryptPassword(this.password));
         // TODO 密码没加盐？
         entity.setStatus(Convert.toInt(this.status));
         return entity;

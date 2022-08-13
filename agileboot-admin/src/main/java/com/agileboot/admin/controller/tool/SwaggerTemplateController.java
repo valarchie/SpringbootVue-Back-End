@@ -1,8 +1,8 @@
 package com.agileboot.admin.controller.tool;
 
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
-import com.agileboot.common.core.exception.errors.BusinessErrorCode;
+import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

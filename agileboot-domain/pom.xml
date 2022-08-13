@@ -30,12 +30,11 @@
             <artifactId>agileboot-orm</artifactId>
         </dependency>
 
-<!--
         <dependency>
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-infrastructure</artifactId>
         </dependency>
-
+<!--
         &lt;!&ndash; 核心模块&ndash;&gt;
         <dependency>
             <groupId>com.agileboot</groupId>

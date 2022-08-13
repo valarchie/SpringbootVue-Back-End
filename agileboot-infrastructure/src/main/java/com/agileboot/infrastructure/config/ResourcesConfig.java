@@ -2,7 +2,7 @@ package com.agileboot.infrastructure.config;
 
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.infrastructure.interceptor.AbstractRepeatSubmitInterceptor;
+import com.agileboot.infrastructure.interceptor.repeatSubmit.AbstractRepeatSubmitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

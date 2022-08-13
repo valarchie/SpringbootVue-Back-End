@@ -4,9 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.entity.SysDept;
 import com.agileboot.admin.response.TreeSelectedDTO;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysDeptXEntity;
 import com.agileboot.orm.enums.dictionary.CommonStatusEnum;
 import com.agileboot.orm.service.ISysDeptXService;
@@ -136,7 +138,8 @@ public class SysDeptController extends BaseController {
 //            return Rdto.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
             return ResponseDTO.fail();
         }
-        dept.setCreateBy(getUsername());
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
         SysDeptXEntity entity = new SysDeptXEntity();
         entity.setParentId(dept.getParentId());
@@ -146,8 +149,8 @@ public class SysDeptController extends BaseController {
         entity.setLeaderName(dept.getLeader());
         entity.setPhone(dept.getPhone());
         entity.setEmail(dept.getEmail());
-        entity.setCreatorId(getUserId());
-        entity.setCreatorName(getUsername());
+        entity.setCreatorId(loginUser.getUserId());
+        entity.setCreatorName(loginUser.getUsername());
         entity.insert();
 
         return ResponseDTO.ok();
@@ -176,6 +179,8 @@ public class SysDeptController extends BaseController {
             return ResponseDTO.fail();
         }
 
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         SysDeptXEntity entity = new SysDeptXEntity();
         entity.setDeptId(deptId);
         entity.setParentId(dept.getParentId());
@@ -185,8 +190,8 @@ public class SysDeptController extends BaseController {
         entity.setLeaderName(dept.getLeader());
         entity.setPhone(dept.getPhone());
         entity.setEmail(dept.getEmail());
-        entity.setUpdaterName(getUsername());
-        entity.setUpdaterId(getUserId());
+        entity.setUpdaterName(loginUser.getUsername());
+        entity.setUpdaterId(loginUser.getUserId());
         entity.updateById();
 
         return ResponseDTO.ok();

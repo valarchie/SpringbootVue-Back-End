@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.response.UploadDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.config.ServerConfig;
 import java.io.IOException;

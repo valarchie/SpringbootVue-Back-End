@@ -30,11 +30,11 @@ public class Constants {
     public static final String RESOURCE_PREFIX = "/profile";
 
 
-    public static class TokenConstants {
+    public static class Token {
         /**
          * 令牌
          */
-        public static final String TOKEN = "token";
+        public static final String TOKEN_FIELD = "token";
 
         /**
          * 令牌前缀
@@ -45,6 +45,19 @@ public class Constants {
          * 令牌前缀
          */
         public static final String LOGIN_USER_KEY = "login_user_key";
+
+    }
+
+    public static class Captcha {
+        /**
+         * 令牌
+         */
+        public static final String MATH_TYPE = "math";
+
+        /**
+         * 令牌前缀
+         */
+        public static final String CHAR_TYPE = "char";
 
     }
 

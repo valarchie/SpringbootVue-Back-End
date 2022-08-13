@@ -14,7 +14,7 @@ public class ServerConfig {
 
     /**
      * 获取完整的请求路径，包括：域名，端口，上下文访问路径
-     *
+     * TODO 压根不用做成config
      * @return 服务地址
      */
     public String getUrl() {
@@ -22,6 +22,7 @@ public class ServerConfig {
         return getDomain(request);
     }
 
+    // TODO 需要改造一下
     public static String getDomain(HttpServletRequest request) {
         StringBuffer url = request.getRequestURL();
         String contextPath = request.getServletContext().getContextPath();

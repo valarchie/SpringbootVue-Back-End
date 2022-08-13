@@ -6,13 +6,13 @@ import com.agileboot.admin.response.UserProfileDTO;
 import com.agileboot.admin.response.UserProfileDTO.UserProfileDTOBuilder;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.loginuser.AuthenticationUtils;
-import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysUserXService;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class SysProfileController extends BaseController {
      */
     @GetMapping
     public ResponseDTO profile() {
-        LoginUser user = getLoginUser();
+        LoginUser user = AuthenticationUtils.getLoginUser();
 
         SysUserXEntity userXEntity = userService.getById(user.getUserId());
         // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
@@ -65,7 +65,7 @@ public class SysProfileController extends BaseController {
     @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO updateProfile(@RequestBody SysUser user) {
-        LoginUser loginUser = getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         user.setUserName(loginUser.getUsername());
         if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(),
             user.getUserId())) {
@@ -94,7 +94,7 @@ public class SysProfileController extends BaseController {
     @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/password")
     public ResponseDTO updatePassword(String oldPassword, String newPassword) {
-        LoginUser loginUser = getLoginUser();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         String password = loginUser.getPassword();
         if (!AuthenticationUtils.matchesPassword(oldPassword, password)) {
 //            return Rdto.error("修改密码失败，旧密码错误");
@@ -105,7 +105,7 @@ public class SysProfileController extends BaseController {
             return ResponseDTO.fail();
         }
         SysUserXEntity entity = new SysUserXEntity();
-        entity.setUserId(getUserId());
+        entity.setUserId(loginUser.getUserId());
         entity.setPassword(AuthenticationUtils.encryptPassword(newPassword));
 
         if (entity.updateById()) {
@@ -125,11 +125,11 @@ public class SysProfileController extends BaseController {
     @PostMapping("/avatar")
     public ResponseDTO avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
-            LoginUser loginUser = getLoginUser();
+            LoginUser loginUser = AuthenticationUtils.getLoginUser();
             String avatar = FileUploadUtils.upload(AgileBootConfig.getAvatarPath(), file);
 
             SysUserXEntity entity = new SysUserXEntity();
-            entity.setUserId(getUserId());
+            entity.setUserId(loginUser.getUserId());
             entity.setAvatar(avatar);
 
             if (entity.updateById()) {

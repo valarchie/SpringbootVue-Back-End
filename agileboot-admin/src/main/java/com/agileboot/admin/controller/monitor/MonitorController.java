@@ -1,28 +1,18 @@
 package com.agileboot.admin.controller.monitor;
 
-import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.response.RedisCacheInfoDTO;
-import com.agileboot.admin.response.RedisCacheInfoDTO.CommonStatusDTO;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.loginuser.LoginUser;
+import com.agileboot.domain.system.monitor.MonitorDomainService;
+import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.RedisUtil;
-import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
-import com.agileboot.infrastructure.web.domain.ServerInfo;
 import com.agileboot.infrastructure.web.domain.SysUserOnline;
-import com.agileboot.infrastructure.web.service.SysUserOnlineServiceImpl;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import com.agileboot.infrastructure.web.domain.server.ServerInfo;
 import java.util.List;
-import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisServerCommands;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MonitorController extends BaseController {
 
     @Autowired
+    private MonitorDomainService monitorDomainService;
+
+    @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
@@ -55,68 +48,23 @@ public class MonitorController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @GetMapping("/cacheInfo")
     public ResponseDTO<RedisCacheInfoDTO> getRedisCacheInfo() throws Exception {
-        Properties info = (Properties) redisTemplate.execute((RedisCallback<Object>) RedisServerCommands::info);
-        Properties commandStats = (Properties) redisTemplate.execute(
-            (RedisCallback<Object>) connection -> connection.info("commandstats"));
-        Object dbSize = redisTemplate.execute((RedisCallback<Object>) RedisServerCommands::dbSize);
-
-        if(commandStats == null) {
-            throw new RuntimeException("找不到对应的redis信息。");
-        }
-
-        RedisCacheInfoDTO cacheInfo = new RedisCacheInfoDTO();
-
-        cacheInfo.setInfo(info);
-        cacheInfo.setDbSize(dbSize);
-        cacheInfo.setCommandStats(new ArrayList<>());
-
-        commandStats.stringPropertyNames().forEach(key -> {
-            String property = commandStats.getProperty(key);
-
-            RedisCacheInfoDTO.CommonStatusDTO commonStatus = new CommonStatusDTO();
-            commonStatus.setName(StrUtil.removePrefix(key, "cmdstat_"));
-            commonStatus.setValue(StrUtil.subBetween(property, "calls=", ",usec"));
-
-            cacheInfo.getCommandStats().add(commonStatus);
-        });
-
-        return ResponseDTO.ok(cacheInfo);
+        RedisCacheInfoDTO redisCacheInfo = monitorDomainService.getRedisCacheInfo();
+        return ResponseDTO.ok(redisCacheInfo);
     }
 
 
     @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @GetMapping("/serverInfo")
-    public ResponseDTO<ServerInfo> getServerInfo() throws Exception {
-        ServerInfo serverInfo = ServerInfo.fillInfo();
+    public ResponseDTO<ServerInfo> getServerInfo() {
+        ServerInfo serverInfo = monitorDomainService.getServerInfo();
         return ResponseDTO.ok(serverInfo);
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
     @GetMapping("/onlineUser/list")
     public ResponseDTO<TableDataInfo> list(String ipaddr, String userName) {
-        Collection<String> keys = redisUtil.keys(CacheKeyEnum.LOGIN_USER_KEY.key() + "*");
-        List<SysUserOnline> userOnlineList = new ArrayList<SysUserOnline>();
-        for (String key : keys) {
-            LoginUser user = redisUtil.getCacheObject(key);
-            if (StrUtil.isNotEmpty(ipaddr) && StrUtil.isNotEmpty(userName)) {
-                if (StrUtil.equals(ipaddr, user.getIpaddr()) && StrUtil.equals(userName, user.getUsername())) {
-                    userOnlineList.add(userOnlineService.selectOnlineByInfo(ipaddr, userName, user));
-                }
-            } else if (StrUtil.isNotEmpty(ipaddr)) {
-                if (StrUtil.equals(ipaddr, user.getIpaddr())) {
-                    userOnlineList.add(userOnlineService.selectOnlineByIpaddr(ipaddr, user));
-                }
-            } else if (StrUtil.isNotEmpty(userName)) {
-                if (StrUtil.equals(userName, user.getUsername())) {
-                    userOnlineList.add(userOnlineService.selectOnlineByUserName(userName, user));
-                }
-            } else {
-                userOnlineList.add(userOnlineService.loginUserToUserOnline(user));
-            }
-        }
-        Collections.reverse(userOnlineList);
-        userOnlineList.removeAll(Collections.singleton(null));
-        return ResponseDTO.ok(getDataTable(userOnlineList));
+        List<SysUserOnline> onlineUserList = monitorDomainService.getOnlineUserList(userName, ipaddr);
+        return ResponseDTO.ok(getDataTable(onlineUserList));
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.user;
 
-import com.agileboot.common.core.exception.ApiException;
-import com.agileboot.common.core.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserXService;

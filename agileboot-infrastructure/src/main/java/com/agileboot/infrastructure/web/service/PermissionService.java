@@ -2,9 +2,9 @@ package com.agileboot.infrastructure.web.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.common.loginuser.AuthenticationUtils;
-import com.agileboot.common.loginuser.LoginUser;
-import com.agileboot.common.loginuser.Role;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.domain.login.Role;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.enums.DataScopeEnum;
 import com.agileboot.orm.service.ISysDeptXService;
@@ -84,7 +84,7 @@ public class PermissionService {
             return true;
         }
 
-        if(role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
+        if (role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
             deptService.isChildOfTargetDeptId(loginUser.getDeptId(), targetUser.getDeptId())) {
             return true;
         }

@@ -7,8 +7,6 @@ import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.page.PageDomain;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.core.page.TableSupport;
-import com.agileboot.common.loginuser.AuthenticationUtils;
-import com.agileboot.common.loginuser.LoginUser;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -152,15 +150,6 @@ public class BaseController {
         return orderDirection;
     }
 
-
-
-
-
-
-
-
-
-
     /**
      * 页面跳转
      */
@@ -168,32 +157,5 @@ public class BaseController {
         return StrUtil.format("redirect:{}", url);
     }
 
-    /**
-     * 获取用户缓存信息
-     */
-    public LoginUser getLoginUser() {
-        return AuthenticationUtils.getLoginUser();
-    }
-
-    /**
-     * 获取登录用户id
-     */
-    public Long getUserId() {
-        return getLoginUser().getUserId();
-    }
-
-    /**
-     * 获取登录部门id
-     */
-    public Long getDeptId() {
-        return getLoginUser().getDeptId();
-    }
-
-    /**
-     * 获取登录用户名
-     */
-    public String getUsername() {
-        return getLoginUser().getUsername();
-    }
 
 }

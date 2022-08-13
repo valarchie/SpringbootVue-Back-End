@@ -4,10 +4,12 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysNotice;
 import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.domain.ResponseDTO;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysNoticeXEntity;
 import com.agileboot.orm.service.ISysNoticeXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -67,12 +69,14 @@ public class SysNoticeController extends BaseController {
     @AccessLog(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
         sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
-        sysNoticeXEntity.setCreatorId(getUserId());
-        sysNoticeXEntity.setCreatorName(getUsername());
+        sysNoticeXEntity.setCreatorId(loginUser.getUserId());
+        sysNoticeXEntity.setCreatorName(loginUser.getUsername());
         sysNoticeXEntity.insert();
         return ResponseDTO.ok();
     }
@@ -84,13 +88,15 @@ public class SysNoticeController extends BaseController {
     @AccessLog(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
+
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
         SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
         sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
         sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
         sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
         sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
-        sysNoticeXEntity.setUpdaterId(getUserId());
-        sysNoticeXEntity.setUpdaterName(getUsername());
+        sysNoticeXEntity.setUpdaterId(loginUser.getUserId());
+        sysNoticeXEntity.setUpdaterName(loginUser.getUsername());
         sysNoticeXEntity.updateById();
         return ResponseDTO.ok();
     }
