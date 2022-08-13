@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 /**
  * 自定义退出处理类 返回成功
+ * 在SecurityConfig类当中 定义了/logout 路径对应处理逻辑
  *
  * @author ruoyi
  */

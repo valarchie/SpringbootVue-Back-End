@@ -155,7 +155,7 @@ public class LoginService {
             ImgUtil.writeJpg(image, os);
 
             captchaDTO.setUuid(uuid);
-            captchaDTO.setImg(cn.hutool.core.codec.Base64.encode(os.toByteArray()));
+            captchaDTO.setImg(Base64.encode(os.toByteArray()));
 
         }
 

@@ -11,19 +11,12 @@ import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.domain.system.menu.MenuApplicationService;
 import com.agileboot.domain.system.menu.RouterVo;
-import com.agileboot.domain.system.user.UserApplicationService;
-import com.agileboot.infrastructure.cache.RedisUtil;
-import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
-import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.LoginService;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.service.ISysConfigXService;
-import com.agileboot.orm.service.ISysUserXService;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,40 +31,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
+    private final LoginService loginService;
 
-    @Autowired
-    private RedisUtil redisUtil;
-
-    @Autowired
-    private GuavaCacheService guavaCacheService;
-
-    @Autowired
-    private ISysConfigXService configService;
-
-    @Autowired
-    private RedisCacheService redisCacheService;
-
-    @Autowired
-    private UserApplicationService userApplicationService;
-
-
-    @Autowired
-    private LoginService loginService;
-
-    @Autowired
-    private ISysUserXService userService;
-
-    @Autowired
-    private MenuApplicationService menuApplicationService;
-
-    @Autowired
-    private RedisUtil cache;
-
+    private final MenuApplicationService menuApplicationService;
     /**
      * 系统基础配置
      */
-    @Autowired
-    private AgileBootConfig agileBootConfig;
+    private final AgileBootConfig agileBootConfig;
+
+    public LoginController(LoginService loginService,
+        MenuApplicationService menuApplicationService, AgileBootConfig agileBootConfig) {
+        this.loginService = loginService;
+        this.menuApplicationService = menuApplicationService;
+        this.agileBootConfig = agileBootConfig;
+    }
 
     /**
      * 访问首页，提示语

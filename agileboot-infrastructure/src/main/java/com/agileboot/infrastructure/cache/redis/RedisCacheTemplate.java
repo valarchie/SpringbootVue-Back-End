@@ -32,7 +32,7 @@ public class RedisCacheTemplate<T> {
             @Override
             public Optional<T> load(String cachedKey) {
                 T cacheObject = redisUtil.getCacheObject(cachedKey);
-                log.debug("find the local guava cache of key{} : is {}", cachedKey, cacheObject);
+                log.debug("find the redis cache of key: {} is {}", cachedKey, cacheObject);
                 return Optional.ofNullable(cacheObject);
             }
         });
@@ -42,10 +42,16 @@ public class RedisCacheTemplate<T> {
         this.redisRedisEnum = redisRedisEnum;
     }
 
+    /**
+     * 从缓存中获取对象   如果获取不到的话  从DB层面获取
+     * @param id
+     * @return
+     */
     public T getObjectById(Object id) {
         String cachedKey = generateKey(id);
         try {
             Optional<T> optional = guavaCache.get(cachedKey);
+            log.debug("find the guava cache of key: {}", cachedKey);
 
             if (!optional.isPresent()) {
                 T objectFromDb = getObjectFromDb(id);
@@ -53,7 +59,7 @@ public class RedisCacheTemplate<T> {
                 return objectFromDb;
             }
 
-            return null;
+            return optional.get();
         } catch (ExecutionException e) {
             e.printStackTrace();
             return null;
@@ -69,6 +75,7 @@ public class RedisCacheTemplate<T> {
         String cachedKey = generateKey(id);
         try {
             Optional<T> optional = guavaCache.get(cachedKey);
+            log.debug("find the guava cache of key: {}", cachedKey);
             return optional.orElse(null);
         } catch (ExecutionException e) {
             e.printStackTrace();

@@ -40,7 +40,7 @@ public class ServerInfo {
     /**
      * JVM相关信息
      */
-    private JvmInfo jvm = new JvmInfo();
+    private JvmInfo jvmInfo = new JvmInfo();
 
     /**
      * 服务器相关信息
@@ -119,11 +119,11 @@ public class ServerInfo {
      */
     private void fillJvmInfo() {
         Properties props = System.getProperties();
-        jvm.setTotal(Runtime.getRuntime().totalMemory());
-        jvm.setMax(Runtime.getRuntime().maxMemory());
-        jvm.setFree(Runtime.getRuntime().freeMemory());
-        jvm.setVersion(props.getProperty("java.version"));
-        jvm.setHome(props.getProperty("java.home"));
+        jvmInfo.setTotal(Runtime.getRuntime().totalMemory());
+        jvmInfo.setMax(Runtime.getRuntime().maxMemory());
+        jvmInfo.setFree(Runtime.getRuntime().freeMemory());
+        jvmInfo.setVersion(props.getProperty("java.version"));
+        jvmInfo.setHome(props.getProperty("java.home"));
     }
 
     /**

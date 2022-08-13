@@ -82,7 +82,7 @@ public class SysMenuController extends BaseController {
         if(loginUser.isAdmin()) {
             sysMenuEntities = menuService.list(query.generateQueryWrapper());
         } else {
-            sysMenuEntities = menuService.selectMenuListByUserId(getUserId());
+            sysMenuEntities = menuService.selectMenuListByUserId(loginUser.getUserId());
         }
         List<Tree<Long>> trees = menuApplicationService.buildMenuTreeSelect(sysMenuEntities);
 
@@ -94,7 +94,9 @@ public class SysMenuController extends BaseController {
      */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public ResponseDTO roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
-        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(getUserId());
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(loginUser.getUserId());
 
         TreeSelectedDTO tree = new TreeSelectedDTO();
         tree.setMenus(menuApplicationService.buildMenuTreeSelect(menus));
@@ -110,6 +112,8 @@ public class SysMenuController extends BaseController {
     @AccessLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody SysMenu menu) {
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
         if (menuService.checkMenuNameUnique(menu.getMenuName(), null, menu.getParentId())) {
 //            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
             return ResponseDTO.fail();
@@ -120,8 +124,8 @@ public class SysMenuController extends BaseController {
             return ResponseDTO.fail();
         }
         SysMenuXEntity entity = menu.toEntity();
-        entity.setCreatorId(getUserId());
-        entity.setCreatorName(getUsername());
+        entity.setCreatorId(loginUser.getUserId());
+        entity.setCreatorName(loginUser.getUsername());
         entity.insert();
 
         return ResponseDTO.ok();
@@ -147,10 +151,13 @@ public class SysMenuController extends BaseController {
             return ResponseDTO.fail();
         }
 
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+
         SysMenuXEntity entity = menu.toEntity();
 
-        entity.setUpdaterId(getUserId());
-        entity.setUpdateName(getUsername());
+        entity.setUpdaterId(loginUser.getUserId());
+        entity.setUpdateName(loginUser.getUsername());
         entity.updateById();
         return ResponseDTO.ok();
     }

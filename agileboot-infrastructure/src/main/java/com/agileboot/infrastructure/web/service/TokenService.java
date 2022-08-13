@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.common.exception.errors.ErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
@@ -76,10 +75,6 @@ public class TokenService {
                 String uuid = (String) claims.get(Token.LOGIN_USER_KEY);
 
                 LoginUser user = redisCacheService.loginUserCache.getCachedObjectById(uuid);
-
-                if (user == null) {
-                    throw new ApiException(BusinessErrorCode.USER_CACHE_IS_EXPIRE);
-                }
 
                 return user;
             } catch (Exception e) {

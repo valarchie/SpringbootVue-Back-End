@@ -7,13 +7,11 @@ import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.monitor.MonitorDomainService;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;
 import com.agileboot.infrastructure.annotations.AccessLog;
-import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.web.domain.SysUserOnline;
 import com.agileboot.infrastructure.web.domain.server.ServerInfo;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,15 +30,6 @@ public class MonitorController extends BaseController {
 
     @Autowired
     private MonitorDomainService monitorDomainService;
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private SysUserOnlineServiceImpl userOnlineService;
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Autowired
     private RedisCacheService redisCacheService;
