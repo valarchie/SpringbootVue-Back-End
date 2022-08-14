@@ -83,6 +83,22 @@ public class RedisCacheTemplate<T> {
         }
     }
 
+    /**
+     * 从缓存中获取 对象， 即使找不到的话 也不从DB中找
+     * @param cachedKey 直接通过redis的key来搜索
+     * @return
+     */
+    public T getCachedObjectByKey(String cachedKey) {
+        try {
+            Optional<T> optional = guavaCache.get(cachedKey);
+            log.debug("find the guava cache of key: {}", cachedKey);
+            return optional.orElse(null);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public void set(Object id, T obj) {
         redisUtil.setCacheObject(generateKey(id), obj, redisRedisEnum.expiration(), redisRedisEnum.timeUnit());

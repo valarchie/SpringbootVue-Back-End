@@ -31,6 +31,8 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     UPLOAD_IMPORT_EXCEL_FAILED(Module.UPLOAD, 4, "导入excel失败：%s"),
 
+    UPLOAD_FILE_IS_EMPTY(Module.UPLOAD, 5, "上传文件为空"),
+
     USER_NON_EXIST(Module.USER, 1, "登录用户：%s 不存在"),
 
     USER_IS_DISABLE(Module.USER, 2, "对不起， 您张的账号：%s 已停用"),

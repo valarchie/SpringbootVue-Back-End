@@ -2,7 +2,7 @@ package com.agileboot.common.utils.file;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -123,7 +123,7 @@ public class FileUploadUtils {
     }
 
     public static String getPathFileName(String uploadDir, String fileName) {
-        String currentDir = StrUtil.subAfter(uploadDir, AgileBootConfig.getProfile(), false);
+        String currentDir = StrUtil.strip(uploadDir, AgileBootConfig.getProfile() + "/");
         return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
     }
 
@@ -155,6 +155,7 @@ public class FileUploadUtils {
 
     /**
      * 获取文件名的后缀
+     *
      * @param file 表单文件
      * @return 后缀名
      */
@@ -178,7 +179,8 @@ public class FileUploadUtils {
         // 禁止目录上跳级别
         return !StrUtil.contains(resource, "..") &&
             // 检查允许下载的文件规则
-            StrUtil.containsAnyIgnoreCase(FileTypeUtil.getType(resource), FileTypesConstant.ALLOWED_DOWNLOAD_EXTENSIONS);
+            StrUtil.containsAnyIgnoreCase(FileNameUtil.getSuffix(resource),
+                FileTypesConstant.ALLOWED_DOWNLOAD_EXTENSIONS);
     }
 
 
@@ -196,7 +198,7 @@ public class FileUploadUtils {
 
         response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Content-Disposition,download-filename");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
-//        response.setHeader("download-filename", fileNameUrlEncoded);
+        response.setHeader("download-filename", fileNameUrlEncoded);
     }
 
 

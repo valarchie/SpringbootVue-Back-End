@@ -5,14 +5,17 @@ import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO.CommonStatusDTO;
 import com.agileboot.infrastructure.cache.RedisUtil;
 import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
-import com.agileboot.infrastructure.web.domain.SysUserOnline;
+import com.agileboot.infrastructure.cache.redis.RedisCacheService;
+import com.agileboot.infrastructure.web.domain.OnlineUser;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.domain.server.ServerInfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -27,6 +30,9 @@ public class MonitorDomainService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private RedisCacheService redisCacheService;
 
 
     public RedisCacheInfoDTO getRedisCacheInfo() {
@@ -59,31 +65,23 @@ public class MonitorDomainService {
         return cacheInfo;
     }
 
-    public List<SysUserOnline> getOnlineUserList(String userName, String ipaddr) {
-
+    public List<OnlineUser> getOnlineUserList(String userName, String ipaddr) {
         Collection<String> keys = redisUtil.keys(CacheKeyEnum.LOGIN_USER_KEY.key() + "*");
-        List<SysUserOnline> userOnlineList = new ArrayList<SysUserOnline>();
-        for (String key : keys) {
-            LoginUser user = redisUtil.getCacheObject(key);
-            SysUserOnline sysUserOnline = loginUserToUserOnline(user);
 
-            if (StrUtil.isAllNotEmpty(ipaddr, userName) &&
-                StrUtil.equals(ipaddr, user.getIpaddr()) && StrUtil.equals(userName, user.getUsername())) {
-                userOnlineList.add(sysUserOnline);
-            }
-            if (StrUtil.isNotEmpty(ipaddr) && StrUtil.equals(ipaddr, user.getIpaddr())) {
-                userOnlineList.add(sysUserOnline);
-            }
-            if (StrUtil.isNotEmpty(userName) && StrUtil.equals(userName, user.getUsername())) {
-                userOnlineList.add(sysUserOnline);
-            }
+        List<OnlineUser> allOnlineUsers = keys.stream().map(
+                o -> mapLoginUserToUserOnline(redisCacheService.loginUserCache.getCachedObjectByKey(o)))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
 
-            userOnlineList.add(sysUserOnline);
-        }
-        Collections.reverse(userOnlineList);
-        userOnlineList.removeAll(Collections.singleton(null));
+        List<OnlineUser> filteredOnlineUsers = allOnlineUsers.stream()
+            .filter(o ->
+                StrUtil.isEmpty(userName) || userName.equals(o.getUserName())
+            ).filter( o ->
+                StrUtil.isEmpty(ipaddr) || ipaddr.equals(o.getIpaddr())
+            ).collect(Collectors.toList());
 
-        return userOnlineList;
+        Collections.reverse(filteredOnlineUsers);
+        return filteredOnlineUsers;
     }
 
     public ServerInfo getServerInfo() {
@@ -97,20 +95,20 @@ public class MonitorDomainService {
      * @param user 用户信息
      * @return 在线用户
      */
-    public SysUserOnline loginUserToUserOnline(LoginUser user) {
+    public OnlineUser mapLoginUserToUserOnline(LoginUser user) {
         if (user == null) {
             return null;
         }
-        SysUserOnline sysUserOnline = new SysUserOnline();
-        sysUserOnline.setTokenId(user.getToken());
-        sysUserOnline.setUserName(user.getUsername());
-        sysUserOnline.setIpaddr(user.getIpaddr());
-        sysUserOnline.setLoginLocation(user.getLoginLocation());
-        sysUserOnline.setBrowser(user.getBrowser());
-        sysUserOnline.setOs(user.getOs());
-        sysUserOnline.setLoginTime(user.getLoginTime());
+        OnlineUser onlineUser = new OnlineUser();
+        onlineUser.setTokenId(user.getToken());
+        onlineUser.setUserName(user.getUsername());
+        onlineUser.setIpaddr(user.getIpaddr());
+        onlineUser.setLoginLocation(user.getLoginLocation());
+        onlineUser.setBrowser(user.getBrowser());
+        onlineUser.setOs(user.getOs());
+        onlineUser.setLoginTime(user.getLoginTime());
         // TODO 利用缓存类   获取deptName
-        sysUserOnline.setDeptName("depart 1");
-        return sysUserOnline;
+        onlineUser.setDeptName("depart 1");
+        return onlineUser;
     }
 }

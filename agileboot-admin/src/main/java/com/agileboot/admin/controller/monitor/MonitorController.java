@@ -8,7 +8,7 @@ import com.agileboot.domain.system.monitor.MonitorDomainService;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
-import com.agileboot.infrastructure.web.domain.SysUserOnline;
+import com.agileboot.infrastructure.web.domain.OnlineUser;
 import com.agileboot.infrastructure.web.domain.server.ServerInfo;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class MonitorController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")
     @GetMapping("/cacheInfo")
-    public ResponseDTO<RedisCacheInfoDTO> getRedisCacheInfo() throws Exception {
+    public ResponseDTO<RedisCacheInfoDTO> getRedisCacheInfo() {
         RedisCacheInfoDTO redisCacheInfo = monitorDomainService.getRedisCacheInfo();
         return ResponseDTO.ok(redisCacheInfo);
     }
@@ -49,10 +49,16 @@ public class MonitorController extends BaseController {
         return ResponseDTO.ok(serverInfo);
     }
 
+    /**
+     * 获取在线用户列表
+     * @param ipaddr
+     * @param userName
+     * @return
+     */
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
     @GetMapping("/onlineUser/list")
     public ResponseDTO<TableDataInfo> list(String ipaddr, String userName) {
-        List<SysUserOnline> onlineUserList = monitorDomainService.getOnlineUserList(userName, ipaddr);
+        List<OnlineUser> onlineUserList = monitorDomainService.getOnlineUserList(userName, ipaddr);
         return ResponseDTO.ok(getDataTable(onlineUserList));
     }
 
@@ -62,7 +68,7 @@ public class MonitorController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:online:forceLogout')")
     @AccessLog(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/onlineUser/{tokenId}")
-    public ResponseDTO forceLogout(@PathVariable String tokenId) {
+    public ResponseDTO<Object> forceLogout(@PathVariable String tokenId) {
         redisCacheService.loginUserCache.delete(tokenId);
         return ResponseDTO.ok();
     }
