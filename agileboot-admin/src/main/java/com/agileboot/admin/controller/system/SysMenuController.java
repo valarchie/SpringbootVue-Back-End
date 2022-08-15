@@ -9,11 +9,11 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.menu.MenuApplicationService;
+import com.agileboot.domain.system.menu.MenuQuery;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.query.system.MenuQuery;
 import com.agileboot.orm.service.ISysMenuXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.List;
@@ -80,7 +80,7 @@ public class SysMenuController extends BaseController {
         List<SysMenuXEntity> sysMenuEntities;
 
         if(loginUser.isAdmin()) {
-            sysMenuEntities = menuService.list(query.generateQueryWrapper());
+            sysMenuEntities = menuService.list(query.toQueryWrapper());
         } else {
             sysMenuEntities = menuService.selectMenuListByUserId(loginUser.getUserId());
         }

@@ -4,8 +4,8 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysNotice;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
@@ -43,14 +43,14 @@ public class SysNoticeController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SysNotice notice) {
+    public ResponseDTO<PageDTO> list(SysNotice notice) {
         Page<SysNoticeXEntity> page = getPage();
         QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.like(StrUtil.isNotEmpty(notice.getNoticeTitle()), "notice_title", notice.getNoticeTitle())
                 .eq(notice.getNoticeType()!=null, "notice_type" , notice.getNoticeType())
                     .like(notice.getCreateBy()!=null, "creator_name", notice.getCreateBy());
         noticeService.page(page, sysNoticeWrapper);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     /**

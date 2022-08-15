@@ -1,16 +1,14 @@
-package com.agileboot.orm.query.system;
+package com.agileboot.domain.system.loginInfo;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.query.AbstractQueryConditionGenerator;
+import com.agileboot.orm.query.AbstractQuery;
 import com.agileboot.orm.query.TimeRangeQuery;
 import com.agileboot.orm.result.SearchUserResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class SearchUserQuery  extends AbstractQueryConditionGenerator<SearchUserResult> {
+public class SearchUserQuery extends AbstractQuery {
 
     private Long userId;
     private String username;
@@ -21,7 +19,7 @@ public class SearchUserQuery  extends AbstractQueryConditionGenerator<SearchUser
     private TimeRangeQuery timeRange;
 
     @Override
-    public QueryWrapper<SearchUserResult> generateQueryWrapper() {
+    public QueryWrapper<SearchUserResult> toQueryWrapper() {
         QueryWrapper<SearchUserResult> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.like(StrUtil.isNotEmpty(username), "username", username)

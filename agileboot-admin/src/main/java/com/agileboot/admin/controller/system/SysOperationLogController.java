@@ -3,8 +3,8 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysOperLog;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.time.DatePicker;
 import com.agileboot.infrastructure.annotations.AccessLog;
@@ -38,7 +38,7 @@ public class SysOperationLogController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:operlog:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SysOperLog operLog) {
+    public ResponseDTO<PageDTO> list(SysOperLog operLog) {
 
         Page<SysOperationLogXEntity> page = getPage();
         QueryWrapper<SysOperationLogXEntity> queryWrapper = new QueryWrapper<>();
@@ -57,7 +57,7 @@ public class SysOperationLogController extends BaseController {
         List<SysOperLog> excelModels = page.getRecords().stream().map(SysOperLog::new)
             .collect(Collectors.toList());
 
-        return ResponseDTO.ok(getDataTable(excelModels, page.getTotal()));
+        return ResponseDTO.ok(new PageDTO(excelModels, page.getTotal()));
     }
 
     @AccessLog(title = "操作日志", businessType = BusinessType.EXPORT)

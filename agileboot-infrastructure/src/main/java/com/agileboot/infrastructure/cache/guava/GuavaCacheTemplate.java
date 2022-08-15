@@ -59,7 +59,7 @@ public abstract class GuavaCacheTemplate<T> {
             @Override
             public Optional<T> load(String key) {
                 T cacheObject = getObjectFromDb(key);
-                log.debug("find the local guava cache of key{} : is {}", key, cacheObject);
+                log.debug("find the local guava cache of key: {}  is {}", key, cacheObject);
                 return Optional.ofNullable(cacheObject);
             }
         });

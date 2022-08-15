@@ -1,18 +1,17 @@
 package com.agileboot.admin.controller.system;
 
-import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysConfig;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.domain.system.config.ConfigQuery;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.orm.entity.SysConfigXEntity;
 import com.agileboot.orm.result.DictionaryData;
 import com.agileboot.orm.service.ISysConfigXService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +43,12 @@ public class SysConfigController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:config:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SysConfig config) {
+    public ResponseDTO<PageDTO> list(ConfigQuery query) {
         Page<SysConfigXEntity> page = getPage();
-        QueryWrapper<SysConfigXEntity> sysNoticeWrapper = new QueryWrapper<>();
-        sysNoticeWrapper.like(StrUtil.isNotEmpty(config.getConfigName()), "config_name", config.getConfigName());
-        configService.page(page, sysNoticeWrapper);
-        return ResponseDTO.ok(getDataTable(page));
+//        QueryWrapper<SysConfigXEntity> sysNoticeWrapper = new QueryWrapper<>();
+//        sysNoticeWrapper.like(StrUtil.isNotEmpty(config.getConfigName()), "config_name", config.getConfigName());
+        configService.page(page, query.toQueryWrapper());
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     /**

@@ -5,19 +5,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
 
 @Data
-public class SortQuery<T> {
+public class SortQuery {
+
+    private static final String ASC = "ascending";
+    private static final String DESC = "descending";
 
     private String column;
     private String direction;
 
     @SuppressWarnings("rawtypes")
-    public QueryWrapper<T> addSortByCondition(QueryWrapper<T> queryWrapper) {
-
+    public QueryWrapper addQueryCondition(QueryWrapper queryWrapper) {
         if(queryWrapper != null) {
             queryWrapper.orderBy(StrUtil.isNotBlank(column), convertSortDirection(),
                 StrUtil.toUnderlineCase(column));
         }
-
         return queryWrapper;
     }
 
@@ -25,9 +26,9 @@ public class SortQuery<T> {
         boolean orderDirection = true;
         if (StrUtil.isNotEmpty(direction)) {
             // 兼容前端排序类型
-            if ("ascending".equals(direction)) {
+            if (ASC.equals(direction)) {
                 orderDirection = true;
-            } else if ("descending".equals(direction)) {
+            } else if (DESC.equals(direction)) {
                 orderDirection = false;
             }
         }

@@ -3,12 +3,12 @@ package com.agileboot.admin.controller.system;
 
 import com.agileboot.admin.deprecated.domain.SysLogininfor;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.domain.system.loginInfo.LoginInfoQuery;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
-import com.agileboot.orm.query.system.LoginInfoQuery;
 import com.agileboot.orm.service.ISysLoginInfoXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -39,13 +39,13 @@ public class SysLoginInfoController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('monitor:logininfor:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(LoginInfoQuery loginInfoQuery) {
+    public ResponseDTO<PageDTO> list(LoginInfoQuery loginInfoQuery) {
 
         Page<SysLoginInfoXEntity> page = getPage();
-        QueryWrapper queryWrapper = loginInfoQuery.generateQueryWrapper();
+        QueryWrapper queryWrapper = loginInfoQuery.toQueryWrapper();
 
         loginInfoService.page(page, queryWrapper);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     @AccessLog(title = "登录日志", businessType = BusinessType.EXPORT)
@@ -55,7 +55,7 @@ public class SysLoginInfoController extends BaseController {
 
         Page<SysLoginInfoXEntity> page = getPage();
 
-        QueryWrapper queryWrapper = loginInfoQuery.generateQueryWrapper();
+        QueryWrapper queryWrapper = loginInfoQuery.toQueryWrapper();
 
         loginInfoService.page(page, queryWrapper);
         List<SysLogininfor> excelModels = page.getRecords().stream().map(SysLogininfor::new)

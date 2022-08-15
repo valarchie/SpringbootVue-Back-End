@@ -6,10 +6,10 @@ import com.agileboot.admin.deprecated.domain.SysUserRole;
 import com.agileboot.admin.deprecated.entity.SysRole;
 import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.domain.system.role.RoleApplicationService;
+import com.agileboot.domain.system.role.RoleDomainService;
 import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
@@ -59,11 +59,11 @@ public class SysRoleController extends BaseController {
     private ISysUserXService userService;
 
     @Autowired
-    private RoleApplicationService roleApplicationService;
+    private RoleDomainService roleDomainService;
 
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SysRole role) {
+    public ResponseDTO<PageDTO> list(SysRole role) {
 
         Page<SysRoleXEntity> page = getPage();
         QueryWrapper<SysRoleXEntity> queryWrapper = new QueryWrapper<>();
@@ -73,7 +73,7 @@ public class SysRoleController extends BaseController {
             .like(StrUtil.isNotEmpty(role.getRoleName()), "role_name", role.getRoleName());
 
         roleService.page(page, queryWrapper);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     @AccessLog(title = "角色管理", businessType = BusinessType.EXPORT)
@@ -124,7 +124,7 @@ public class SysRoleController extends BaseController {
         role.setCreateBy(loginUser.getUsername());
 
         RoleModel roleModel = role.toModel();
-        roleApplicationService.createRole(roleModel);
+        roleDomainService.createRole(roleModel);
 
         return ResponseDTO.ok();
 
@@ -152,7 +152,7 @@ public class SysRoleController extends BaseController {
 
         RoleModel roleModel = role.toModel();
 
-        if (roleApplicationService.updateRole(roleModel)) {
+        if (roleDomainService.updateRole(roleModel)) {
             // 更新缓存用户权限
             if (loginUser != null && AuthenticationUtils.isAdmin(loginUser.getUserId())) {
                 loginUser.setMenuPermissions(userDetailsService.getMenuPermissions(loginUser.getUserId()));
@@ -174,7 +174,7 @@ public class SysRoleController extends BaseController {
         roleService.checkRoleAllowed(role.getRoleId());
         roleService.checkRoleDataScope(role.getRoleId());
         RoleModel roleModel = role.toModel();
-        roleApplicationService.authDataScope(roleModel);
+        roleDomainService.authDataScope(roleModel);
 
         return ResponseDTO.ok();
     }
@@ -228,10 +228,10 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/{roleId}/allocated/list")
-    public ResponseDTO<TableDataInfo> allocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
+    public ResponseDTO<PageDTO> allocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
         Page page = getPage();
         userService.selectAllocatedList(user.getRoleId(), user.getUserName(), user.getPhonenumber(), page);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     /**
@@ -239,10 +239,10 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping("/{roleId}/unallocated/list")
-    public ResponseDTO<TableDataInfo> unallocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
+    public ResponseDTO<PageDTO> unallocatedList(@PathVariable("roleId")Long roleId, SysUser user) {
         Page page = getPage();
         userService.selectUnallocatedList(user.getRoleId(), user.getUserName(), user.getPhonenumber(), page);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     /**
@@ -252,7 +252,7 @@ public class SysRoleController extends BaseController {
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
     @DeleteMapping("/{roleId}/user/grant")
     public ResponseDTO cancelAuthUser(@PathVariable("roleId")Long roleId, @RequestBody SysUserRole userRole) {
-        roleApplicationService.deleteAuthUser(userRole.getRoleId(), userRole.getUserId());
+        roleDomainService.deleteAuthUser(userRole.getRoleId(), userRole.getUserId());
         return ResponseDTO.ok();
     }
 
@@ -264,7 +264,7 @@ public class SysRoleController extends BaseController {
     @DeleteMapping("/{roleId}/user/grant/bulk")
     public ResponseDTO cancelAuthUserAll(@PathVariable("roleId")Long roleId, Long[] userIds) {
         List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
-        roleApplicationService.deleteAuthUsers(roleId, userIdList);
+        roleDomainService.deleteAuthUsers(roleId, userIdList);
 
         return ResponseDTO.ok();
     }
@@ -278,7 +278,7 @@ public class SysRoleController extends BaseController {
     public ResponseDTO selectAuthUserAll(@PathVariable("roleId") Long roleId, Long[] userIds) {
         List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
         roleService.checkRoleDataScope(roleId);
-        roleApplicationService.insertAuthUsers(roleId, userIdList);
+        roleDomainService.insertAuthUsers(roleId, userIdList);
         return ResponseDTO.ok();
     }
 }

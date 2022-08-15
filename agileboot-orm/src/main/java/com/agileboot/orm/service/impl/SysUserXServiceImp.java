@@ -7,7 +7,6 @@ import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.mapper.SysUserXMapper;
-import com.agileboot.orm.query.system.SearchUserQuery;
 import com.agileboot.orm.result.SearchUserResult;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserRoleXService;
@@ -156,9 +155,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, SearchUserQuery query) {
-        QueryWrapper<SearchUserResult> queryWrapper = query.generateQueryWrapper();
-
+    public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, QueryWrapper<SearchUserResult> queryWrapper) {
         List<SearchUserResult> searchUserResults = baseMapper.selectUserList(page, queryWrapper);
         page.setRecords(searchUserResults);
         return page;

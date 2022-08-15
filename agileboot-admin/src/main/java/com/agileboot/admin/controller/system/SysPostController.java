@@ -3,8 +3,8 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
@@ -46,7 +46,7 @@ public class SysPostController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:post:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SysPost post) {
+    public ResponseDTO<PageDTO> list(SysPost post) {
         Page<SysPostXEntity> page = getPage();
         QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
 
@@ -56,7 +56,7 @@ public class SysPostController extends BaseController {
             .like(StrUtil.isNotEmpty(post.getPostName()), "post_name", post.getPostName());
 
         postService.page(page, queryWrapper);
-        return ResponseDTO.ok(getDataTable(page));
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     @AccessLog(title = "岗位管理", businessType = BusinessType.EXPORT)

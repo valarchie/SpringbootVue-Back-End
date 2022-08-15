@@ -7,17 +7,17 @@ import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.response.UserDetailDTO;
 import com.agileboot.admin.response.UserInfoDTO;
 import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
-import com.agileboot.domain.system.user.UserApplicationService;
+import com.agileboot.domain.system.loginInfo.SearchUserQuery;
+import com.agileboot.domain.system.user.UserDomainService;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.query.system.SearchUserQuery;
 import com.agileboot.orm.service.ISysPostXService;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
@@ -59,17 +59,17 @@ public class SysUserController extends BaseController {
     @Autowired
     private ISysPostXService postService;
     @Autowired
-    private UserApplicationService userApplicationService;
+    private UserDomainService userDomainService;
 
     /**
      * 获取用户列表
      */
     @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping("/list")
-    public ResponseDTO<TableDataInfo> list(SearchUserQuery query) {
+    public ResponseDTO<PageDTO> list(SearchUserQuery query) {
         Page page = getPage();
-        userService.selectUserList(page, query);
-        return ResponseDTO.ok(getDataTable(page));
+        userService.selectUserList(page, query.toQueryWrapper());
+        return ResponseDTO.ok(new PageDTO(page));
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.EXPORT)
@@ -77,7 +77,7 @@ public class SysUserController extends BaseController {
     @PostMapping("/export")
     public void export(HttpServletResponse response, SearchUserQuery query) {
         Page page = getPage();
-        userService.selectUserList(page, query);
+        userService.selectUserList(page, query.toQueryWrapper());
         List<SysUser> list = page.getRecords();
 
         CustomExcelUtil.writeToResponse(list, SysUser.class, response);

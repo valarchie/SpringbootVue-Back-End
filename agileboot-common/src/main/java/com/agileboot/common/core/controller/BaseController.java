@@ -3,18 +3,13 @@ package com.agileboot.common.core.controller;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.page.PageDomain;
-import com.agileboot.common.core.page.TableDataInfo;
 import com.agileboot.common.core.page.TableSupport;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -54,75 +49,17 @@ public class BaseController {
         });
     }
 
-    /**
-     * 设置请求分页数据
-     */
-    protected void startPage() {
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        Integer pageNum = pageDomain.getPageNum();
-        Integer pageSize = pageDomain.getPageSize();
-        String orderBy = pageDomain.getOrderBy();
-        Boolean reasonable = pageDomain.getReasonable();
-        PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
-    }
+
 
     @SuppressWarnings("rawtypes")
     protected Page getPage() {
         PageDomain pageDomain = TableSupport.buildPageRequest();
         Integer pageNum = pageDomain.getPageNum();
         Integer pageSize = pageDomain.getPageSize();
-        return new Page<>(pageNum, pageSize);
+        return new Page(pageNum, pageSize);
     }
 
 
-    /**
-     * 设置请求排序数据
-     */
-    protected void startOrderBy() {
-        PageDomain pageDomain = TableSupport.buildPageRequest();
-        if (StrUtil.isNotEmpty(pageDomain.getOrderBy())) {
-            String orderBy = pageDomain.getOrderBy();
-            PageHelper.orderBy(orderBy);
-        }
-    }
-
-    /**
-     * 清理分页的线程变量
-     */
-    protected void clearPage() {
-        PageHelper.clearPage();
-    }
-
-    /**
-     * 响应请求分页数据
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    protected TableDataInfo getDataTable(List<?> list) {
-        TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.HTTP_OK);
-        rspData.setMsg("查询成功");
-        rspData.setRows(list);
-        rspData.setTotal(new PageInfo(list).getTotal());
-        return rspData;
-    }
-
-    protected TableDataInfo getDataTable(Page page) {
-        TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.HTTP_OK);
-        rspData.setMsg("查询成功");
-        rspData.setRows(page.getRecords());
-        rspData.setTotal(page.getTotal());
-        return rspData;
-    }
-
-    protected TableDataInfo getDataTable(List<?> list, Long count) {
-        TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.HTTP_OK);
-        rspData.setMsg("查询成功");
-        rspData.setRows(list);
-        rspData.setTotal(count);
-        return rspData;
-    }
 
     public void fillOrderBy(QueryWrapper queryWrapper) {
 

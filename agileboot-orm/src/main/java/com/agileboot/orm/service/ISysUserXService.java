@@ -1,8 +1,8 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.query.system.SearchUserQuery;
 import com.agileboot.orm.result.SearchUserResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.Set;
@@ -97,7 +97,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    Page<SearchUserResult> selectUserList( Page<SearchUserResult> page,  SearchUserQuery query);
+    Page<SearchUserResult> selectUserList( Page<SearchUserResult> page, QueryWrapper<SearchUserResult> queryWrapper);
 
     /**
      * 校验用户是否允许操作
