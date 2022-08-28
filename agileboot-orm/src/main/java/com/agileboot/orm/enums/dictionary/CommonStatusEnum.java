@@ -1,12 +1,12 @@
 package com.agileboot.orm.enums.dictionary;
 
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 
 /**
  * 除非表有特殊指明的话，一般用这个枚举代表 status字段
  * @author valarchie
  */
-public enum CommonStatusEnum implements DictionaryEnumInterface<Integer> {
+public enum CommonStatusEnum implements DictionaryEnum<Integer> {
     /**
      * 开关状态
      */

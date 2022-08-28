@@ -1,12 +1,12 @@
 package com.agileboot.orm.enums.dictionary;
 
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 
 /**
  * 系统内代表是与否的枚举
  * @author valarchie
  */
-public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
+public enum CommonAnswerEnum implements DictionaryEnum<Integer> {
     /**
      * 是与否
      */
@@ -23,6 +23,7 @@ public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
         this.cssTag = cssTag;
     }
 
+
     @Override
     public Integer getValue() {
         return value;
@@ -32,6 +33,7 @@ public enum CommonAnswerEnum implements DictionaryEnumInterface<Integer> {
     public String description() {
         return description;
     }
+
 
     @Override
     public String cssTag() {

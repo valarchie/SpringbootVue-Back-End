@@ -2,7 +2,9 @@ package com.agileboot.orm.query;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import com.agileboot.common.utils.time.DatePicker;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.Date;
 import java.util.Map;
 import lombok.Data;
 
@@ -15,6 +17,10 @@ public abstract class AbstractQuery {
     protected String orderByColumn;
 
     protected String isAsc;
+
+    private Date beginTime;
+
+    private Date endTime;
 
     private static final String ASC = "ascending";
     private static final String DESC = "descending";
@@ -44,14 +50,23 @@ public abstract class AbstractQuery {
         return columnName;
     }
 
-    @SuppressWarnings("rawtypes")
-    public QueryWrapper addQueryCondition(QueryWrapper queryWrapper) {
+    public void addSortCondition(QueryWrapper<?> queryWrapper) {
         if(queryWrapper != null) {
             queryWrapper.orderBy(StrUtil.isNotBlank(orderByColumn), convertSortDirection(),
                 StrUtil.toUnderlineCase(orderByColumn));
+
         }
-        return queryWrapper;
     }
+
+    @SuppressWarnings("unchecked")
+    public void addTimeCondition(QueryWrapper queryWrapper, String fieldName) {
+        if(queryWrapper!=null) {
+            queryWrapper
+                .ge(beginTime != null, fieldName, DatePicker.getBeginOfTheDay(beginTime))
+                .le(endTime != null, fieldName, DatePicker.getEndOfTheDay(endTime));
+        }
+    }
+
 
     public boolean convertSortDirection() {
         boolean orderDirection = true;

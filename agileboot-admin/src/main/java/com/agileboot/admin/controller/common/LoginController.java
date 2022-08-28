@@ -9,7 +9,7 @@ import com.agileboot.admin.response.UserPermissionDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.domain.system.menu.MenuApplicationService;
+import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.RouterVo;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
@@ -33,16 +33,16 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    private final MenuApplicationService menuApplicationService;
+    private final MenuDomainService menuDomainService;
     /**
      * 系统基础配置
      */
     private final AgileBootConfig agileBootConfig;
 
     public LoginController(LoginService loginService,
-        MenuApplicationService menuApplicationService, AgileBootConfig agileBootConfig) {
+        MenuDomainService menuDomainService, AgileBootConfig agileBootConfig) {
         this.loginService = loginService;
-        this.menuApplicationService = menuApplicationService;
+        this.menuDomainService = menuDomainService;
         this.agileBootConfig = agileBootConfig;
     }
 
@@ -104,7 +104,7 @@ public class LoginController {
     @GetMapping("/getRouters")
     public ResponseDTO<List<RouterVo>> getRouters() {
         Long userId = AuthenticationUtils.getUserId();
-        List<RouterVo> routerTree = menuApplicationService.getRouterTree(userId);
+        List<RouterVo> routerTree = menuDomainService.getRouterTree(userId);
         return ResponseDTO.ok(routerTree);
     }
 

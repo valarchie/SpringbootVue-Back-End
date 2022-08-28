@@ -26,6 +26,8 @@ public class LoginInfoQuery extends AbstractQuery {
             .eq(StrUtil.isNotEmpty(status), "status", status)
             .like(StrUtil.isNotEmpty(username), "user_name", username);
 
+        addSortCondition(queryWrapper);
+
         if (timeRange != null) {
             timeRange.addQueryCondition(queryWrapper, "login_time");
         }

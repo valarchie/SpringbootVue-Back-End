@@ -49,6 +49,9 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     USER_IMPORT_DATA_IS_NULL(Module.USER, 7, "导入的用户为空"),
 
+    CONFIG_VALUE_IS_NOT_ALLOW_TO_EMPTY(Module.CONFIG, 1, "参数键值不允许为空"),
+
+    CONFIG_VALUE_IS_NOT_IN_OPTIONS(Module.CONFIG, 2, "参数键值不存在列表中")
     ;
 
     enum Module {
@@ -64,6 +67,8 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
         UPLOAD(3),
 
         USER(4),
+
+        CONFIG(5),
 
         ;
 

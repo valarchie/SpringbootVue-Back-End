@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public abstract class AbstractPageQuery extends AbstractQuery {
 
-    public static final Integer MAX_PAGE_NUM = 200;
-    public static final Integer MAX_PAGE_SIZE = 500;
+    public static final int MAX_PAGE_NUM = 200;
+    public static final int MAX_PAGE_SIZE = 500;
 
     @Max(MAX_PAGE_NUM)
     protected Integer pageNum = 1;

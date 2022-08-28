@@ -8,7 +8,7 @@ import com.agileboot.admin.response.TreeSelectedDTO;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.domain.system.menu.MenuApplicationService;
+import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.MenuQuery;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
@@ -41,7 +41,8 @@ public class SysMenuController extends BaseController {
     @Autowired
     private ISysMenuXService menuService;
 
-    @Autowired MenuApplicationService menuApplicationService;
+    @Autowired
+    MenuDomainService menuDomainService;
 
     /**
      * 获取菜单列表
@@ -84,7 +85,7 @@ public class SysMenuController extends BaseController {
         } else {
             sysMenuEntities = menuService.selectMenuListByUserId(loginUser.getUserId());
         }
-        List<Tree<Long>> trees = menuApplicationService.buildMenuTreeSelect(sysMenuEntities);
+        List<Tree<Long>> trees = menuDomainService.buildMenuTreeSelect(sysMenuEntities);
 
         return ResponseDTO.ok(trees);
     }
@@ -99,7 +100,7 @@ public class SysMenuController extends BaseController {
         List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(loginUser.getUserId());
 
         TreeSelectedDTO tree = new TreeSelectedDTO();
-        tree.setMenus(menuApplicationService.buildMenuTreeSelect(menus));
+        tree.setMenus(menuDomainService.buildMenuTreeSelect(menus));
         tree.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
 
         return ResponseDTO.ok(tree);

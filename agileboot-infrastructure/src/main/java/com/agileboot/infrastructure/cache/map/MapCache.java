@@ -11,7 +11,7 @@ import com.agileboot.orm.enums.dictionary.NoticeStatusEnum;
 import com.agileboot.orm.enums.dictionary.NoticeTypeEnum;
 import com.agileboot.orm.enums.dictionary.OperationStatusEnum;
 import com.agileboot.orm.enums.dictionary.VisibleStatusEnum;
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 import com.agileboot.orm.result.DictionaryData;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +49,7 @@ public class MapCache {
     }
 
     @SuppressWarnings("rawtypes")
-    private static List<DictionaryData> arrayToList(DictionaryEnumInterface[] dictionaryEnums) {
+    private static List<DictionaryData> arrayToList(DictionaryEnum[] dictionaryEnums) {
         if(ArrayUtil.isEmpty(dictionaryEnums)) {
             return ListUtil.empty();
         }

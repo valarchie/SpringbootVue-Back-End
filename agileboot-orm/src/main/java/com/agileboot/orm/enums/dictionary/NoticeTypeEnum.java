@@ -1,12 +1,12 @@
 package com.agileboot.orm.enums.dictionary;
 
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 
 /**
  * 对应sys_notice的 notice_type字段
  * @author valarchie
  */
-public enum NoticeTypeEnum implements DictionaryEnumInterface<Integer> {
+public enum NoticeTypeEnum implements DictionaryEnum<Integer> {
 
     /**
      * 通知类型

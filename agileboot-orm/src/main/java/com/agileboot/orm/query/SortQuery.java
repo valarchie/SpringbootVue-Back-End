@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
 
 @Data
+@Deprecated
 public class SortQuery {
 
     private static final String ASC = "ascending";
@@ -13,13 +14,11 @@ public class SortQuery {
     private String column;
     private String direction;
 
-    @SuppressWarnings("rawtypes")
-    public QueryWrapper addQueryCondition(QueryWrapper queryWrapper) {
+    public void addQueryCondition(QueryWrapper<?> queryWrapper) {
         if(queryWrapper != null) {
             queryWrapper.orderBy(StrUtil.isNotBlank(column), convertSortDirection(),
                 StrUtil.toUnderlineCase(column));
         }
-        return queryWrapper;
     }
 
     public boolean convertSortDirection() {

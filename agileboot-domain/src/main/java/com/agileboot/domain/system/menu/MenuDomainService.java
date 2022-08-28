@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author valarchie
  */
 @Service
-public class MenuApplicationService {
+public class MenuDomainService {
 
     @Autowired
     private ISysMenuXService menuService;

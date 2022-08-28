@@ -1,7 +1,7 @@
 package com.agileboot.orm.result;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 import lombok.Data;
 
 /**
@@ -16,7 +16,7 @@ public class DictionaryData {
     private String cssTag;
 
     @SuppressWarnings("rawtypes")
-    public DictionaryData(DictionaryEnumInterface enumType) {
+    public DictionaryData(DictionaryEnum enumType) {
         if (enumType != null) {
             this.label = enumType.description();
             this.value = StrUtil.toString(enumType.getValue());

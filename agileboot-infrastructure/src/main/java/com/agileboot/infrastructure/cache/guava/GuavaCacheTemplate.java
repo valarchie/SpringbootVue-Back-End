@@ -87,7 +87,11 @@ public abstract class GuavaCacheTemplate<T> {
             return;
         }
 
-        guavaCache.refresh(key);
+        guavaCache.invalidate(key);
+    }
+
+    public void invalidateAll() {
+        guavaCache.invalidateAll();
     }
 
     /**

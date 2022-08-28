@@ -1,12 +1,12 @@
 package com.agileboot.orm.enums.dictionary;
 
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 
 /**
  * 对应sys_operation_log的business_type
  * @author valarchie
  */
-public enum BusinessTypeEnum implements DictionaryEnumInterface<Integer> {
+public enum BusinessTypeEnum implements DictionaryEnum<Integer> {
 
     /**
      * 操作类型

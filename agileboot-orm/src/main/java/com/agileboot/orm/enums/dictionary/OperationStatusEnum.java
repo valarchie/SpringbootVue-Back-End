@@ -1,12 +1,12 @@
 package com.agileboot.orm.enums.dictionary;
 
-import com.agileboot.orm.enums.interfaces.DictionaryEnumInterface;
+import com.agileboot.orm.enums.interfaces.DictionaryEnum;
 
 /**
  * 对应sys_operation_log的status字段
  * @author valarchie
  */
-public enum OperationStatusEnum implements DictionaryEnumInterface<Integer> {
+public enum OperationStatusEnum implements DictionaryEnum<Integer> {
 
     /**
      * 操作状态

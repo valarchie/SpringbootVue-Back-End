@@ -1,19 +1,20 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.admin.deprecated.domain.SysConfig;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.domain.system.config.ConfigDTO;
+import com.agileboot.domain.system.config.ConfigDomainService;
 import com.agileboot.domain.system.config.ConfigQuery;
+import com.agileboot.domain.system.config.ConfigUpdateDTO;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.map.MapCache;
-import com.agileboot.orm.entity.SysConfigXEntity;
 import com.agileboot.orm.result.DictionaryData;
-import com.agileboot.orm.service.ISysConfigXService;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -27,16 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 参数配置 信息操作处理
- * TODO 改成系统配置应该更合理吧
- * TODO 需配置缓存 直接使用切面缓存    配置根本没有必要做成可配置的  多此一举
- * @author ruoyi
+ * @author valarchie
  */
 @RestController
 @RequestMapping("/system/config")
+@Validated
 public class SysConfigController extends BaseController {
 
     @Autowired
-    private ISysConfigXService configService;
+    private ConfigDomainService configDomainService;
+
+    @Autowired
+    private GuavaCacheService guavaCacheService;
 
     /**
      * 获取参数配置列表
@@ -44,11 +47,8 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(ConfigQuery query) {
-        Page<SysConfigXEntity> page = getPage();
-//        QueryWrapper<SysConfigXEntity> sysNoticeWrapper = new QueryWrapper<>();
-//        sysNoticeWrapper.like(StrUtil.isNotEmpty(config.getConfigName()), "config_name", config.getConfigName());
-        configService.page(page, query.toQueryWrapper());
-        return ResponseDTO.ok(new PageDTO(page));
+        PageDTO page = configDomainService.getConfigList(query);
+        return ResponseDTO.ok(page);
     }
 
     /**
@@ -56,7 +56,7 @@ public class SysConfigController extends BaseController {
      * 换成用Enum
      */
     @GetMapping(value = "/dict/{dictType}")
-    public ResponseDTO<List> dictType(@PathVariable String dictType) {
+    public ResponseDTO<List<DictionaryData>> dictType(@PathVariable String dictType) {
         List<DictionaryData> dictionaryData = MapCache.dictionaryCache().get(dictType);
         return ResponseDTO.ok(dictionaryData);
     }
@@ -67,9 +67,9 @@ public class SysConfigController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:config:query')")
     @GetMapping(value = "/{configId}")
-    public ResponseDTO getInfo(@PathVariable Long configId) {
-        SysConfigXEntity byId = configService.getById(configId);
-        return ResponseDTO.ok(byId);
+    public ResponseDTO<ConfigDTO> getInfo(@NotNull @Positive @PathVariable Long configId) {
+        ConfigDTO config = configDomainService.getConfig(configId);
+        return ResponseDTO.ok(config);
     }
 
 
@@ -79,29 +79,19 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:edit')")
     @AccessLog(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysConfig config) {
-        // 键名 压根就不能修改
-        SysConfigXEntity configEntity = configService.getById(config.getConfigId());
-
-        if (configEntity == null) {
-            return ResponseDTO.fail(BusinessErrorCode.OBJECT_NOT_FOUND);
-        }
-        configEntity.setConfigName(config.getConfigName());
-        configEntity.setConfigValue(config.getConfigValue());
-        configEntity.updateById();
+    public ResponseDTO edit(@RequestBody ConfigUpdateDTO config) {
+        configDomainService.updateConfig(config);
         return ResponseDTO.ok();
     }
 
-
     /**
-     *
      * 刷新参数缓存
      */
     @PreAuthorize("@ss.hasPermi('system:config:remove')")
     @AccessLog(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
-    public ResponseDTO refreshCache() {
-        // TODO 到时候看如何实现
+    public ResponseDTO<?> refreshCache() {
+        guavaCacheService.configCache.invalidateAll();
         return ResponseDTO.ok();
     }
 }

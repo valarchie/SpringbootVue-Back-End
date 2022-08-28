@@ -9,21 +9,19 @@ import lombok.Data;
  * @author valarchie
  */
 @Data
+@Deprecated
 public class TimeRangeQuery {
 
     private Date beginTime;
     private Date endTime;
 
     @SuppressWarnings("unchecked")
-    public QueryWrapper addQueryCondition(QueryWrapper queryWrapper, String fieldName) {
-
+    public void addQueryCondition(QueryWrapper queryWrapper, String fieldName) {
         if(queryWrapper!=null) {
             queryWrapper
                 .ge(beginTime != null, fieldName, DatePicker.getBeginOfTheDay(beginTime))
                 .le(endTime != null, fieldName, DatePicker.getEndOfTheDay(endTime));
         }
-
-        return queryWrapper;
     }
 
 }
