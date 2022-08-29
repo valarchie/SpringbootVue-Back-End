@@ -7,7 +7,7 @@ import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.config.ConfigDTO;
 import com.agileboot.domain.system.config.ConfigDomainService;
 import com.agileboot.domain.system.config.ConfigQuery;
-import com.agileboot.domain.system.config.ConfigUpdateDTO;
+import com.agileboot.domain.system.config.ConfigUpdateCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.map.MapCache;
@@ -79,7 +79,7 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:edit')")
     @AccessLog(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@RequestBody ConfigUpdateDTO config) {
+    public ResponseDTO edit(@RequestBody ConfigUpdateCommand config) {
         configDomainService.updateConfig(config);
         return ResponseDTO.ok();
     }

@@ -3,11 +3,11 @@ package com.agileboot.infrastructure.thread;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.agileboot.common.enums.LoginStatusEnum;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
 import com.agileboot.orm.entity.SysOperationLogXEntity;
+import com.agileboot.orm.enums.LoginStatusEnum;
 import com.agileboot.orm.service.ISysLoginInfoXService;
 import com.agileboot.orm.service.ISysOperationLogXService;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -46,15 +46,15 @@ public class AsyncTaskFactory {
         return () -> {
             // 封装对象
             SysLoginInfoXEntity loginInfo = new SysLoginInfoXEntity();
-            loginInfo.setUserName(username);
+            loginInfo.setUsername(username);
             loginInfo.setIpAddress(ip);
             loginInfo.setLoginLocation(address);
             loginInfo.setBrowser(browser);
-            loginInfo.setOs(os);
+            loginInfo.setOperationSystem(os);
             loginInfo.setMsg(message);
             loginInfo.setLoginTime(DateUtil.date());
             // 日志状态 TODO 替换魔法值
-            loginInfo.setStatus(loginStatusEnum.getStatus());
+            loginInfo.setStatus(loginStatusEnum.getValue());
             // 插入数据
             SpringUtil.getBean(ISysLoginInfoXService.class).save(loginInfo);
         };

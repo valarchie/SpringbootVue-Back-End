@@ -24,8 +24,7 @@ public class ConfigDTO {
                 JSONUtil.isTypeJSONArray(entity.getConfigOptions()) ? JSONUtil.toList(entity.getConfigOptions(),
                     String.class) : ListUtil.empty();
             isAllowChange = Convert.toInt(entity.getIsAllowChange()) + "";
-            isAllowChangeStr = BasicEnumUtil.fromBooleanValue(CommonAnswerEnum.class, entity.getIsAllowChange())
-                .description();
+            isAllowChangeStr = BasicEnumUtil.getDescriptionByBool(CommonAnswerEnum.class, entity.getIsAllowChange());
             remark = entity.getRemark();
             createTime = entity.getCreateTime();
         }

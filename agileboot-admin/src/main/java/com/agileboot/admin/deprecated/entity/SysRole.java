@@ -2,7 +2,6 @@ package com.agileboot.admin.deprecated.entity;
 
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.ColumnType;
 import com.agileboot.common.core.dto.BaseEntity;
 import com.agileboot.domain.system.role.RoleModel;
 import com.agileboot.orm.entity.SysRoleXEntity;
@@ -55,7 +54,7 @@ public class SysRole extends BaseEntity {
     /**
      * 角色ID
      */
-    @ExcelColumn(name = "角色序号", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "角色序号", cellType = ColumnType.NUMERIC)
     private Long roleId;
 
     /**
@@ -84,7 +83,7 @@ public class SysRole extends BaseEntity {
     /**
      * 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限）
      */
-    @ExcelColumn(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限")
+//    @ExcelColumn(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限")
     private String dataScope;
 
     /**
@@ -100,7 +99,7 @@ public class SysRole extends BaseEntity {
     /**
      * 角色状态（0正常 1停用）
      */
-    @ExcelColumn(name = "角色状态", readConverterExp = "0=正常,1=停用")
+//    @ExcelColumn(name = "角色状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /**

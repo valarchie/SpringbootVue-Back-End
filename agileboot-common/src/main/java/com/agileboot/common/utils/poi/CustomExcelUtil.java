@@ -32,12 +32,10 @@ public class CustomExcelUtil {
         Field[] fields = clazz.getDeclaredFields();
 
         //自定义标题别名
-        if (fields != null) {
-            for (Field field : fields) {
-                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
-                if (annotation != null) {
-                    writer.addHeaderAlias(field.getName(), annotation.name());
-                }
+        for (Field field : fields) {
+            ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+            if (annotation != null) {
+                writer.addHeaderAlias(field.getName(), annotation.name());
             }
         }
 

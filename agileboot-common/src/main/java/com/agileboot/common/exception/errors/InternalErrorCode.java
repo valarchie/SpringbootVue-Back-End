@@ -13,7 +13,7 @@ public enum InternalErrorCode implements ErrorCodeInterface{
 
     UNKNOWN_ERROR(Module.COMMON, 2,"未知异常"),
 
-    GET_ENUM_FAILED(Module.COMMON, 3,"获取枚举类型失败"),
+    GET_ENUM_FAILED(Module.COMMON, 3,"获取枚举类型失败, 枚举类:%s"),
 
     LOGIN_CAPTCHA_GENERATE_FAIL(Module.LOGIN, 1,"验证码生成失败"),
 

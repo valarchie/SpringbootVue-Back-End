@@ -2,7 +2,6 @@ package com.agileboot.admin.deprecated.entity;
 
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.Type;
 import com.agileboot.common.annotation.ExcelSheet;
 import com.agileboot.common.annotation.Excels;
 import com.agileboot.common.core.dto.BaseEntity;
@@ -114,7 +113,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户性别
      */
-    @ExcelColumn(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
+//    @ExcelColumn(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
 
     /**
@@ -135,7 +134,7 @@ public class SysUser extends BaseEntity {
     /**
      * 帐号状态（0正常 1停用）
      */
-    @ExcelColumn(name = "帐号状态", readConverterExp = "0=正常,1=停用")
+//    @ExcelColumn(name = "帐号状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /**
@@ -146,21 +145,21 @@ public class SysUser extends BaseEntity {
     /**
      * 最后登录IP
      */
-    @ExcelColumn(name = "最后登录IP", type = Type.EXPORT)
+//    @ExcelColumn(name = "最后登录IP", type = Type.EXPORT)
     private String loginIp;
 
     /**
      * 最后登录时间
      */
-    @ExcelColumn(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
+//    @ExcelColumn(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
     private Date loginDate;
 
     /**
      * 部门对象
      */
     @Excels({
-        @ExcelColumn(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
-        @ExcelColumn(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
+//        @ExcelColumn(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
+//        @ExcelColumn(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
     })
     private SysDept dept;
 

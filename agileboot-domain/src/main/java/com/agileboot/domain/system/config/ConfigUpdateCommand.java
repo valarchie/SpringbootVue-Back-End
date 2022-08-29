@@ -6,7 +6,7 @@ import javax.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class ConfigUpdateDTO {
+public class ConfigUpdateCommand {
 
     @NotNull
     @Positive

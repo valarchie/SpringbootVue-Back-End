@@ -24,7 +24,6 @@ public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-
         body = ServletUtil.getBodyBytes(request);
     }
 

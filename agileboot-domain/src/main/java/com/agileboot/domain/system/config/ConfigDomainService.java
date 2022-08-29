@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author valarchie
@@ -32,12 +33,11 @@ public class ConfigDomainService {
         return new ConfigDTO(byId);
     }
 
-    public void updateConfig(ConfigUpdateDTO updateDTO) {
-        ConfigModel configModel = getConfigModel(updateDTO.getConfigId());
-        configModel.editConfigValue(updateDTO.getConfigValue());
+    @Transactional
+    public void updateConfig(ConfigUpdateCommand updateCommand) {
+        ConfigModel configModel = getConfigModel(updateCommand.getConfigId());
+        configModel.editConfigValue(updateCommand.getConfigValue());
     }
-
-
 
     public ConfigModel getConfigModel(Long id) {
         SysConfigXEntity byId = configService.getById(id);
@@ -48,9 +48,5 @@ public class ConfigDomainService {
 
         return new ConfigModel(byId);
     }
-
-
-
-
 
 }

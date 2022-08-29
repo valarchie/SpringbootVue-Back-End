@@ -1,0 +1,35 @@
+package com.agileboot.domain.system.loginInfo;
+
+import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.orm.entity.SysLoginInfoXEntity;
+import com.agileboot.orm.service.ISysLoginInfoXService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author valarchie
+ */
+@Service
+public class LoginInfoDomainService {
+
+    @Autowired
+    private ISysLoginInfoXService loginInfoService;
+
+    public PageDTO getLoginInfoList(LoginInfoQuery query) {
+        Page<SysLoginInfoXEntity> page = loginInfoService.page(query.toPage(), query.toQueryWrapper());
+        List<LoginInfoDTO> records = page.getRecords().stream().map(LoginInfoDTO::new).collect(Collectors.toList());
+        return new PageDTO(records, page.getTotal());
+    }
+
+    public void deleteLoginInfo(BulkDeleteCommand<Long> deleteCommand) {
+        QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("info_id", deleteCommand.getIds());
+        loginInfoService.remove(queryWrapper);
+    }
+
+}

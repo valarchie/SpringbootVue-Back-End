@@ -12,7 +12,6 @@ import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants.Captcha;
-import com.agileboot.common.enums.LoginStatusEnum;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.common.exception.errors.ErrorCode;
@@ -26,6 +25,7 @@ import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.enums.LoginStatusEnum;
 import com.agileboot.orm.enums.SystemConfigEnum;
 import com.google.code.kaptcha.Producer;
 import java.awt.image.BufferedImage;
@@ -106,7 +106,7 @@ public class LoginService {
             }
         }
         ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_SUCCESS,
-            LoginStatusEnum.LOGIN_SUCCESS.getMsg()));
+            LoginStatusEnum.LOGIN_SUCCESS.description()));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
         // 生成token

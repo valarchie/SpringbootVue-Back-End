@@ -1,19 +1,19 @@
 package com.agileboot.admin.controller.system;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.domain.SysNotice;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.system.notice.NoticeAddCommand;
+import com.agileboot.domain.system.notice.NoticeDTO;
+import com.agileboot.domain.system.notice.NoticeDomainService;
+import com.agileboot.domain.system.notice.NoticeQuery;
+import com.agileboot.domain.system.notice.NoticeUpdateCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
-import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysNoticeXEntity;
-import com.agileboot.orm.service.ISysNoticeXService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -29,28 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 公告 信息操作处理
  *
- * @author ruoyi
+ * @author valarchie
  */
 @RestController
 @RequestMapping("/system/notice")
+@Validated
 public class SysNoticeController extends BaseController {
 
     @Autowired
-    private ISysNoticeXService noticeService;
+    private NoticeDomainService noticeDomainService;
 
     /**
      * 获取通知公告列表
      */
     @PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
-    public ResponseDTO<PageDTO> list(SysNotice notice) {
-        Page<SysNoticeXEntity> page = getPage();
-        QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
-        sysNoticeWrapper.like(StrUtil.isNotEmpty(notice.getNoticeTitle()), "notice_title", notice.getNoticeTitle())
-                .eq(notice.getNoticeType()!=null, "notice_type" , notice.getNoticeType())
-                    .like(notice.getCreateBy()!=null, "creator_name", notice.getCreateBy());
-        noticeService.page(page, sysNoticeWrapper);
-        return ResponseDTO.ok(new PageDTO(page));
+    public ResponseDTO<PageDTO> list(NoticeQuery query) {
+        PageDTO pageDTO = noticeDomainService.getNoticeList(query);
+        return ResponseDTO.ok(pageDTO);
     }
 
     /**
@@ -58,8 +54,8 @@ public class SysNoticeController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
-    public ResponseDTO getInfo(@PathVariable Long noticeId) {
-        return ResponseDTO.ok(noticeService.getById(noticeId));
+    public ResponseDTO<NoticeDTO> getInfo(@PathVariable @NotNull @Positive Long noticeId) {
+        return ResponseDTO.ok(noticeDomainService.getNotice(noticeId));
     }
 
     /**
@@ -68,16 +64,8 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:add')")
     @AccessLog(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysNotice notice) {
-
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
-        sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
-        sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
-        sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
-        sysNoticeXEntity.setCreatorId(loginUser.getUserId());
-        sysNoticeXEntity.setCreatorName(loginUser.getUsername());
-        sysNoticeXEntity.insert();
+    public ResponseDTO add(@RequestBody NoticeAddCommand addCommand) {
+        noticeDomainService.addNotice(addCommand);
         return ResponseDTO.ok();
     }
 
@@ -87,17 +75,8 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:edit')")
     @AccessLog(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysNotice notice) {
-
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        SysNoticeXEntity sysNoticeXEntity = new SysNoticeXEntity();
-        sysNoticeXEntity.setNoticeId(notice.getNoticeId().intValue());
-        sysNoticeXEntity.setNoticeTitle(notice.getNoticeTitle());
-        sysNoticeXEntity.setNoticeType(Convert.toInt(notice.getNoticeType()));
-        sysNoticeXEntity.setNoticeContent(notice.getNoticeContent());
-        sysNoticeXEntity.setUpdaterId(loginUser.getUserId());
-        sysNoticeXEntity.setUpdaterName(loginUser.getUsername());
-        sysNoticeXEntity.updateById();
+    public ResponseDTO edit(@RequestBody NoticeUpdateCommand updateCommand) {
+        noticeDomainService.updateNotice(updateCommand);
         return ResponseDTO.ok();
     }
 
@@ -107,10 +86,11 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:remove')")
     @AccessLog(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
-    public ResponseDTO remove(@PathVariable Long[] noticeIds) {
-        QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
-        sysNoticeWrapper.in("notice_id", noticeIds);
-        noticeService.remove(sysNoticeWrapper);
+    public ResponseDTO remove(@PathVariable List<Long> noticeIds) {
+        noticeDomainService.deleteNotice(new BulkDeleteCommand<Long>(noticeIds));
         return ResponseDTO.ok();
     }
+
+
+
 }

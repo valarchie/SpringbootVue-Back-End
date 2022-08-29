@@ -2,12 +2,12 @@ package com.agileboot.infrastructure.security.handle;
 
 import cn.hutool.json.JSONUtil;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.enums.LoginStatusEnum;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.thread.AsyncTaskFactory;
 import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.orm.enums.LoginStatusEnum;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,8 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
             // 删除用户缓存记录
             tokenService.deleteLoginUser(loginUser.getToken());
             // 记录用户退出日志
-            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(userName, LoginStatusEnum.LOGOUT, LoginStatusEnum.LOGOUT.getMsg()));
+            ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(
+                userName, LoginStatusEnum.LOGOUT, LoginStatusEnum.LOGOUT.description()));
         }
         ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(ResponseDTO.ok()));
     }

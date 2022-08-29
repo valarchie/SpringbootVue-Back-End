@@ -2,21 +2,19 @@ package com.agileboot.domain.system.loginInfo;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
-import com.agileboot.orm.query.AbstractQuery;
-import com.agileboot.orm.query.SortQuery;
-import com.agileboot.orm.query.TimeRangeQuery;
+import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class LoginInfoQuery extends AbstractQuery {
+public class LoginInfoQuery extends AbstractPageQuery {
 
     private String ipaddr;
     private String status;
     private String username;
 
-    private TimeRangeQuery timeRange;
-    private SortQuery sortBy;
 
     @Override
     public QueryWrapper toQueryWrapper() {
@@ -24,16 +22,11 @@ public class LoginInfoQuery extends AbstractQuery {
 
         queryWrapper.like(StrUtil.isNotEmpty(ipaddr), "ip_address", ipaddr)
             .eq(StrUtil.isNotEmpty(status), "status", status)
-            .like(StrUtil.isNotEmpty(username), "user_name", username);
+            .like(StrUtil.isNotEmpty(username), "username", username);
 
         addSortCondition(queryWrapper);
+        addTimeCondition(queryWrapper, "login_time");
 
-        if (timeRange != null) {
-            timeRange.addQueryCondition(queryWrapper, "login_time");
-        }
-        if (sortBy != null) {
-            sortBy.addQueryCondition(queryWrapper);
-        }
         return queryWrapper;
     }
 }

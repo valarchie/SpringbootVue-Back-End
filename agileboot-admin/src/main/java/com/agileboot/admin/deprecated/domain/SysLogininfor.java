@@ -1,7 +1,6 @@
 package com.agileboot.admin.deprecated.domain;
 
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.ColumnType;
 import com.agileboot.common.core.dto.BaseEntity;
 import com.agileboot.orm.entity.SysLoginInfoXEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,14 +21,13 @@ import lombok.NoArgsConstructor;
 public class SysLogininfor extends BaseEntity {
 
     public SysLogininfor(SysLoginInfoXEntity loginInfoX) {
-
         if(loginInfoX!=null) {
             this.infoId = loginInfoX.getInfoId();
-            this.userName = loginInfoX.getUserName();
+            this.userName = loginInfoX.getUsername();
             this.ipaddr = loginInfoX.getIpAddress();
             this.loginLocation = loginInfoX.getLoginLocation();
             this.browser = loginInfoX.getBrowser();
-            this.os = loginInfoX.getOs();
+            this.os = loginInfoX.getOperationSystem();
             this.status = loginInfoX.getStatus()+"";
             this.msg = loginInfoX.getMsg();
             this.loginTime = loginInfoX.getLoginTime();
@@ -41,7 +39,7 @@ public class SysLogininfor extends BaseEntity {
     /**
      * ID
      */
-    @ExcelColumn(name = "序号", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "序号", cellType = ColumnType.NUMERIC)
     private Long infoId;
 
     /**
@@ -53,7 +51,7 @@ public class SysLogininfor extends BaseEntity {
     /**
      * 登录状态 0成功 1失败
      */
-    @ExcelColumn(name = "登录状态", readConverterExp = "0=成功,1=失败")
+//    @ExcelColumn(name = "登录状态", readConverterExp = "0=成功,1=失败")
     private String status;
 
     /**
@@ -90,7 +88,6 @@ public class SysLogininfor extends BaseEntity {
      * 访问时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ExcelColumn(name = "访问时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date loginTime;
 
 }

@@ -11,6 +11,10 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
      */
     OBJECT_NOT_FOUND(Module.COMMON, 1, "找不到ID为%s 的%s"),
 
+    UNSUPPORTED_OPERATION(Module.COMMON, 2, "不支持的操作"),
+
+    BULK_DELETE_IDS_IS_INVALID(Module.COMMON, 3, "批量参数ID列表为空"),
+
     FORBIDDEN_TO_MODIFY_ADMIN(Module.DATA_SECURITY, 1, "不允许修改管理员的信息"),
 
     LOGIN_WRONG_USER_PASSWORD(Module.LOGIN, 1, "用户密码错误，请重输"),

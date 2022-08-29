@@ -34,8 +34,8 @@ public class SysLoginInfoXEntity extends Model<SysLoginInfoXEntity> {
     private Long infoId;
 
     @ApiModelProperty("用户账号")
-    @TableField("user_name")
-    private String userName;
+    @TableField("username")
+    private String username;
 
     @ApiModelProperty("登录IP地址")
     @TableField("ip_address")
@@ -50,8 +50,8 @@ public class SysLoginInfoXEntity extends Model<SysLoginInfoXEntity> {
     private String browser;
 
     @ApiModelProperty("操作系统")
-    @TableField("os")
-    private String os;
+    @TableField("operation_system")
+    private String operationSystem;
 
     @ApiModelProperty("登录状态（0成功 1失败）")
     @TableField("`status`")

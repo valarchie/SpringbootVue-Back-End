@@ -1,7 +1,6 @@
 package com.agileboot.admin.deprecated.entity;
 
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.ColumnType;
 import com.agileboot.common.core.dto.BaseEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -23,13 +22,13 @@ public class SysDictData extends BaseEntity {
     /**
      * 字典编码
      */
-    @ExcelColumn(name = "字典编码", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "字典编码", cellType = ColumnType.NUMERIC)
     private Long dictCode;
 
     /**
      * 字典排序
      */
-    @ExcelColumn(name = "字典排序", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "字典排序", cellType = ColumnType.NUMERIC)
     private Long dictSort;
 
     /**
@@ -70,13 +69,13 @@ public class SysDictData extends BaseEntity {
     /**
      * 是否默认（Y是 N否）
      */
-    @ExcelColumn(name = "是否默认", readConverterExp = "Y=是,N=否")
+//    @ExcelColumn(name = "是否默认", readConverterExp = "Y=是,N=否")
     private String isDefault;
 
     /**
      * 状态（0正常 1停用）
      */
-    @ExcelColumn(name = "状态", readConverterExp = "0=正常,1=停用")
+//    @ExcelColumn(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
 

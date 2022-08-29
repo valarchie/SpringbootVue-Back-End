@@ -62,7 +62,7 @@ public class SysOperationLogXEntity extends Model<SysOperationLogXEntity> {
     private Long userId;
 
     @ApiModelProperty("操作人员")
-    @TableField("user_name")
+    @TableField("username")
     private String userName;
 
     @ApiModelProperty("操作人员ip")

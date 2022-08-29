@@ -1,7 +1,6 @@
 package com.agileboot.admin.deprecated.domain;
 
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.ColumnType;
 import com.agileboot.common.core.dto.BaseEntity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -23,7 +22,7 @@ public class SysConfig extends BaseEntity {
     /**
      * 参数主键
      */
-    @ExcelColumn(name = "参数主键", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "参数主键", cellType = ColumnType.NUMERIC)
     private Long configId;
 
     /**
@@ -53,7 +52,7 @@ public class SysConfig extends BaseEntity {
     /**
      * 系统内置（Y是 N否）
      */
-    @ExcelColumn(name = "系统内置", readConverterExp = "Y=是,N=否")
+//    @ExcelColumn(name = "系统内置", readConverterExp = "Y=是,N=否")
     private String configType;
 
 }

@@ -2,7 +2,6 @@ package com.agileboot.admin.deprecated.domain;
 
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.annotation.ExcelColumn;
-import com.agileboot.common.annotation.ExcelColumn.ColumnType;
 import com.agileboot.common.core.dto.BaseEntity;
 import com.agileboot.orm.entity.SysPostXEntity;
 import javax.validation.constraints.NotBlank;
@@ -51,7 +50,7 @@ public class SysPost extends BaseEntity {
     /**
      * 岗位序号
      */
-    @ExcelColumn(name = "岗位序号", cellType = ColumnType.NUMERIC)
+//    @ExcelColumn(name = "岗位序号", cellType = ColumnType.NUMERIC)
     private Long postId;
 
     /**
@@ -80,7 +79,7 @@ public class SysPost extends BaseEntity {
     /**
      * 状态（0正常 1停用）
      */
-    @ExcelColumn(name = "状态", readConverterExp = "0=正常,1=停用")
+//    @ExcelColumn(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
     /**
