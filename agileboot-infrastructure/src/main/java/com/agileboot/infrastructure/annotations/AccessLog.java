@@ -1,7 +1,7 @@
 package com.agileboot.infrastructure.annotations;
 
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.enums.OperatorType;
+import com.agileboot.orm.enums.OperatorTypeEnum;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,7 +31,7 @@ public @interface AccessLog {
     /**
      * 操作人类别
      */
-    OperatorType operatorType() default OperatorType.MANAGE;
+    OperatorTypeEnum operatorType() default OperatorTypeEnum.WEB;
 
     /**
      * 是否保存请求的参数
@@ -41,5 +41,5 @@ public @interface AccessLog {
     /**
      * 是否保存响应的参数
      */
-    boolean isSaveResponseData() default true;
+    boolean isSaveResponseData() default false;
 }

@@ -1,10 +1,10 @@
 package com.agileboot.infrastructure.aspectj;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
-import com.agileboot.common.enums.BusinessStatus;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.thread.AsyncTaskFactory;
@@ -12,6 +12,8 @@ import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysOperationLogXEntity;
+import com.agileboot.orm.enums.RequestMethodEnum;
+import com.agileboot.orm.enums.dictionary.OperationStatusEnum;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -66,18 +68,18 @@ public class AccessLogAspect {
 
             // *========数据库日志=========*//
             SysOperationLogXEntity operationLog = new SysOperationLogXEntity();
-            operationLog.setStatus(BusinessStatus.SUCCESS.ordinal());
+            operationLog.setStatus(OperationStatusEnum.SUCCESS.getValue());
             // 请求的地址
 
             String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
             operationLog.setOperatorIp(ip);
             operationLog.setRequestUrl(ServletHolderUtil.getRequest().getRequestURI());
             if (loginUser != null) {
-                operationLog.setUserName(loginUser.getUsername());
+                operationLog.setUsername(loginUser.getUsername());
             }
 
             if (e != null) {
-                operationLog.setStatus(BusinessStatus.FAIL.ordinal());
+                operationLog.setStatus(OperationStatusEnum.FAIL.getValue());
 
                 operationLog.setErrorStack(StrUtil.sub(e.getMessage(), 0, 2000));
             }
@@ -86,8 +88,9 @@ public class AccessLogAspect {
             String methodName = joinPoint.getSignature().getName();
             operationLog.setCalledMethod(className + "." + methodName + "()");
             // 设置请求方式
-            //
-            operationLog.setRequestMethod(getHttpMethodIntValue(ServletHolderUtil.getRequest().getMethod()));
+            RequestMethodEnum requestMethodEnum = EnumUtil.fromString(RequestMethodEnum.class,
+                ServletHolderUtil.getRequest().getMethod());
+            operationLog.setRequestMethod(requestMethodEnum != null ? requestMethodEnum.getValue() : RequestMethodEnum.UNKNOWN.getValue());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operationLog, jsonResult);
             operationLog.setOperationTime(DateUtil.date());

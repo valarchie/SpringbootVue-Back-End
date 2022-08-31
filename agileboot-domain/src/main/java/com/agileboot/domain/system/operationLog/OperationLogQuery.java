@@ -13,7 +13,7 @@ public class OperationLogQuery extends AbstractPageQuery {
 
     private String businessType;
     private String status;
-    private String operatorName;
+    private String username;
     private String requestModule;
 
 
@@ -23,7 +23,7 @@ public class OperationLogQuery extends AbstractPageQuery {
 
         queryWrapper.like(businessType!=null, "business_type", businessType)
             .eq(status != null, "status", status)
-            .like(StrUtil.isNotEmpty(operatorName), "user_name", operatorName)
+            .like(StrUtil.isNotEmpty(username), "username", username)
             .like(StrUtil.isNotEmpty(requestModule), "request_module", requestModule);
 
         addSortCondition(queryWrapper);

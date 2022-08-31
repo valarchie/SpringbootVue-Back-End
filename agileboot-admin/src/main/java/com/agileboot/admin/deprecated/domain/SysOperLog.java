@@ -31,7 +31,7 @@ public class SysOperLog extends BaseEntity {
         this.operatorType = entity.getOperatorType();
         this.operIp = entity.getOperatorIp();
         this.operLocation = entity.getOperatorLocation();
-        this.operName = entity.getUserName();
+        this.operName = entity.getUsername();
         this.operParam = entity.getOperationParam();
         this.operTime = entity.getOperationTime();
         this.operUrl = entity.getRequestUrl();
