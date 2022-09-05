@@ -76,7 +76,7 @@ public class SysDeptXServiceImp extends ServiceImpl<SysDeptXMapper, SysDeptXEnti
         QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq( "dept_id", deptId)
             .eq(enabled != null, "status", 1)
-            .apply( "dept_id = '" + deptId + "' or FIND_IN_SET ( dept_id , ancestors)");
+            .apply( "FIND_IN_SET (dept_id , ancestors)");
         return this.baseMapper.exists(queryWrapper);
     }
 

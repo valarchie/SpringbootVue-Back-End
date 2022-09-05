@@ -55,7 +55,25 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     CONFIG_VALUE_IS_NOT_ALLOW_TO_EMPTY(Module.CONFIG, 1, "参数键值不允许为空"),
 
-    CONFIG_VALUE_IS_NOT_IN_OPTIONS(Module.CONFIG, 2, "参数键值不存在列表中")
+    CONFIG_VALUE_IS_NOT_IN_OPTIONS(Module.CONFIG, 2, "参数键值不存在列表中"),
+
+    POST_NAME_IS_NOT_UNIQUE(Module.POST, 1, "岗位名称:%s, 已存在"),
+
+    POST_CODE_IS_NOT_UNIQUE(Module.DEPT, 2, "岗位编号:%s, 已存在"),
+
+    DEPT_NAME_IS_NOT_UNIQUE(Module.DEPT, 3, "部门名称:%s, 已存在"),
+
+    DEPT_PARENT_ID_IS_NOT_ALLOWED_SELF(Module.DEPT, 4, "父级部门不能选择自己"),
+
+    DEPT_STATUS_ID_IS_NOT_ALLOWED_CHANGE(Module.DEPT, 5, "子部门还有正在启用的部门，暂时不能停用该部门"),
+
+    DEPT_EXIST_CHILD_DEPT_NOT_ALLOW_DELETE(Module.DEPT, 6, "该部门存在下级部门不允许删除"),
+
+    DEPT_EXIST_LINK_USER_NOT_ALLOW_DELETE(Module.DEPT, 6, "该部门存在关联的用户不允许删除"),
+
+    DEPT_PARENT_DEPT_NO_EXIST_OR_DISABLED(Module.DEPT, 7, "该父级部门不存在或已停用"),
+
+
     ;
 
     enum Module {
@@ -73,6 +91,10 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
         USER(4),
 
         CONFIG(5),
+
+        POST(6),
+
+        DEPT(7),
 
         ;
 

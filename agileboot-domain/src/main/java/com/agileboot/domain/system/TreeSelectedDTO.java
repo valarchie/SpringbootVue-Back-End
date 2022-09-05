@@ -1,4 +1,4 @@
-package com.agileboot.admin.response;
+package com.agileboot.domain.system;
 
 import cn.hutool.core.lang.tree.Tree;
 import java.util.List;

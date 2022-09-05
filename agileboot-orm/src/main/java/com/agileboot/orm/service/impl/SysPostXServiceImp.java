@@ -22,7 +22,7 @@ public class SysPostXServiceImp extends ServiceImpl<SysPostXMapper, SysPostXEnti
     /**
      * 校验岗位名称是否唯一
      *
-     * @param post 岗位信息
+     * @param postName 岗位名称
      * @return 结果
      */
     @Override

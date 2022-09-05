@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Deprecated
-public class SysPost extends BaseEntity {
+public class  SysPost extends BaseEntity {
 
 
     public SysPost(SysPostXEntity entity) {

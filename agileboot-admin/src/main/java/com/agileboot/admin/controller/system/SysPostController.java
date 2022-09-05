@@ -1,21 +1,18 @@
 package com.agileboot.admin.controller.system;
 
-import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.domain.SysPost;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.common.utils.poi.CustomExcelUtil;
+import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.system.post.AddPostCommand;
+import com.agileboot.domain.system.post.PostDTO;
+import com.agileboot.domain.system.post.PostDomainService;
+import com.agileboot.domain.system.post.PostQuery;
+import com.agileboot.domain.system.post.UpdatePostCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
-import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysPostXEntity;
-import com.agileboot.orm.service.ISysPostXService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,46 +33,28 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/system/post")
+@Validated
 public class SysPostController extends BaseController {
 
     @Autowired
-    private ISysPostXService postService;
+    private PostDomainService postDomainService;
 
     /**
      * 获取岗位列表
      */
     @PreAuthorize("@ss.hasPermi('system:post:list')")
     @GetMapping("/list")
-    public ResponseDTO<PageDTO> list(SysPost post) {
-        Page<SysPostXEntity> page = getPage();
-        QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq(post.getStatus() != null, "status", post.getStatus())
-            .eq(post.getPostCode() != null, "post_code", post.getPostCode())
-            .eq(post.getPostId() != null, "post_id", post.getPostId())
-            .like(StrUtil.isNotEmpty(post.getPostName()), "post_name", post.getPostName());
-
-        postService.page(page, queryWrapper);
-        return ResponseDTO.ok(new PageDTO(page));
+    public ResponseDTO<PageDTO> list(PostQuery query) {
+        PageDTO pageDTO = postDomainService.getPostList(query);
+        return ResponseDTO.ok(pageDTO);
     }
 
     @AccessLog(title = "岗位管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:post:export')")
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SysPost post) {
-        Page<SysPostXEntity> page = getPage();
-        QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq(post.getStatus() != null, "status", post.getStatus())
-            .eq(post.getPostCode() != null, "post_code", post.getPostCode())
-            .eq(post.getPostId() != null, "post_id", post.getPostId())
-            .like(StrUtil.isNotEmpty(post.getPostName()), "post_name", post.getPostName());
-
-        postService.page(page, queryWrapper);
-
-        List<SysPost> list = page.getRecords().stream().map(SysPost::new).collect(Collectors.toList());
-//        ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-//        util.exportExcel(response, list, "岗位数据");
+    public void export(HttpServletResponse response, PostQuery query) {
+        PageDTO pageDTO = postDomainService.getPostList(query);
+        CustomExcelUtil.writeToResponse(pageDTO.getRows(), PostDTO.class, response);
     }
 
     /**
@@ -84,7 +63,8 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:query')")
     @GetMapping(value = "/{postId}")
     public ResponseDTO getInfo(@PathVariable Long postId) {
-        return ResponseDTO.ok(new SysPost(postService.getById(postId)));
+        PostDTO post = postDomainService.getPost(postId);
+        return ResponseDTO.ok(post);
     }
 
     /**
@@ -93,22 +73,8 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:add')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysPost post) {
-        if (postService.checkPostNameUnique(null, post.getPostName())) {
-//            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
-            return ResponseDTO.fail();
-        }
-        if (postService.checkPostCodeUnique(null, post.getPostCode())) {
-//            return Rdto.error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
-            return ResponseDTO.fail();
-        }
-
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        SysPostXEntity entity = post.toEntity();
-        entity.setCreatorId(loginUser.getUserId());
-        entity.setCreateName(loginUser.getUsername());
-        entity.insert();
+    public ResponseDTO add(@RequestBody AddPostCommand addCommand) {
+        postDomainService.addPost(addCommand);
         return ResponseDTO.ok();
     }
 
@@ -118,24 +84,8 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysPost post) {
-        if (postService.checkPostNameUnique(post.getPostId(), post.getPostName())) {
-//            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
-            return ResponseDTO.fail();
-        }
-        if (postService.checkPostCodeUnique(post.getPostId(), post.getPostCode())) {
-//            return Rdto.error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
-            return ResponseDTO.fail();
-        }
-
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        SysPostXEntity entity = post.toEntity();
-
-        entity.setUpdaterId(loginUser.getUserId());
-        entity.setUpdateName(loginUser.getUsername());
-        entity.updateById();
-
+    public ResponseDTO edit(@RequestBody UpdatePostCommand updateCommand) {
+        postDomainService.updatePost(updateCommand);
         return ResponseDTO.ok();
     }
 
@@ -145,22 +95,9 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
-    public ResponseDTO remove(@PathVariable Long[] postIds) {
-
-        List<Long> postIdList = Arrays.stream(postIds).collect(Collectors.toList());
-        postService.removeBatchByIds(postIdList);
-
+    public ResponseDTO remove(@PathVariable List<Long> postIds) {
+        postDomainService.deletePost(new BulkDeleteCommand<>(postIds));
         return ResponseDTO.ok();
     }
 
-    /**  找不到调用
-     * 获取岗位选择框列表
-     */
-//    @GetMapping("/optionselect")
-//    public ResponseDTO optionselect() {
-//        List<SysPostXEntity> list = postService.list();
-//        List<SysPost> posts =
-//            list != null ? list.stream().map(SysPost::new).collect(Collectors.toList()) : new ArrayList<>();
-//        return ResponseDTO.ok(posts);
-//    }
 }
