@@ -24,7 +24,7 @@ public class MenuQuery extends AbstractQuery {
             .eq(isVisible!=null, "is_visible", isVisible)
             .eq(status!=null, "status", status);
 
-        queryWrapper.orderBy(true, true, Arrays.asList("m.parent_id", "order_num"));
+        queryWrapper.orderBy(true, true, Arrays.asList("parent_id", "order_num"));
         return queryWrapper;
     }
 }

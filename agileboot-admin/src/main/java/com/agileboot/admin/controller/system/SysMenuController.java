@@ -1,22 +1,22 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
-import com.agileboot.admin.deprecated.entity.SysMenu;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.TreeSelectedDTO;
+import com.agileboot.domain.system.menu.AddMenuCommand;
+import com.agileboot.domain.system.menu.MenuDTO;
 import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.MenuQuery;
+import com.agileboot.domain.system.menu.UpdateMenuCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.service.ISysMenuXService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/system/menu")
+@Validated
 public class SysMenuController extends BaseController {
 
     @Autowired
@@ -49,15 +50,9 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:menu:list')")
     @GetMapping("/list")
-    public ResponseDTO<List> list(SysMenu menu) {
-
-        QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq(menu.getStatus() != null, "status", menu.getStatus())
-            .like(StrUtil.isNotEmpty(menu.getMenuName()), "menu_name", menu.getMenuName());
-
-        List<SysMenuXEntity> list = menuService.list(queryWrapper);
-        return ResponseDTO.ok(list);
+    public ResponseDTO<List> list(MenuQuery query) {
+        List<MenuDTO> menuList = menuDomainService.getMenuList(query);
+        return ResponseDTO.ok(menuList);
     }
 
     /**
@@ -65,45 +60,29 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @GetMapping(value = "/{menuId}")
-    public ResponseDTO getInfo(@PathVariable Long menuId) {
-        menuService.getById(menuId);
-        return ResponseDTO.ok();
+    public ResponseDTO<MenuDTO> getInfo(@PathVariable @NotNull @PositiveOrZero Long menuId) {
+        MenuDTO menu = menuDomainService.getMenu(menuId);
+        return ResponseDTO.ok(menu);
     }
 
     /**
      * 获取菜单下拉树列表
      */
     @GetMapping("/dropdownList")
-    public ResponseDTO dropdownList(MenuQuery query) {
-
+    public ResponseDTO dropdownList() {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        List<SysMenuXEntity> sysMenuEntities;
-
-        if(loginUser.isAdmin()) {
-            sysMenuEntities = menuService.list(query.toQueryWrapper());
-        } else {
-            sysMenuEntities = menuService.selectMenuListByUserId(loginUser.getUserId());
-        }
-        List<Tree<Long>> trees = menuDomainService.buildMenuTreeSelect(sysMenuEntities);
-
-        return ResponseDTO.ok(trees);
+        List<Tree<Long>> dropdownList = menuDomainService.getDropdownList(loginUser);
+        return ResponseDTO.ok(dropdownList);
     }
 
     /**
      * 加载对应角色菜单列表树
      */
-    @GetMapping(value = "/roleMenuTreeselect/{roleId}")
+    @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
     public ResponseDTO roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(loginUser.getUserId());
-
-        TreeSelectedDTO tree = new TreeSelectedDTO();
-        tree.setMenus(menuDomainService.buildMenuTreeSelect(menus));
-        tree.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
-
-        return ResponseDTO.ok(tree);
+        TreeSelectedDTO roleDropdownList = menuDomainService.getRoleDropdownList(loginUser, roleId);
+        return ResponseDTO.ok(roleDropdownList);
     }
 
     /**
@@ -112,23 +91,9 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @AccessLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysMenu menu) {
+    public ResponseDTO add(@RequestBody AddMenuCommand addCommand) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        if (menuService.checkMenuNameUnique(menu.getMenuName(), null, menu.getParentId())) {
-//            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-            return ResponseDTO.fail();
-        }
-        if (menu.getIsFrame().equals("0") && !HttpUtil.isHttp(menu.getPath())
-            && !HttpUtil.isHttps(menu.getPath())) {
-//            return Rdto.error("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
-            return ResponseDTO.fail();
-        }
-        SysMenuXEntity entity = menu.toEntity();
-        entity.setCreatorId(loginUser.getUserId());
-        entity.setCreatorName(loginUser.getUsername());
-        entity.insert();
-
+        menuDomainService.addMenu(addCommand, loginUser);
         return ResponseDTO.ok();
     }
 
@@ -138,28 +103,9 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @AccessLog(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysMenu menu) {
-        if (menuService.checkMenuNameUnique(menu.getMenuName(), menu.getMenuId(), menu.getParentId())) {
-//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        }
-        if (menu.getIsFrame().equals("0") && !HttpUtil.isHttp(menu.getPath())
-            && !HttpUtil.isHttps(menu.getPath())) {
-//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
-            return ResponseDTO.fail();
-        }
-        if (menu.getMenuId().equals(menu.getParentId())) {
-//            return Rdto.error("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
-            return ResponseDTO.fail();
-        }
-
+    public ResponseDTO edit(@RequestBody UpdateMenuCommand updateCommand) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-
-        SysMenuXEntity entity = menu.toEntity();
-
-        entity.setUpdaterId(loginUser.getUserId());
-        entity.setUpdateName(loginUser.getUsername());
-        entity.updateById();
+        menuDomainService.updateMenu(updateCommand, loginUser);
         return ResponseDTO.ok();
     }
 
@@ -170,15 +116,7 @@ public class SysMenuController extends BaseController {
     @AccessLog(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
     public ResponseDTO remove(@PathVariable("menuId") Long menuId) {
-        if (menuService.hasChildByMenuId(menuId)) {
-//            return Rdto.error("存在子菜单,不允许删除");
-            return ResponseDTO.fail();
-        }
-        if (menuService.checkMenuExistRole(menuId)) {
-//            return Rdto.error("菜单已分配,不允许删除");
-            return ResponseDTO.fail();
-        }
-        menuService.removeById(menuId);
+        menuDomainService.remove(menuId);
         return ResponseDTO.ok();
     }
 

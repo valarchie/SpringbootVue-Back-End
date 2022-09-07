@@ -5,11 +5,16 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.domain.system.TreeSelectedDTO;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysMenuXEntity;
 import com.agileboot.orm.service.ISysMenuXService;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +26,78 @@ public class MenuDomainService {
 
     @Autowired
     private ISysMenuXService menuService;
+
+
+    public List<MenuDTO> getMenuList(MenuQuery query) {
+        List<SysMenuXEntity> list = menuService.list(query.toQueryWrapper());
+        return list.stream().map(MenuDTO::new).collect(Collectors.toList());
+    }
+
+    public MenuDTO getMenu(Long menuId) {
+        SysMenuXEntity byId = menuService.getById(menuId);
+        return new MenuDTO(byId);
+    }
+
+    public List<Tree<Long>> getDropdownList(LoginUser loginUser) {
+        List<SysMenuXEntity> menuEntityList =
+            loginUser.isAdmin() ? menuService.list() : menuService.selectMenuListByUserId(loginUser.getUserId());
+
+        return buildMenuTreeSelect(menuEntityList);
+    }
+
+
+    public TreeSelectedDTO getRoleDropdownList(LoginUser loginUser, Long roleId) {
+        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(loginUser.getUserId());
+
+        TreeSelectedDTO tree = new TreeSelectedDTO();
+        tree.setMenus(buildMenuTreeSelect(menus));
+        tree.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
+
+        return tree;
+    }
+
+
+    public void addMenu(AddMenuCommand addCommand, LoginUser loginUser) {
+        MenuModel model = addCommand.toModel();
+
+        model.checkMenuNameUnique(menuService);
+        model.checkExternalLink();
+
+        model.setCreatorId(loginUser.getUserId());
+        model.setCreatorName(loginUser.getUsername());
+        model.insert();
+    }
+
+    public void updateMenu(UpdateMenuCommand updateCommand, LoginUser loginUser) {
+        MenuModel model = updateCommand.toModel();
+        model.checkMenuNameUnique(menuService);
+        model.checkExternalLink();
+        model.checkParentId();
+
+        model.setUpdaterId(loginUser.getUserId());
+        model.setUpdateName(loginUser.getUsername());
+        model.updateById();
+    }
+
+
+    public void remove(Long menuId) {
+        MenuModel menuModel = getMenuModel(menuId);
+
+        menuModel.checkHasChildMenus(menuService);
+        menuModel.checkMenuAlreadyAssignToRole(menuService);
+
+        menuModel.deleteById();
+    }
+
+
+    public MenuModel getMenuModel(Long menuId) {
+        SysMenuXEntity byId = menuService.getById(menuId);
+        if (byId == null) {
+            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, menuId, "菜单");
+        }
+        return new MenuModel(byId);
+    }
+
 
 
     /**

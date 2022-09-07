@@ -73,6 +73,16 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     DEPT_PARENT_DEPT_NO_EXIST_OR_DISABLED(Module.DEPT, 7, "该父级部门不存在或已停用"),
 
+    MENU_NAME_IS_NOT_UNIQUE(Module.SYSTEM, 1, "新增菜单:%s 失败，菜单名称已存在"),
+
+    MENU_EXTERNAL_LINK_MUST_BE_HTTP(Module.SYSTEM, 2, "菜单外链必须以 http(s)://开头"),
+
+    MENU_PARENT_ID_NOT_ALLOW_SELF(Module.SYSTEM, 3, "父级菜单不能选择自身"),
+
+    MENU_EXIST_CHILD_MENU_NOT_ALLOW_DELETE(Module.SYSTEM, 4, "存在子菜单不允许删除"),
+
+    MENU_ALREADY_ASSIGN_TO_ROLE_NOT_ALLOW_DELETE(Module.SYSTEM, 4, "菜单已分配给角色，不允许"),
+
 
     ;
 
@@ -95,6 +105,8 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
         POST(6),
 
         DEPT(7),
+
+        SYSTEM(8),
 
         ;
 

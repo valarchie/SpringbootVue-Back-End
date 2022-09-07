@@ -106,7 +106,7 @@ public class RouterModel extends SysMenuXEntity {
      */
     public boolean isSingleLevelMenu() {
         return getParentId().intValue() == 0
-            && MenuTypeEnum.MENU.getValue() == getMenuType()
+            && MenuTypeEnum.MENU.getValue().equals(getMenuType())
             && !getIsExternal();
     }
 
@@ -117,7 +117,7 @@ public class RouterModel extends SysMenuXEntity {
      * @return 结果
      */
     public boolean isMultipleLevelMenu(Tree<Long> tree) {
-        return MenuTypeEnum.DIRECTORY.getValue() == getMenuType() && tree.hasChild();
+        return MenuTypeEnum.DIRECTORY.getValue().equals(getMenuType()) && tree.hasChild();
     }
 
 
