@@ -4,19 +4,17 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.entity.SysUserRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.mapper.SysUserXMapper;
-import com.agileboot.orm.result.SearchUserResult;
+import com.agileboot.orm.query.AbstractPageQuery;
+import com.agileboot.orm.result.SearchUserDO;
 import com.agileboot.orm.service.ISysConfigXService;
 import com.agileboot.orm.service.ISysUserRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -111,10 +109,8 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     public Set<String> selectMenuPermsByUserId(Long userId) {
         Set<String> permissionStrList = baseMapper.selectMenuPermsByUserId(userId);
         Set<String> singlePermsSet = new HashSet<>();
-        for (String perm : permissionStrList)
-        {
-            if (StrUtil.isNotEmpty(perm))
-            {
+        for (String perm : permissionStrList) {
+            if (StrUtil.isNotEmpty(perm)) {
                 singlePermsSet.addAll(Arrays.asList(perm.trim().split(",")));
             }
         }
@@ -129,35 +125,23 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public Page<SysUserXEntity> selectAllocatedList(Long roleId, String username, String phoneNumber,
-        Page<SysUserXEntity> page) {
-
-        QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
-            .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber);
-
-        baseMapper.selectRoleAssignedUserList(page, queryWrapper);
+    public Page selectAllocatedList(AbstractPageQuery query) {
+        Page page = query.toPage();
+        baseMapper.selectRoleAssignedUserList(page, query.toQueryWrapper());
         return page;
     }
 
     @Override
-    public Page<SysUserXEntity> selectUnallocatedList(Long roleId, String username, String phoneNumber,
-        Page<SysUserXEntity> page) {
-
-        QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
-            .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber)
-            .and(o-> o.ne("r.role_id", roleId)
-                .or().isNull("r.role_id"));
-
-        baseMapper.selectRoleUnassignedUserList(page, queryWrapper);
+    public Page<SysUserXEntity> selectUnallocatedList(AbstractPageQuery query) {
+        Page page = query.toPage();
+        baseMapper.selectRoleUnassignedUserList(page, query.toQueryWrapper());
         return page;
     }
 
     @Override
-    public Page<SearchUserResult> selectUserList(Page<SearchUserResult> page, QueryWrapper<SearchUserResult> queryWrapper) {
-        List<SearchUserResult> searchUserResults = baseMapper.selectUserList(page, queryWrapper);
-        page.setRecords(searchUserResults);
+    public Page<SearchUserDO> selectUserList(AbstractPageQuery query) {
+        Page page = query.toPage();
+        List<SearchUserDO> searchUserDOS = baseMapper.selectUserList(page, query.toQueryWrapper());
         return page;
     }
 
@@ -184,22 +168,6 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
 //        }
     }
 
-    @Override
-    public void insertUserAuth(Long userId, Long[] roleIds) {
-
-        userRoleService.getBaseMapper().deleteByMap(Collections.singletonMap("user_id", userId));
-
-        List<SysUserRoleXEntity> list = new ArrayList<>();
-
-        for (Long roleId : roleIds) {
-            SysUserRoleXEntity entity = new SysUserRoleXEntity();
-            entity.setUserId(userId);
-            entity.setRoleId(roleId);
-
-            list.add(entity);
-        }
-        userRoleService.saveBatch(list);
-    }
 
 
 }

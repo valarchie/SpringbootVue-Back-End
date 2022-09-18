@@ -1,22 +1,22 @@
 package com.agileboot.admin.controller.system;
 
-import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.entity.SysUser;
-import com.agileboot.admin.response.UserProfileDTO;
-import com.agileboot.admin.response.UserProfileDTO.UserProfileDTOBuilder;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.common.utils.file.FileUploadUtils;
+import com.agileboot.domain.common.UploadFileDTO;
+import com.agileboot.domain.system.user.UserDomainService;
+import com.agileboot.domain.system.user.UserProfileDTO;
+import com.agileboot.domain.system.user.command.UpdateProfileCommand;
+import com.agileboot.domain.system.user.command.UpdateUserAvatarCommand;
+import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.service.TokenService;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysUserXService;
 import java.io.IOException;
-import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,10 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SysProfileController extends BaseController {
 
     @Autowired
-    private ISysUserXService userService;
-
-    @Autowired
-    private TokenService tokenService;
+    private UserDomainService userDomainService;
 
     /**
      * 个人信息
@@ -48,15 +45,8 @@ public class SysProfileController extends BaseController {
     @GetMapping
     public ResponseDTO profile() {
         LoginUser user = AuthenticationUtils.getLoginUser();
-
-        SysUserXEntity userXEntity = userService.getById(user.getUserId());
-        // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
-
-        UserProfileDTOBuilder profileDTO = UserProfileDTO.builder().user(new SysUser(userXEntity))
-            .postGroup(userService.selectUserPostGroup(user.getUserId()))
-            .roleGroup(userService.selectUserRoleGroup(user.getUserId()));
-
-        return ResponseDTO.ok(profileDTO);
+        UserProfileDTO userProfile = userDomainService.getUserProfile(user.getUserId());
+        return ResponseDTO.ok(userProfile);
     }
 
     /**
@@ -64,28 +54,11 @@ public class SysProfileController extends BaseController {
      */
     @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO updateProfile(@RequestBody SysUser user) {
+    public ResponseDTO updateProfile(@RequestBody UpdateProfileCommand command) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        user.setUserName(loginUser.getUsername());
-        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(),
-            user.getUserId())) {
-//            return Rdto.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-            return ResponseDTO.fail();
-        }
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
-//            return Rdto.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-            return ResponseDTO.fail();
-        }
-        user.setUserId(loginUser.getUserId());
-        user.setPassword(null);
-
-        SysUserXEntity entity = user.toEntity();
-        if (entity.updateById()) {
-            tokenService.setLoginUser(loginUser);
-            return ResponseDTO.ok();
-        }
-//        return Rdto.error("修改个人信息异常，请联系管理员");
-        return ResponseDTO.fail();
+        command.setUserId(loginUser.getUserId());
+        userDomainService.updateUserProfile(command);
+        return ResponseDTO.ok();
     }
 
     /**
@@ -93,29 +66,10 @@ public class SysProfileController extends BaseController {
      */
     @AccessLog(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/password")
-    public ResponseDTO updatePassword(String oldPassword, String newPassword) {
+    public ResponseDTO updatePassword(@RequestBody UpdateUserPasswordCommand command) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        String password = loginUser.getPassword();
-        if (!AuthenticationUtils.matchesPassword(oldPassword, password)) {
-//            return Rdto.error("修改密码失败，旧密码错误");
-            return ResponseDTO.fail();
-        }
-        if (AuthenticationUtils.matchesPassword(newPassword, password)) {
-//            return Rdto.error("新密码不能与旧密码相同");
-            return ResponseDTO.fail();
-        }
-        SysUserXEntity entity = new SysUserXEntity();
-        entity.setUserId(loginUser.getUserId());
-        entity.setPassword(AuthenticationUtils.encryptPassword(newPassword));
-
-        if (entity.updateById()) {
-            // 更新缓存用户密码
-            loginUser.setPassword(AuthenticationUtils.encryptPassword(newPassword));
-            tokenService.setLoginUser(loginUser);
-            return ResponseDTO.ok();
-        }
-//        return Rdto.error("修改密码异常，请联系管理员");
-        return ResponseDTO.fail();
+        userDomainService.updateUserPassword(loginUser, command);
+        return ResponseDTO.ok();
     }
 
     /**
@@ -124,23 +78,13 @@ public class SysProfileController extends BaseController {
     @AccessLog(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping("/avatar")
     public ResponseDTO avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
-            LoginUser loginUser = AuthenticationUtils.getLoginUser();
-            String avatar = FileUploadUtils.upload(AgileBootConfig.getAvatarPath(), file);
-
-            SysUserXEntity entity = new SysUserXEntity();
-            entity.setUserId(loginUser.getUserId());
-            entity.setAvatar(avatar);
-
-            if (entity.updateById()) {
-                // 更新缓存用户头像
-                tokenService.setLoginUser(loginUser);
-                return ResponseDTO.ok(new HashMap<String, String>(){{
-                    put("imgUrl", avatar);
-                }});
-            }
+        if (file.isEmpty()) {
+            throw new ApiException(BusinessErrorCode.USER_UPLOAD_FILE_FAILED);
         }
-//        return Rdto.error("上传图片异常，请联系管理员");
-        return ResponseDTO.fail();
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+        String avatar = FileUploadUtils.upload(AgileBootConfig.getAvatarPath(), file);
+
+        userDomainService.updateUserAvatar(loginUser, new UpdateUserAvatarCommand(loginUser.getUserId(), avatar));
+        return ResponseDTO.ok(new UploadFileDTO(avatar));
     }
 }

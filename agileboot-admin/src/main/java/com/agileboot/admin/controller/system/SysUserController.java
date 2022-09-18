@@ -1,33 +1,26 @@
 package com.agileboot.admin.controller.system;
 
-import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.domain.SysPost;
-import com.agileboot.admin.deprecated.entity.SysRole;
-import com.agileboot.admin.deprecated.entity.SysUser;
-import com.agileboot.admin.response.UserDetailDTO;
-import com.agileboot.admin.response.UserInfoDTO;
+import cn.hutool.core.collection.ListUtil;
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
+import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
+import com.agileboot.domain.system.user.UserDTO;
+import com.agileboot.domain.system.user.UserDetailDTO;
 import com.agileboot.domain.system.user.UserDomainService;
+import com.agileboot.domain.system.user.UserInfoDTO;
+import com.agileboot.domain.system.user.command.AddUserCommand;
+import com.agileboot.domain.system.user.command.ChangeStatusCommand;
+import com.agileboot.domain.system.user.command.ResetPasswordCommand;
+import com.agileboot.domain.system.user.command.UpdateUserCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysPostXService;
-import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserXService;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -51,14 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class SysUserController extends BaseController {
 
     @Autowired
-    private ISysUserXService userService;
-
-    @Autowired
-    private ISysRoleXService roleService;
-
-    @Autowired
-    private ISysPostXService postService;
-    @Autowired
     private UserDomainService userDomainService;
 
     /**
@@ -67,43 +52,35 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(SearchUserQuery query) {
-        Page page = getPage();
-        userService.selectUserList(page, query.toQueryWrapper());
-        return ResponseDTO.ok(new PageDTO(page));
+        PageDTO page = userDomainService.getUserList(query);
+        return ResponseDTO.ok(page);
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:user:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SearchUserQuery query) {
-        Page page = getPage();
-        userService.selectUserList(page, query.toQueryWrapper());
-        List<SysUser> list = page.getRecords();
-
-        CustomExcelUtil.writeToResponse(list, SysUser.class, response);
+        PageDTO userList = userDomainService.getUserList(query);
+        CustomExcelUtil.writeToResponse(userList.getRows(), UserDTO.class, response);
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:user:import')")
     @PostMapping("/importData")
     public ResponseDTO importData(MultipartFile file, boolean updateSupport) throws Exception {
-        List<Object> objects = new ArrayList<>();
-
-        CustomExcelUtil.readFromResponse(objects, SysUser.class, file);
-
+        List<?> commands = CustomExcelUtil.readFromResponse(AddUserCommand.class, file);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
-        String operName = loginUser.getUsername();
-//        List<SysUserXEntity> collect = userList.stream().map(SysUser::toEntity).collect(Collectors.toList());
-
-//        String message = userApplicationService.importUser(null, updateSupport, operName);
-        return ResponseDTO.ok("message");
+        for (Object command : commands) {
+            AddUserCommand addUserCommand = (AddUserCommand) command;
+            userDomainService.addUser(loginUser, addUserCommand);
+        }
+        return ResponseDTO.ok();
     }
 
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response) {
-//        ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-//        util.importTemplateExcel(response, "用户数据");
+        CustomExcelUtil.writeToResponse(ListUtil.empty(), UserDTO.class, response);
     }
 
     /**
@@ -111,21 +88,10 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:query')")
     @GetMapping(value = {"/", "/{userId}"})
-    public ResponseDTO<UserDetailDTO> getInfo(@PathVariable(value = "userId", required = false) Long userId) {
-        userService.checkUserDataScope(userId);
-        UserDetailDTO detailDTO = new UserDetailDTO();
-
-        List<SysRole> roles = roleService.list().stream().map(SysRole::new).collect(Collectors.toList());
-
-        detailDTO.setRoles(SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
-        detailDTO.setPosts(postService.list().stream().map(SysPost::new).collect(Collectors.toList()));
-
-        SysUser sysUser = new SysUser(userService.getById(userId));
-        detailDTO.setUser(sysUser);
-        detailDTO.setPostIds(postService.selectPostListByUserId(userId));
-        detailDTO.setRoleIds(sysUser.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList()));
-
-        return ResponseDTO.ok(detailDTO);
+    public ResponseDTO<UserDetailDTO> getUserDetailInfo(@PathVariable(value = "userId", required = false) Long userId) {
+//      TODO  userService.checkUserDataScope(userId);
+        UserDetailDTO userDetailInfo = userDomainService.getUserDetailInfo(userId);
+        return ResponseDTO.ok(userDetailInfo);
     }
 
     /**
@@ -134,29 +100,9 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:add') AND @ss.checkDataScopeWithUserId(#user.deptId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResponseDTO add(@Validated @RequestBody SysUser user) {
-        if (userService.checkUserNameUnique(user.getUserName())) {
-//            return Rdto.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-            return ResponseDTO.fail();
-        }
-
-        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(),
-            user.getUserId())) {
-//            return Rdto.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-            return ResponseDTO.fail();
-        }
-
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
-//            return Rdto.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-            return ResponseDTO.fail();
-        }
+    public ResponseDTO add(@Validated @RequestBody AddUserCommand command) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        user.setCreateBy(loginUser.getUsername());
-        user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
-        SysUserXEntity entity = user.toEntity();
-        entity.insert();
-
+        userDomainService.addUser(loginUser, command);
         return ResponseDTO.ok();
     }
 
@@ -166,24 +112,11 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public ResponseDTO edit(@Validated @RequestBody SysUser user) {
-        userService.checkUserAllowed(user.getUserId());
-        userService.checkUserDataScope(user.getUserId());
-        if (StrUtil.isNotEmpty(user.getPhonenumber()) && userService.checkPhoneUnique(user.getPhonenumber(),
-            user.getUserId())) {
-//            return Rdto.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-            return ResponseDTO.fail();
-        }
-        if (StrUtil.isNotEmpty(user.getEmail()) && userService.checkEmailUnique(user.getEmail(), user.getUserId())) {
-//            return Rdto.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-            return ResponseDTO.fail();
-        }
-
+    public ResponseDTO edit(@Validated @RequestBody UpdateUserCommand command) {
+//       TODO userService.checkUserAllowed(user.getUserId());
+//        userService.checkUserDataScope(user.getUserId());
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        user.setUpdateBy(loginUser.getUsername());
-        SysUserXEntity entity = user.toEntity();
-        entity.updateById();
+        userDomainService.updateUser(loginUser, command);
         return ResponseDTO.ok();
     }
 
@@ -193,16 +126,10 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:remove')")
     @AccessLog(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
-    public ResponseDTO remove(@PathVariable Long[] userIds) {
-
+    public ResponseDTO remove(@PathVariable List<Long> userIds) {
+        BulkDeleteCommand<Long> bulkDeleteCommand = new BulkDeleteCommand(userIds);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        if (ArrayUtils.contains(userIds, loginUser.getUserId())) {
-//            return error("当前用户不能删除");
-            return ResponseDTO.fail();
-        }
-        List<Long> userIdList = Arrays.stream(userIds).collect(Collectors.toList());
-        userService.removeByIds(userIdList);
+        userDomainService.deleteUsers(loginUser, bulkDeleteCommand);
         return ResponseDTO.ok();
     }
 
@@ -212,17 +139,12 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/password/reset")
-    public ResponseDTO resetPwd(@PathVariable Long userId, @RequestBody SysUser user) {
-
+    public ResponseDTO resetPassword(@PathVariable Long userId, @RequestBody ResetPasswordCommand command) {
+//      TODO  userService.checkUserAllowed(user.getUserId());
+//        userService.checkUserDataScope(user.getUserId());
+        command.setUserId(userId);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        userService.checkUserAllowed(user.getUserId());
-        userService.checkUserDataScope(user.getUserId());
-        user.setPassword(AuthenticationUtils.encryptPassword(user.getPassword()));
-        user.setUpdateBy(loginUser.getUsername());
-        SysUserXEntity entity = user.toEntity();
-        entity.updateById();
-
+        userDomainService.resetUserPassword(loginUser, command);
         return ResponseDTO.ok();
     }
 
@@ -232,15 +154,11 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:edit')")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/status")
-    public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody SysUser user) {
-
+    public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody ChangeStatusCommand command) {
+//        TODO userService.checkUserAllowed(user.getUserId());
+//        userService.checkUserDataScope(user.getUserId());
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-
-        userService.checkUserAllowed(user.getUserId());
-        userService.checkUserDataScope(user.getUserId());
-        user.setUpdateBy(loginUser.getUsername());
-        SysUserXEntity entity = user.toEntity();
-        entity.updateById();
+        userDomainService.changeUserStatus(loginUser, command);
         return ResponseDTO.ok();
     }
 
@@ -249,31 +167,11 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:user:query')")
     @GetMapping("/{userId}/role")
-    public ResponseDTO<UserInfoDTO> authRole(@PathVariable("userId") Long userId) {
-
-
-
-        SysUser user = new SysUser(userService.getById(userId));
-        List<SysRoleXEntity> roleXEntities = roleService.selectRolesByUserId(userId);
-        List<SysRole> roles = roleXEntities.stream().map(SysRole::new).collect(Collectors.toList());
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setUser(user);
-        userInfoDTO.setRoles(
-            SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
-
-        return ResponseDTO.ok(userInfoDTO);
+    public ResponseDTO<UserInfoDTO> getRoleOfUser(@PathVariable("userId") Long userId) {
+        UserInfoDTO userWithRole = userDomainService.getUserWithRole(userId);
+        return ResponseDTO.ok(userWithRole);
     }
 
-    /**
-     * 用户授权角色
-     */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
-    @AccessLog(title = "用户管理", businessType = BusinessType.GRANT)
-    @PutMapping("/{userId}/role")
-    public ResponseDTO insertAuthRole(@PathVariable("userId") Long userId, Long[] roleIds) {
-        userService.checkUserDataScope(userId);
-        userService.insertUserAuth(userId, roleIds);
-        return ResponseDTO.ok();
-    }
+
+
 }

@@ -3,7 +3,7 @@ package com.agileboot.orm.mapper;
 import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.result.SearchUserResult;
+import com.agileboot.orm.result.SearchUserDO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -103,7 +103,7 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
         + "FROM sys_user u "
         + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
         + "${ew.customSqlSegment}")
-    List<SearchUserResult> selectUserList(Page<SearchUserResult> page,
-        @Param(Constants.WRAPPER) Wrapper<SearchUserResult> queryWrapper);
+    List<SearchUserDO> selectUserList(Page<SearchUserDO> page,
+        @Param(Constants.WRAPPER) Wrapper<SearchUserDO> queryWrapper);
 
 }

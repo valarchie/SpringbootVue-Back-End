@@ -1,17 +1,22 @@
 package com.agileboot.domain.system.role;
 
 import cn.hutool.core.collection.CollUtil;
-import com.agileboot.orm.entity.SysRoleDeptXEntity;
-import com.agileboot.orm.entity.SysRoleMenuXEntity;
-import com.agileboot.orm.entity.SysUserRoleXEntity;
+import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.exception.ApiException;
+import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.infrastructure.web.service.UserDetailsServiceImpl;
+import com.agileboot.orm.entity.SysRoleXEntity;
+import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.service.ISysRoleDeptXService;
 import com.agileboot.orm.service.ISysRoleMenuXService;
 import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserRoleXService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import java.util.ArrayList;
-import java.util.Collections;
+import com.agileboot.orm.service.ISysUserXService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,96 +35,132 @@ public class RoleDomainService {
     @Autowired
     private ISysUserRoleXService userRoleService;
 
-    public boolean createRole(RoleModel roleModel) {
-        roleModel.insert();
-        List<SysRoleMenuXEntity> list = new ArrayList<>();
-        for (Long menuId : roleModel.getMenuIds()) {
-            SysRoleMenuXEntity rm = new SysRoleMenuXEntity();
-            rm.setRoleId(roleModel.getRoleId());
-            rm.setMenuId(menuId);
-            list.add(rm);
-        }
+    @Autowired
+    private ISysUserXService userService;
 
-        roleMenuService.saveBatch(list);
-        return true;
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
+    public PageDTO getRoleList(RoleQuery query) {
+        Page<SysRoleXEntity> page = roleService.page(query.toPage(), query.toQueryWrapper());
+        List<RoleDTO> records = page.getRecords().stream().map(RoleDTO::new).collect(Collectors.toList());
+        return new PageDTO(records, page.getTotal());
+    }
+
+    public RoleDTO getRoleInfo(Long roleId) {
+        SysRoleXEntity byId = roleService.getById(roleId);
+        return new RoleDTO(byId);
     }
 
 
-    public boolean updateRole(RoleModel roleModel) {
+    public void addRole(AddRoleCommand addCommand, LoginUser loginUser) {
+        RoleModel roleModel = addCommand.toModel();
+
+        roleModel.checkRoleNameUnique(roleService);
+        roleModel.checkRoleKeyUnique(roleService);
+
+        roleModel.setCreatorId(loginUser.getUserId());
+        roleModel.setCreatorName(loginUser.getUsername());
+
+        roleModel.insert(roleMenuService);
+    }
+
+
+    public void updateRole(UpdateRoleCommand updateCommand, LoginUser loginUser) {
+        SysRoleXEntity byId = roleService.getById(updateCommand.getRoleId());
+
+        if (byId == null) {
+            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, updateCommand.getRoleId(), "角色");
+        }
+
+        RoleModel roleModel = updateCommand.toModel();
+        roleModel.checkRoleKeyUnique(roleService);
+        roleModel.checkRoleNameUnique(roleService);
+
+        roleModel.setUpdaterId(loginUser.getUserId());
+        roleModel.setUpdaterName(loginUser.getUsername());
+
+        roleModel.updateById(roleMenuService);
+
+        if (loginUser.isAdmin()) {
+            loginUser.setMenuPermissions(userDetailsService.getMenuPermissions(loginUser.getUserId()));
+            tokenService.setLoginUser(loginUser);
+        }
+    }
+
+
+    public RoleModel getRoleModel(Long roleId) {
+        SysRoleXEntity byId = roleService.getById(roleId);
+
+        if (byId == null) {
+            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, roleId, "角色");
+        }
+
+        return new RoleModel(byId);
+    }
+
+    public void updateStatus(UpdateStatusCommand command, LoginUser loginUser) {
+        RoleModel roleModel = getRoleModel(command.getRoleId());
+        roleModel.setStatus(command.getStatus());
+        roleModel.setUpdaterId(loginUser.getUserId());
+        roleModel.setUpdaterName(loginUser.getUsername());
         roleModel.updateById();
+    }
 
-        // 清空之前的角色菜单关联
-        roleMenuService.getBaseMapper().deleteByMap(Collections.singletonMap("role_id", roleModel.getRoleId()));
+    public void updateDataScope(UpdateDataScopeCommand command) {
+        RoleModel roleModel = getRoleModel(command.getRoleId());
+        roleModel.setDeptIds(command.getDeptIds());
 
-        List<SysRoleMenuXEntity> list = new ArrayList<>();
-        for (Long menuId : roleModel.getMenuIds()) {
-            SysRoleMenuXEntity rm = new SysRoleMenuXEntity();
-            rm.setRoleId(roleModel.getRoleId());
-            rm.setMenuId(menuId);
-            list.add(rm);
+        roleModel.generateDeptIdSet();
+        roleModel.updateById();
+    }
+
+
+    public PageDTO getAllocatedUserList(AllocatedRoleQuery query) {
+        Page<SysUserXEntity> page = userService.selectAllocatedList(query);
+        return new PageDTO(page.getRecords(), page.getTotal());
+    }
+
+    public PageDTO getUnallocatedUserList(UnallocatedRoleQuery query) {
+        Page<SysUserXEntity> page = userService.selectUnallocatedList(query);
+        return new PageDTO(page.getRecords(), page.getTotal());
+    }
+
+
+
+    public void deleteRoleOfUser(Long userId) {
+        SysUserXEntity user = userService.getById(userId);
+        if (user != null) {
+            user.setRoleId(null);
+            user.updateById();
         }
-
-        roleMenuService.saveBatch(list);
-        return true;
     }
 
-
-
-    /**
-     * 修改数据权限信息
-     *
-     * @param role 角色信息
-     * @return 结果
-     */
-    public boolean authDataScope(RoleModel role) {
-        // 新增角色和部门信息（数据权限）
-        role.updateById();
-
-        roleDeptService.getBaseMapper().deleteByMap(Collections.singletonMap("role_id", role.getRoleId()));
-        // 新增用户与角色管理
-        List<SysRoleDeptXEntity> list = new ArrayList<>();
-        for (Long deptId : role.getDeptIds()) {
-            SysRoleDeptXEntity link = new SysRoleDeptXEntity();
-            link.setRoleId(role.getRoleId());
-            link.setDeptId(deptId);
-            list.add(link);
+    public void deleteRoleOfUserByBulk(List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return;
         }
-
-        return roleDeptService.saveBatch(list);
-    }
-
-
-
-    public boolean deleteAuthUser(Long roleId, Long userId) {
-        QueryWrapper<SysUserRoleXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", userId)
-            .eq("user_id", userId);
-
-        return userRoleService.remove(queryWrapper);
-    }
-
-    public boolean deleteAuthUsers(Long roleId, List<Long> userIds) {
-        QueryWrapper<SysUserRoleXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId)
-            .in("user_id", userIds);
-
-        return userRoleService.remove(queryWrapper);
-    }
-
-    public boolean insertAuthUsers(Long roleId, List<Long> userIds) {
-        if(CollUtil.isEmpty(userIds)) {
-            return false;
-        }
-
-        List<SysUserRoleXEntity> list = new ArrayList<>();
 
         for (Long userId : userIds) {
-            SysUserRoleXEntity entity = new SysUserRoleXEntity();
-            entity.setUserId(userId);
-            entity.setRoleId(roleId);
-            list.add(entity);
+            SysUserXEntity user = userService.getById(userId);
+            user.setRoleId(null);
+            user.updateById();
         }
-        return userRoleService.saveBatch(list);
+    }
+
+    public void addRoleOfUserByBulk(Long roleId, List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return;
+        }
+
+        for (Long userId : userIds) {
+            SysUserXEntity user = userService.getById(userId);
+            user.setRoleId(roleId);
+            user.updateById();
+        }
     }
 
 

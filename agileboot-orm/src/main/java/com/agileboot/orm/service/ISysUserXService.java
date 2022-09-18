@@ -1,8 +1,8 @@
 package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.result.SearchUserResult;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.agileboot.orm.query.AbstractPageQuery;
+import com.agileboot.orm.result.SearchUserDO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.Set;
@@ -79,8 +79,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      */
     SysUserXEntity getUserByUserName(String userName);
 
-    Page<SysUserXEntity> selectAllocatedList(Long roleId, String username, String phoneNumber,
-        Page<SysUserXEntity> page);
+    Page<SysUserXEntity> selectAllocatedList(AbstractPageQuery query);
 
     /**
      * 根据条件分页查询未分配用户角色列表
@@ -88,8 +87,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    Page<SysUserXEntity>  selectUnallocatedList(Long roleId, String username, String phoneNumber,
-        Page<SysUserXEntity> page);
+    Page<SysUserXEntity>  selectUnallocatedList(AbstractPageQuery query);
 
     /**
      * 根据条件分页查询用户列表
@@ -97,7 +95,7 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    Page<SearchUserResult> selectUserList( Page<SearchUserResult> page, QueryWrapper<SearchUserResult> queryWrapper);
+    Page<SearchUserDO> selectUserList(AbstractPageQuery query);
 
     /**
      * 校验用户是否允许操作
@@ -112,12 +110,5 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
     void checkUserDataScope(Long userId);
 
 
-    /**
-     * 用户授权角色
-     *
-     * @param userId 用户ID
-     * @param roleIds 角色组
-     */
-    void insertUserAuth(Long userId, Long[] roleIds);
 
 }

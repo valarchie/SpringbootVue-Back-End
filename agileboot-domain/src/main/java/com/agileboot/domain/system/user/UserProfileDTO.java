@@ -1,6 +1,5 @@
-package com.agileboot.admin.response;
+package com.agileboot.domain.system.user;
 
-import com.agileboot.admin.deprecated.entity.SysUser;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import lombok.Data;
  */
 public class UserProfileDTO {
 
-    private SysUser user;
+    private UserDTO user;
     private String roleGroup;
     private String postGroup;
 

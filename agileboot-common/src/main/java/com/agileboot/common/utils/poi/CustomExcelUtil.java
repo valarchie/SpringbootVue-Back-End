@@ -56,7 +56,7 @@ public class CustomExcelUtil {
 
     }
 
-    public static List<?> readFromResponse(List<?> list, Class clazz,  MultipartFile file) {
+    public static List<?> readFromResponse(Class clazz,  MultipartFile file) {
 
         ExcelReader reader = null;
         try {
@@ -79,10 +79,7 @@ public class CustomExcelUtil {
         }
 
         List read = reader.read(0, 1, clazz);
-
-        System.out.println(read);
-
-        return null;
+        return read;
     }
 
 

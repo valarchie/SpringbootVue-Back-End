@@ -1,13 +1,40 @@
 package com.agileboot.domain.system.user;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.convert.Convert;
+import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.system.loginInfo.SearchUserQuery;
+import com.agileboot.domain.system.post.PostDTO;
+import com.agileboot.domain.system.role.RoleDTO;
+import com.agileboot.domain.system.user.UserProfileDTO.UserProfileDTOBuilder;
+import com.agileboot.domain.system.user.command.AddUserCommand;
+import com.agileboot.domain.system.user.command.ChangeStatusCommand;
+import com.agileboot.domain.system.user.command.ResetPasswordCommand;
+import com.agileboot.domain.system.user.command.UpdateProfileCommand;
+import com.agileboot.domain.system.user.command.UpdateUserAvatarCommand;
+import com.agileboot.domain.system.user.command.UpdateUserCommand;
+import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.orm.entity.SysPostXEntity;
+import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.result.SearchUserDO;
 import com.agileboot.orm.service.ISysConfigXService;
+import com.agileboot.orm.service.ISysDeptXService;
+import com.agileboot.orm.service.ISysPostXService;
+import com.agileboot.orm.service.ISysRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDomainService {
@@ -16,10 +43,161 @@ public class UserDomainService {
     private ISysUserXService userService;
 
     @Autowired
+    private ISysRoleXService roleService;
+
+    @Autowired
+    private ISysDeptXService deptService;
+
+
+    @Autowired
+    private ISysPostXService postService;
+
+    @Autowired
     private ISysConfigXService configService;
 
-//    @Autowired
-//    private RedisCache redisCache;
+    @Autowired
+    private TokenService tokenService;
+
+
+
+    public PageDTO getUserList(SearchUserQuery query) {
+        Page<SearchUserDO> searchUserDOPage = userService.selectUserList(query);
+        List<UserDTO> userDTOList = searchUserDOPage.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
+        return new PageDTO(userDTOList, searchUserDOPage.getTotal());
+    }
+
+    public UserProfileDTO getUserProfile(Long userId) {
+
+        SysUserXEntity userXEntity = userService.getById(userId);
+        // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
+
+        UserProfileDTOBuilder profileDTO = UserProfileDTO.builder().user(new UserDTO(userXEntity))
+            .postGroup(userService.selectUserPostGroup(userId))
+            .roleGroup(userService.selectUserRoleGroup(userId));
+
+        return profileDTO.build();
+    }
+
+
+    public void updateUserProfile(UpdateProfileCommand command) {
+        UserModel userModel = getUserModel(command.getUserId());
+
+        userModel.checkPhoneNumberIsUnique(userService);
+        userModel.checkEmailIsUnique(userService);
+
+        userModel.updateById();
+    }
+
+    public UserDetailDTO getUserDetailInfo(Long userId) {
+        SysUserXEntity userEntity = userService.getById(userId);
+        UserDetailDTO detailDTO = new UserDetailDTO();
+
+        if (userEntity != null) {
+            detailDTO.setUser(new UserDTO(userEntity));
+            SysRoleXEntity roleEntity = roleService.getById(userEntity.getRoleId());
+            SysPostXEntity postEntity = postService.getById(userEntity.getPostId());
+
+            detailDTO.setRoles(ListUtil.of(new RoleDTO(roleEntity)));
+            detailDTO.setPosts(ListUtil.of(new PostDTO(postEntity)));
+
+            detailDTO.setPostIds(ListUtil.of(userEntity.getPostId()));
+            detailDTO.setRoleIds(ListUtil.of(userEntity.getRoleId()));
+        }
+        return detailDTO;
+    }
+
+    public void addUser(LoginUser loginUser, AddUserCommand command) {
+        UserModel model = command.toModel();
+
+        model.checkUsernameIsUnique(userService);
+        model.checkPhoneNumberIsUnique(userService);
+        model.checkEmailIsUnique(userService);
+
+        model.setCreatorId(loginUser.getUserId());
+        model.setCreatorName(loginUser.getUsername());
+
+        model.insert();
+    }
+
+    public void updateUser(LoginUser loginUser, UpdateUserCommand command) {
+        UserModel model = command.toModel();
+
+        model.checkUsernameIsUnique(userService);
+        model.checkPhoneNumberIsUnique(userService);
+        model.checkEmailIsUnique(userService);
+
+        model.setUpdaterId(loginUser.getUserId());
+        model.setUpdaterName(loginUser.getUsername());
+
+        model.insert();
+    }
+
+    @Transactional
+    public void deleteUsers(LoginUser loginUser, BulkDeleteCommand<Long> command) {
+        for (Long id : command.getIds()) {
+            UserModel userModel = getUserModel(id);
+            userModel.checkCanBeDelete(loginUser);
+            userModel.deleteById();
+        }
+    }
+
+    public void updateUserPassword(LoginUser loginUser, UpdateUserPasswordCommand command) {
+        UserModel userModel = getUserModel(command.getUserId());
+        userModel.modifyPassword(command);
+        userModel.updateById();
+
+        loginUser.setPassword(userModel.getPassword());
+        tokenService.setLoginUser(loginUser);
+    }
+
+    public void resetUserPassword(LoginUser loginUser, ResetPasswordCommand command) {
+        UserModel userModel = getUserModel(command.getUserId());
+        userModel.setPassword(command.getPassword());
+
+        userModel.setUpdaterId(loginUser.getUserId());
+        userModel.setUpdaterName(loginUser.getUsername());
+        userModel.updateById();
+    }
+
+    public void changeUserStatus(LoginUser loginUser, ChangeStatusCommand command) {
+        UserModel userModel = getUserModel(command.getUserId());
+        userModel.setStatus(Convert.toInt(command.getStatus()));
+
+        userModel.setUpdaterId(loginUser.getUserId());
+        userModel.setUpdaterName(loginUser.getUsername());
+        userModel.updateById();
+    }
+
+    public void updateUserAvatar(LoginUser loginUser, UpdateUserAvatarCommand command) {
+        UserModel userModel = getUserModel(command.getUserId());
+        userModel.setAvatar(command.getAvatar());
+        userModel.updateById();
+        tokenService.setLoginUser(loginUser);
+    }
+
+    public UserInfoDTO getUserWithRole(Long userId) {
+        UserModel userModel = getUserModel(userId);
+        UserDTO userDTO = new UserDTO(userModel);
+
+        SysRoleXEntity roleEntity = roleService.getById(userModel.getRoleId());
+        RoleDTO roleDTO = new RoleDTO(roleEntity);
+
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.setUser(userDTO);
+        userInfoDTO.setRoles(ListUtil.of(roleDTO));
+        return userInfoDTO;
+    }
+
+    public UserModel getUserModel(Long userId) {
+        SysUserXEntity byId = userService.getById(userId);
+        if (byId == null) {
+            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, userId, "用户");
+        }
+
+        UserModel userModel = new UserModel();
+        BeanUtil.copyProperties(byId, userModel);
+        return userModel;
+    }
 
 
     public String importUser(List<SysUserXEntity> userList, Boolean isUpdateSupport, String operName) {

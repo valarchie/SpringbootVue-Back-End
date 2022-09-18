@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 用户登录对象
  *
- * @author ruoyi
+ * @author valarchie
  */
 @Data
 public class LoginDTO {

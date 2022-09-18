@@ -2,7 +2,6 @@ package com.agileboot.admin.controller.common;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.admin.deprecated.entity.SysUser;
 import com.agileboot.admin.request.LoginDTO;
 import com.agileboot.admin.request.RegisterDTO;
 import com.agileboot.admin.response.UserPermissionDTO;
@@ -11,6 +10,7 @@ import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.RouterVo;
+import com.agileboot.domain.system.user.UserDTO;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.LoginService;
@@ -89,7 +89,7 @@ public class LoginController {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
         UserPermissionDTO permissionDTO = new UserPermissionDTO();
-        permissionDTO.setUser(new SysUser(loginUser.getEntity()));
+        permissionDTO.setUser(new UserDTO(loginUser.getEntity()));
         permissionDTO.setRoles(loginUser.getRoleKeys());
         permissionDTO.setPermissions(loginUser.getMenuPermissions());
 

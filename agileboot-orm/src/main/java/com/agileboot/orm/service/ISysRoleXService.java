@@ -48,5 +48,6 @@ public interface ISysRoleXService extends IService<SysRoleXEntity> {
      * @param userId 用户ID
      * @return 角色列表
      */
+    @Deprecated
     List<SysRoleXEntity> selectRolesByUserId(Long userId);
 }

@@ -83,6 +83,26 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     MENU_ALREADY_ASSIGN_TO_ROLE_NOT_ALLOW_DELETE(Module.SYSTEM, 4, "菜单已分配给角色，不允许"),
 
+    ROLE_NAME_IS_NOT_UNIQUE(Module.SYSTEM, 5, "角色名称：%s, 已存在"),
+
+    ROLE_KEY_IS_NOT_UNIQUE(Module.SYSTEM, 5, "角色标识：%s, 已存在"),
+
+    ROLE_DATA_SCOPE_DUPLICATED_DEPT(Module.SYSTEM, 6, "重复的部门id"),
+
+    USER_PHONE_NUMBER_IS_NOT_UNIQUE(Module.SYSTEM, 7, "该电话号码已被其他用户占用"),
+
+    USER_EMAIL_IS_NOT_UNIQUE(Module.SYSTEM, 9, "该邮件地址已被其他用户占用"),
+
+    USER_PASSWORD_IS_NOT_CORRECT(Module.SYSTEM, 10, "用户密码错误"),
+
+    USER_NEW_PASSWORD_IS_THE_SAME_AS_OLD(Module.SYSTEM, 11, "用户新密码与旧密码相同"),
+
+    USER_UPLOAD_FILE_FAILED(Module.SYSTEM, 12, "用户上传文件失败"),
+
+    USER_NAME_IS_NOT_UNIQUE(Module.SYSTEM, 12, "用户名已被其他用户占用"),
+
+    USER_CURRENT_USER_CAN_NOT_BE_DELETE(Module.SYSTEM, 12, "当前用户不允许被删除"),
+
 
     ;
 
