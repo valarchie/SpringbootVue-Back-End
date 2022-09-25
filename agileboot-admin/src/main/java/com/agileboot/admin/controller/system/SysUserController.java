@@ -80,7 +80,7 @@ public class SysUserController extends BaseController {
 
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response) {
-        CustomExcelUtil.writeToResponse(ListUtil.empty(), UserDTO.class, response);
+        CustomExcelUtil.writeToResponse(ListUtil.toList(new AddUserCommand()), AddUserCommand.class, response);
     }
 
     /**
@@ -97,7 +97,7 @@ public class SysUserController extends BaseController {
     /**
      * 新增用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:add') AND @ss.checkDataScopeWithUserId(#user.deptId)")
+    @PreAuthorize("@ss.hasPermi('system:user:add') AND @ss.checkDataScopeWithUserId(#command.deptId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody AddUserCommand command) {
@@ -157,6 +157,7 @@ public class SysUserController extends BaseController {
     public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody ChangeStatusCommand command) {
 //        TODO userService.checkUserAllowed(user.getUserId());
 //        userService.checkUserDataScope(user.getUserId());
+        command.setUserId(userId);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         userDomainService.changeUserStatus(loginUser, command);
         return ResponseDTO.ok();

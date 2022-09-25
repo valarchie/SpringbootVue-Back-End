@@ -55,9 +55,9 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public boolean checkUserNameUnique(String userName) {
+    public boolean checkUserNameUnique(String username) {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name", userName);
+        queryWrapper.eq("username", username);
         return this.baseMapper.exists(queryWrapper);
     }
 
@@ -147,6 +147,7 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     public Page<SearchUserDO> selectUserList(AbstractPageQuery query) {
         Page page = query.toPage();
         List<SearchUserDO> searchUserDOS = baseMapper.selectUserList(page, query.toQueryWrapper());
+        page.setRecords(searchUserDOS);
         return page;
     }
 

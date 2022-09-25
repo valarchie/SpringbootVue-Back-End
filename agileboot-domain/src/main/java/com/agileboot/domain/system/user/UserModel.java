@@ -44,22 +44,14 @@ public class UserModel extends SysUserXEntity {
 
 
     public void modifyPassword(UpdateUserPasswordCommand command) {
-
         if (!AuthenticationUtils.matchesPassword(command.getOldPassword(), getPassword())) {
             throw new ApiException(BusinessErrorCode.USER_PASSWORD_IS_NOT_CORRECT);
         }
 
-        if (AuthenticationUtils.matchesPassword(getPassword(), command.getNewPassword())) {
+        if (AuthenticationUtils.matchesPassword(command.getNewPassword(), getPassword())) {
             throw new ApiException(BusinessErrorCode.USER_NEW_PASSWORD_IS_THE_SAME_AS_OLD);
         }
-
-        setPassword(command.getNewPassword());
-    }
-
-
-    @Override
-    public void setPassword(String password) {
-        super.setPassword(AuthenticationUtils.encryptPassword(password));
+        setPassword(AuthenticationUtils.encryptPassword(command.getNewPassword()));
     }
 
 

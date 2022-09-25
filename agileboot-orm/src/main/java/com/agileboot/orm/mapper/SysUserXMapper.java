@@ -31,7 +31,7 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
      */
     @Select("SELECT DISTINCT r.* "
         + "FROM sys_role r "
-        + " LEFT JOIN sys_user u ON u.user_id = ur.user_id "
+        + " LEFT JOIN sys_user u ON u.role_id = r.role_id "
         + "WHERE r.deleted = 0 "
         + " AND u.user_id = #{userId}")
     List<SysRoleXEntity> selectRolesByUserId(Long userId);

@@ -12,7 +12,7 @@ public class RoleDTO {
 
     public RoleDTO(SysRoleXEntity entity) {
         if (entity != null) {
-            this.roleId = entity.getRoleId() + "";
+            this.roleId = entity.getRoleId();
             this.roleName = entity.getRoleName() + "";
             this.roleKey = entity.getRoleKey();
             this.roleSort = entity.getRoleSort() + "";
@@ -24,7 +24,7 @@ public class RoleDTO {
     }
 
     @ExcelColumn(name = "角色ID")
-    private String roleId;
+    private Long roleId;
     @ExcelColumn(name = "角色名称")
     private String roleName;
     @ExcelColumn(name = "角色标识")

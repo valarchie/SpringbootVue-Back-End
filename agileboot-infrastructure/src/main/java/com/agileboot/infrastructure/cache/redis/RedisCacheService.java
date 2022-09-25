@@ -25,7 +25,7 @@ public class RedisCacheService {
 
         captchaCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.CAPTCHAT);
 
-        loginUserCache = new RedisCacheTemplate(redisUtil, CacheKeyEnum.LOGIN_USER_KEY);
+        loginUserCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.LOGIN_USER_KEY);
 
         repeatSubmitCache = new RedisCacheTemplate<>(redisUtil, CacheKeyEnum.REPEAT_SUBMIT_KEY);
     }

@@ -1,8 +1,11 @@
 package com.agileboot.domain.system.user;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelSheet;
+import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
+import com.agileboot.orm.entity.SysDeptXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.result.SearchUserDO;
 import java.util.Date;
@@ -15,6 +18,11 @@ public class UserDTO {
     public UserDTO(SysUserXEntity entity) {
         if (entity != null) {
             BeanUtil.copyProperties(entity, this);
+            SysDeptXEntity dept = SpringUtil.getBean(GuavaCacheService.class).deptCache
+                .get(entity.getDeptId() + "");
+            if (dept != null) {
+                this.deptName = dept.getDeptName();
+            }
         }
     }
 
@@ -37,6 +45,9 @@ public class UserDTO {
     @ExcelColumn(name = "部门ID")
     private Long deptId;
 
+    @ExcelColumn(name = "部门名称")
+    private String deptName;
+
     @ExcelColumn(name = "用户名")
     private String username;
 
@@ -53,13 +64,13 @@ public class UserDTO {
     private String phoneNumber;
 
     @ExcelColumn(name = "性别")
-    private Integer sex;
+    private String sex;
 
     @ExcelColumn(name = "用户头像")
     private String avatar;
 
     @ExcelColumn(name = "状态")
-    private Integer status;
+    private String status;
 
     @ExcelColumn(name = "IP")
     private String loginIp;

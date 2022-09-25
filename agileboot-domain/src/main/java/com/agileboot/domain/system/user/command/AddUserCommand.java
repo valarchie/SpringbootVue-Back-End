@@ -1,6 +1,7 @@
 package com.agileboot.domain.system.user.command;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.domain.system.user.UserModel;
 import lombok.Data;
@@ -35,6 +36,15 @@ public class AddUserCommand {
     @ExcelColumn(name = "状态")
     private String status;
 
+    @ExcelColumn(name = "角色ID")
+    private Long roleId;
+
+    @ExcelColumn(name = "职位ID")
+    private Long postId;
+
+    @ExcelColumn(name = "备注")
+    private String remark;
+
 
     public UserModel toModel() {
         UserModel model = new UserModel();
@@ -45,8 +55,14 @@ public class AddUserCommand {
         model.setEmail(email);
         model.setPhoneNumber(phoneNumber);
         model.setSex(sex);
-        model.setPassword(password);
+        if (StrUtil.isNotEmpty(password)) {
+            model.setPassword(password);
+        }
         model.setStatus(Convert.toInt(status));
+
+        model.setRoleId(roleId);
+        model.setPostId(postId);
+        model.setRemark(remark);
 
         return model;
     }

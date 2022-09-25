@@ -20,7 +20,6 @@ import com.agileboot.domain.system.user.command.UpdateUserCommand;
 import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
-import com.agileboot.orm.entity.SysPostXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
 import com.agileboot.orm.result.SearchUserDO;
@@ -81,6 +80,7 @@ public class UserDomainService {
 
     public void updateUserProfile(UpdateProfileCommand command) {
         UserModel userModel = getUserModel(command.getUserId());
+        command.updateModel(userModel);
 
         userModel.checkPhoneNumberIsUnique(userService);
         userModel.checkEmailIsUnique(userService);
@@ -92,16 +92,15 @@ public class UserDomainService {
         SysUserXEntity userEntity = userService.getById(userId);
         UserDetailDTO detailDTO = new UserDetailDTO();
 
+        List<RoleDTO> roleDTOs = roleService.list().stream().map(RoleDTO::new).collect(Collectors.toList());
+        List<PostDTO> postDTOs = postService.list().stream().map(PostDTO::new).collect(Collectors.toList());
+        detailDTO.setRoles(roleDTOs);
+        detailDTO.setPosts(postDTOs);
+
         if (userEntity != null) {
             detailDTO.setUser(new UserDTO(userEntity));
-            SysRoleXEntity roleEntity = roleService.getById(userEntity.getRoleId());
-            SysPostXEntity postEntity = postService.getById(userEntity.getPostId());
-
-            detailDTO.setRoles(ListUtil.of(new RoleDTO(roleEntity)));
-            detailDTO.setPosts(ListUtil.of(new PostDTO(postEntity)));
-
-            detailDTO.setPostIds(ListUtil.of(userEntity.getPostId()));
-            detailDTO.setRoleIds(ListUtil.of(userEntity.getRoleId()));
+            detailDTO.setRoleId(userEntity.getRoleId());
+            detailDTO.setPostId(userEntity.getPostId());
         }
         return detailDTO;
     }
@@ -122,14 +121,14 @@ public class UserDomainService {
     public void updateUser(LoginUser loginUser, UpdateUserCommand command) {
         UserModel model = command.toModel();
 
-        model.checkUsernameIsUnique(userService);
+//        model.checkUsernameIsUnique(userService);
         model.checkPhoneNumberIsUnique(userService);
         model.checkEmailIsUnique(userService);
 
         model.setUpdaterId(loginUser.getUserId());
         model.setUpdaterName(loginUser.getUsername());
 
-        model.insert();
+        model.updateById();
     }
 
     @Transactional

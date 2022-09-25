@@ -30,6 +30,8 @@ public class SearchUserQuery extends AbstractPageQuery {
                     .apply("u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(" + deptId
                         + ", ancestors))"));
 
+        this.addTimeCondition(queryWrapper, "u.create_time");
+
         return queryWrapper;
     }
 }

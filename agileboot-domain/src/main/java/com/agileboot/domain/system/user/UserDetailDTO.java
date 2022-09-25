@@ -15,9 +15,9 @@ public class UserDetailDTO {
 
     private List<PostDTO> posts;
 
-    private List<Long> postIds;
+    private Long postId;
 
-    private List<Long> roleIds;
+    private Long roleId;
 
     private Set<String> permissions;
 
