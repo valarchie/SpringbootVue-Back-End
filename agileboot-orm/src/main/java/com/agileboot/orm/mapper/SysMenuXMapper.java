@@ -24,7 +24,6 @@ public interface SysMenuXMapper extends BaseMapper<SysMenuXEntity> {
     @Select("SELECT DISTINCT m.* "
         + "FROM sys_menu m "
         + " LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id "
-        + " LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id "
         + "WHERE ur.user_id = #{userId} "
         + " AND m.status = 1 "
         + " AND m.deleted = 0 "

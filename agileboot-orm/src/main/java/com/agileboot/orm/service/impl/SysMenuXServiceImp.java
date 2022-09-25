@@ -94,7 +94,7 @@ public class SysMenuXServiceImp extends ServiceImpl<SysMenuXMapper, SysMenuXEnti
         }
 
         return sysMenuList.stream()
-            .filter(menu -> menu.getMenuType() != MenuTypeEnum.BUTTON.getValue())
+            .filter(menu -> !MenuTypeEnum.BUTTON.getValue().equals(menu.getMenuType()))
             .collect(Collectors.toList());
     }
 

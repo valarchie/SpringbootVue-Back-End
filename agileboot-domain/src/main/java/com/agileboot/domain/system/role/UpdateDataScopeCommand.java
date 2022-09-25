@@ -17,5 +17,7 @@ public class UpdateDataScopeCommand {
     @NotEmpty
     private List<Long> deptIds;
 
+    private Integer dataScope;
+
 
 }

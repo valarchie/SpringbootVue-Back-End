@@ -4,10 +4,8 @@ package com.agileboot.orm.service.impl;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.mapper.SysRoleXMapper;
 import com.agileboot.orm.mapper.SysUserXMapper;
-import com.agileboot.orm.service.ISysRoleDeptXService;
 import com.agileboot.orm.service.ISysRoleMenuXService;
 import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserRoleXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
@@ -29,10 +27,7 @@ public class SysRoleXServiceImp extends ServiceImpl<SysRoleXMapper, SysRoleXEnti
 
     @Autowired
     ISysRoleMenuXService roleMenuService;
-    @Autowired
-    ISysRoleDeptXService roleDeptService;
-    @Autowired
-    ISysUserRoleXService userRoleService;
+
     @Autowired
     SysUserXMapper userXMapper;
 

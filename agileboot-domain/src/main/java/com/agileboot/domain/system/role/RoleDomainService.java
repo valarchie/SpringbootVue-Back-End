@@ -4,16 +4,16 @@ import cn.hutool.core.collection.CollUtil;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.domain.system.user.UserDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
 import com.agileboot.infrastructure.web.service.UserDetailsServiceImpl;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysRoleDeptXService;
 import com.agileboot.orm.service.ISysRoleMenuXService;
 import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,12 +28,6 @@ public class RoleDomainService {
 
     @Autowired
     private ISysRoleMenuXService roleMenuService;
-
-    @Autowired
-    private ISysRoleDeptXService roleDeptService;
-
-    @Autowired
-    private ISysUserRoleXService userRoleService;
 
     @Autowired
     private ISysUserXService userService;
@@ -66,6 +60,25 @@ public class RoleDomainService {
         roleModel.setCreatorName(loginUser.getUsername());
 
         roleModel.insert(roleMenuService);
+    }
+
+    public void deleteRoleByBulk(List<Long> roleIds, LoginUser loginUser) {
+        if (roleIds != null) {
+            for (Long roleId : roleIds) {
+                deleteRole(roleId, loginUser);
+            }
+        }
+    }
+
+    public void deleteRole(Long roleId, LoginUser loginUser) {
+        RoleModel roleModel = getRoleModel(roleId);
+
+        roleModel.checkRoleNameUnique(roleService);
+
+        roleModel.setUpdaterId(loginUser.getUserId());
+        roleModel.setUpdaterName(loginUser.getUsername());
+
+        roleModel.deleteById(roleMenuService);
     }
 
 
@@ -113,6 +126,7 @@ public class RoleDomainService {
     public void updateDataScope(UpdateDataScopeCommand command) {
         RoleModel roleModel = getRoleModel(command.getRoleId());
         roleModel.setDeptIds(command.getDeptIds());
+        roleModel.setDataScope(command.getDataScope());
 
         roleModel.generateDeptIdSet();
         roleModel.updateById();
@@ -121,12 +135,14 @@ public class RoleDomainService {
 
     public PageDTO getAllocatedUserList(AllocatedRoleQuery query) {
         Page<SysUserXEntity> page = userService.selectAllocatedList(query);
-        return new PageDTO(page.getRecords(), page.getTotal());
+        List<UserDTO> dtoList = page.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
+        return new PageDTO(dtoList, page.getTotal());
     }
 
     public PageDTO getUnallocatedUserList(UnallocatedRoleQuery query) {
         Page<SysUserXEntity> page = userService.selectUnallocatedList(query);
-        return new PageDTO(page.getRecords(), page.getTotal());
+        List<UserDTO> dtoList = page.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
+        return new PageDTO(dtoList, page.getTotal());
     }
 
 
@@ -145,9 +161,12 @@ public class RoleDomainService {
         }
 
         for (Long userId : userIds) {
-            SysUserXEntity user = userService.getById(userId);
-            user.setRoleId(null);
-            user.updateById();
+//            SysUserXEntity user = userService.getById(userId);
+
+            LambdaUpdateWrapper<SysUserXEntity> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.set(SysUserXEntity::getRoleId, null).eq(SysUserXEntity::getUserId, userId);
+
+            userService.update(updateWrapper);
         }
     }
 

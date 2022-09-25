@@ -85,6 +85,19 @@ public class SysRoleController extends BaseController {
     }
 
     /**
+     * 新增角色
+     */
+    @PreAuthorize("@ss.hasPermi('system:role:remove')")
+    @AccessLog(title = "角色管理", businessType = BusinessType.INSERT)
+    @DeleteMapping(value = "/{roleId}")
+    public ResponseDTO remove(@PathVariable("roleId")List<Long> roleIds) {
+        // TODO 权限校验
+        LoginUser loginUser = AuthenticationUtils.getLoginUser();
+        roleDomainService.deleteRoleByBulk(roleIds, loginUser);
+        return ResponseDTO.ok();
+    }
+
+    /**
      * 修改保存角色
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
@@ -95,7 +108,7 @@ public class SysRoleController extends BaseController {
 //        roleService.checkRoleDataScope(role.getRoleId());
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         roleDomainService.updateRole(updateCommand, loginUser);
-        return ResponseDTO.fail();
+        return ResponseDTO.ok();
     }
 
     /**
@@ -104,12 +117,10 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{roleId}/dataScope")
-    public ResponseDTO dataScope(@PathVariable("roleId")Long roleId, @RequestBody List<Long> deptIdList) {
+    public ResponseDTO dataScope(@PathVariable("roleId")Long roleId, @RequestBody UpdateDataScopeCommand command) {
 //        roleService.checkRoleAllowed(role.getRoleId());
 //        roleService.checkRoleDataScope(role.getRoleId());
-        UpdateDataScopeCommand command = new UpdateDataScopeCommand();
         command.setRoleId(roleId);
-        command.setDeptIds(deptIdList);
 
         roleDomainService.updateDataScope(command);
         return ResponseDTO.ok();
@@ -121,11 +132,11 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{roleId}/status")
-    public ResponseDTO changeStatus(@PathVariable("roleId")Long roleId, @RequestBody Integer status) {
+    public ResponseDTO changeStatus(@PathVariable("roleId")Long roleId, @RequestBody UpdateStatusCommand command) {
 //      TODO  roleService.checkRoleAllowed(role.getRoleId());
 //        roleService.checkRoleDataScope(role.getRoleId());
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        UpdateStatusCommand command = new UpdateStatusCommand(roleId, status);
+        command.setRoleId(roleId);
 
         roleDomainService.updateStatus(command, loginUser);
         return ResponseDTO.ok();
@@ -170,8 +181,8 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
-    @DeleteMapping("/{roleId}/user/grant/bulk")
-    public ResponseDTO deleteRoleOfUserByBulk(@PathVariable("roleId")Long roleId, List<Long> userIds) {
+    @DeleteMapping("/users/{userIds}/grant/bulk")
+    public ResponseDTO deleteRoleOfUserByBulk(@PathVariable("userIds") List<Long> userIds) {
         roleDomainService.deleteRoleOfUserByBulk(userIds);
         return ResponseDTO.ok();
     }
@@ -181,8 +192,9 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
-    @PostMapping("/{roleId}/user/grant/bulk")
-    public ResponseDTO selectAuthUserAll(@PathVariable("roleId") Long roleId, List<Long> userIds) {
+    @PostMapping("/{roleId}/users/{userIds}/grant/bulk")
+    public ResponseDTO addRoleForUserByBulk(@PathVariable("roleId") Long roleId,
+        @PathVariable("userIds") List<Long> userIds) {
 //        roleService.checkRoleDataScope(roleId);
         roleDomainService.addRoleOfUserByBulk(roleId, userIds);
         return ResponseDTO.ok();

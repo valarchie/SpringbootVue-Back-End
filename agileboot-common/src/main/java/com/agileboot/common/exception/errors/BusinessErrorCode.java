@@ -89,6 +89,8 @@ public enum BusinessErrorCode implements ErrorCodeInterface{
 
     ROLE_DATA_SCOPE_DUPLICATED_DEPT(Module.SYSTEM, 6, "重复的部门id"),
 
+    ROLE_ALREADY_ASSIGN_TO_USER(Module.SYSTEM, 8, "角色已分配给用户，请先取消分配，再删除角色"),
+
     USER_PHONE_NUMBER_IS_NOT_UNIQUE(Module.SYSTEM, 7, "该电话号码已被其他用户占用"),
 
     USER_EMAIL_IS_NOT_UNIQUE(Module.SYSTEM, 9, "该邮件地址已被其他用户占用"),

@@ -8,6 +8,7 @@ import com.agileboot.orm.entity.SysRoleMenuXEntity;
 import com.agileboot.orm.entity.SysRoleXEntity;
 import com.agileboot.orm.service.ISysRoleMenuXService;
 import com.agileboot.orm.service.ISysRoleXService;
+import com.agileboot.orm.service.ISysUserXService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,12 @@ public class RoleModel extends SysRoleXEntity {
 
     public void checkRoleNameUnique(ISysRoleXService roleService) {
         if (roleService.checkRoleNameUnique(getRoleId(), getRoleName())) {
+            throw new ApiException(BusinessErrorCode.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
+        }
+    }
+
+    public void checkRoleCanBeDelete(ISysUserXService userService) {
+        if (userService.checkExistUserLinkToRole(getRoleId())) {
             throw new ApiException(BusinessErrorCode.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
         }
     }
@@ -69,16 +76,24 @@ public class RoleModel extends SysRoleXEntity {
         saveMenus(roleMenuService);
     }
 
+    public void deleteById(ISysRoleMenuXService roleMenuService) {
+        this.deleteById();
+        // 清空之前的角色菜单关联
+        roleMenuService.getBaseMapper().deleteByMap(Collections.singletonMap("role_id", getRoleId()));
+    }
+
 
     public void saveMenus(ISysRoleMenuXService roleMenuService) {
         List<SysRoleMenuXEntity> list = new ArrayList<>();
-        for (Long menuId : getMenuIds()) {
-            SysRoleMenuXEntity rm = new SysRoleMenuXEntity();
-            rm.setRoleId(getRoleId());
-            rm.setMenuId(menuId);
-            list.add(rm);
+        if (getMenuIds() != null) {
+            for (Long menuId : getMenuIds()) {
+                SysRoleMenuXEntity rm = new SysRoleMenuXEntity();
+                rm.setRoleId(getRoleId());
+                rm.setMenuId(menuId);
+                list.add(rm);
+            }
+            roleMenuService.saveBatch(list);
         }
-        roleMenuService.saveBatch(list);
     }
 
 }

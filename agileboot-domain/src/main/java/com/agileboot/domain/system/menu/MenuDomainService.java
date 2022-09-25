@@ -47,7 +47,8 @@ public class MenuDomainService {
 
 
     public TreeSelectedDTO getRoleDropdownList(LoginUser loginUser, Long roleId) {
-        List<SysMenuXEntity> menus = menuService.selectMenuListByUserId(loginUser.getUserId());
+        List<SysMenuXEntity> menus = loginUser.isAdmin() ?
+            menuService.list() : menuService.selectMenuListByUserId(loginUser.getUserId());
 
         TreeSelectedDTO tree = new TreeSelectedDTO();
         tree.setMenus(buildMenuTreeSelect(menus));

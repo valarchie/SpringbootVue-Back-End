@@ -23,8 +23,8 @@ public interface SysDeptXMapper extends BaseMapper<SysDeptXEntity> {
      */
     @Select("SELECT d.dept_id "
         + "FROM sys_dept d "
-        + " LEFT JOIN sys_role_dept rd ON d.dept_id = rd.dept_id "
-        + "WHERE rd.role_id = #{roleId} and d.deleted = 0 "
+        + " LEFT JOIN sys_role r ON d.dept_id = r.dept_id "
+        + "WHERE r.role_id = #{roleId} and d.deleted = 0 "
         + "ORDER BY d.parent_id, d.order_num")
     List<Long> selectDeptListByRoleId(Long roleId);
 

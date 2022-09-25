@@ -19,7 +19,7 @@ public class AllocatedRoleQuery extends AbstractPageQuery {
     @Override
     public QueryWrapper toQueryWrapper() {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
+        queryWrapper.eq("r.role_id", roleId).like(StrUtil.isNotEmpty(username),"u.username", username)
             .like(StrUtil.isNotEmpty(phoneNumber), "u.phone_number", phoneNumber);
 
         return queryWrapper;

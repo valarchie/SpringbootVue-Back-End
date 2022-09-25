@@ -31,7 +31,6 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
      */
     @Select("SELECT DISTINCT r.* "
         + "FROM sys_role r "
-        + " LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id "
         + " LEFT JOIN sys_user u ON u.user_id = ur.user_id "
         + "WHERE r.deleted = 0 "
         + " AND u.user_id = #{userId}")
@@ -45,8 +44,7 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
      */
     @Select("SELECT p.* "
         + "FROM sys_post p "
-        + " LEFT JOIN sys_user_post up ON up.post_id = p.post_id "
-        + " LEFT JOIN sys_user u ON u.user_id = up.user_id "
+        + " LEFT JOIN sys_user u ON p.post_id = u.post_id "
         + "WHERE u.user_id = #{userId} "
         + " AND p.deleted = 0")
     List<SysPostXEntity> selectPostsByUserId(Long userId);
@@ -61,11 +59,11 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
     @Select("SELECT DISTINCT m.perms "
         + "FROM sys_menu m "
         + " LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id "
-        + " LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id "
-        + " LEFT JOIN sys_role r ON r.role_id = ur.role_id "
+        + " LEFT JOIN sys_user u ON rm.role_id = u.role_id "
+        + " LEFT JOIN sys_role r ON r.role_id = u.role_id "
         + "WHERE m.status = 1 AND m.deleted = 0 "
         + " AND r.status = 1 AND r.deleted = 0 "
-        + " AND ur.user_id = #{userId}")
+        + " AND u.user_id = #{userId}")
     Set<String> selectMenuPermsByUserId(Long userId);
 
 
@@ -73,8 +71,7 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
         + " , u.phone_number, u.status, u.create_time "
         + "FROM sys_user u "
         + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
-        + " LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id "
-        + " LEFT JOIN sys_role r ON r.role_id = ur.role_id "
+        + " LEFT JOIN sys_role r ON r.role_id = u.role_id "
         + " ${ew.customSqlSegment}")
     List<SysUserXEntity> selectRoleAssignedUserList(Page<SysUserXEntity> page,
         @Param(Constants.WRAPPER) Wrapper<SysUserXEntity> queryWrapper);
@@ -88,8 +85,7 @@ public interface SysUserXMapper extends BaseMapper<SysUserXEntity> {
         + " , u.phone_number, u.status, u.create_time "
         + "FROM sys_user u "
         + " LEFT JOIN sys_dept d ON u.dept_id = d.dept_id "
-        + " LEFT JOIN sys_user_role ur ON u.user_id = ur.user_id "
-        + " LEFT JOIN sys_role r ON r.role_id = ur.role_id"
+        + " LEFT JOIN sys_role r ON r.role_id = u.role_id"
         + " ${ew.customSqlSegment}")
     List<SysUserXEntity> selectRoleUnassignedUserList(Page<SysUserXEntity> page,
         @Param(Constants.WRAPPER) Wrapper<SysUserXEntity> queryWrapper);

@@ -19,6 +19,8 @@ public interface ISysUserXService extends IService<SysUserXEntity> {
 
     boolean checkDeptExistUser(Long deptId);
 
+    boolean checkExistUserLinkToRole(Long roleId);
+
     /**
      * 校验用户名称是否唯一
      *

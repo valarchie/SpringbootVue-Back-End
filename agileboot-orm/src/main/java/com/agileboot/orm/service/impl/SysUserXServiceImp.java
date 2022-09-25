@@ -9,7 +9,6 @@ import com.agileboot.orm.mapper.SysUserXMapper;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.agileboot.orm.result.SearchUserDO;
 import com.agileboot.orm.service.ISysConfigXService;
-import com.agileboot.orm.service.ISysUserRoleXService;
 import com.agileboot.orm.service.ISysUserXService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -40,14 +39,18 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     @Autowired
     protected Validator validator;
 
-    @Autowired
-    private ISysUserRoleXService userRoleService;
-
 
     @Override
     public boolean checkDeptExistUser(Long deptId) {
         QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dept_id", deptId);
+        return this.count(queryWrapper) > 0;
+    }
+
+    @Override
+    public boolean checkExistUserLinkToRole(Long roleId) {
+        QueryWrapper<SysUserXEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId);
         return this.count(queryWrapper) > 0;
     }
 
@@ -125,16 +128,18 @@ public class SysUserXServiceImp extends ServiceImpl<SysUserXMapper, SysUserXEnti
     }
 
     @Override
-    public Page selectAllocatedList(AbstractPageQuery query) {
-        Page page = query.toPage();
-        baseMapper.selectRoleAssignedUserList(page, query.toQueryWrapper());
+    public Page<SysUserXEntity> selectAllocatedList(AbstractPageQuery query) {
+        Page<SysUserXEntity> page = query.toPage();
+        List<SysUserXEntity> list = baseMapper.selectRoleAssignedUserList(page, query.toQueryWrapper());
+        page.setRecords(list);
         return page;
     }
 
     @Override
     public Page<SysUserXEntity> selectUnallocatedList(AbstractPageQuery query) {
-        Page page = query.toPage();
-        baseMapper.selectRoleUnassignedUserList(page, query.toQueryWrapper());
+        Page<SysUserXEntity> page = query.toPage();
+        List<SysUserXEntity> list = baseMapper.selectRoleUnassignedUserList(page, query.toQueryWrapper());
+        page.setRecords(list);
         return page;
     }
 

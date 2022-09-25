@@ -25,8 +25,7 @@ public interface SysPostXMapper extends BaseMapper<SysPostXEntity> {
         + "  p.post_id  "
         + "FROM  "
         + "  sys_post p  "
-        + "LEFT JOIN sys_user_post up ON up.post_id = p.post_id  "
-        + "LEFT JOIN sys_user u ON u.user_id = up.user_id  "
+        + "LEFT JOIN sys_user u ON p.post_id = u.post_id  "
         + "WHERE  "
         + "  u.user_id = #{userId} and p.deleted = 0 ")
     List<Long> selectPostListByUserId(Long userId);
