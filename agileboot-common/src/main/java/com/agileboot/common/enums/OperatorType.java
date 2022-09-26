@@ -3,7 +3,7 @@ package com.agileboot.common.enums;
 /**
  * 操作人类别
  *
- * @author ruoyi
+ * @author ruoyi TODO delete
  */
 public enum OperatorType {
     /**

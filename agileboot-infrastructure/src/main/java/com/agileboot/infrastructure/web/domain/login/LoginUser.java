@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * 登录用户身份权限
  * TODO 这里面的类字段稍微改一下
- * @author ruoyi
+ * @author valarchie
  */
 @Data
 @NoArgsConstructor

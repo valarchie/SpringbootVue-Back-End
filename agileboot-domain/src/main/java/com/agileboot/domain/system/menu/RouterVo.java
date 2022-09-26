@@ -39,7 +39,7 @@ public class RouterVo {
     private String component;
 
     /**
-     * 路由参数：如 {"id": 1, "name": "ry"}
+     * 路由参数：如 {"id": 1, "name": "agileBoot"}
      */
     private String query;
 

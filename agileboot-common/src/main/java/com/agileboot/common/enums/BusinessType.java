@@ -3,7 +3,7 @@ package com.agileboot.common.enums;
 /**
  * 业务操作类型
  *
- * @author ruoyi
+ * @author ruoyi TODO 需要重构  换另外一个类
  */
 public enum BusinessType {
     /**

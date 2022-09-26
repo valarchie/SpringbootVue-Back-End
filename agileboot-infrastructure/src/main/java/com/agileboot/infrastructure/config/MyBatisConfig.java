@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Mybatis支持*匹配扫描包
  *
- * @author ruoyi
+ * @author valarchie
  */
 @Configuration
 public class MyBatisConfig {

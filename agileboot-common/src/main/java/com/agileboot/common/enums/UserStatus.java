@@ -3,7 +3,7 @@ package com.agileboot.common.enums;
 /**
  * 用户状态
  *
- * @author ruoyi
+ * @author ruoyi TODO delete
  */
 public enum UserStatus {
     /**

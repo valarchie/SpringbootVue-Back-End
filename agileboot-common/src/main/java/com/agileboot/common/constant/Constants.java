@@ -4,7 +4,7 @@ package com.agileboot.common.constant;
 /**
  * 通用常量信息
  *
- * @author ruoyi
+ * @author valarchie
  */
 public class Constants {
 

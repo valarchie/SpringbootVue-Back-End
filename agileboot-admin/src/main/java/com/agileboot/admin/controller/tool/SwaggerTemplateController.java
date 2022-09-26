@@ -39,7 +39,7 @@ public class SwaggerTemplateController extends BaseController {
 
     static {
         USER_ENTITY_MAP.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
-        USER_ENTITY_MAP.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
+        USER_ENTITY_MAP.put(2, new UserEntity(2, "agileBoot", "admin123", "15666666666"));
     }
 
     @ApiOperation("获取用户列表")

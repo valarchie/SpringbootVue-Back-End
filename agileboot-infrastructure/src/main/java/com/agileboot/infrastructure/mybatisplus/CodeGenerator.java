@@ -41,7 +41,7 @@ public class CodeGenerator {
      */
     public static void main(String[] args) {
         CodeGenerator generator = CodeGenerator.builder()
-            .databaseUrl("jdbc:mysql://localhost:33066/ry-vue")
+            .databaseUrl("jdbc:mysql://localhost:33066/agileboot")
             .username("root")
             .password("Wds123123#")
             .author("valarchie")

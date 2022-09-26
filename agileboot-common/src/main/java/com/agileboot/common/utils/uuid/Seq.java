@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author ruoyi 序列生成类
+ * @author ruoyi 序列生成类 TODO delete
  */
 public class Seq {
 
