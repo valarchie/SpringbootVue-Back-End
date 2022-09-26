@@ -8,11 +8,11 @@ import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysDeptXEntity;
-import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.service.ISysDeptXService;
-import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.entity.SysDeptEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
+import com.agileboot.orm.service.ISysDeptService;
+import com.agileboot.orm.service.ISysRoleService;
+import com.agileboot.orm.service.ISysUserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,26 +28,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeptDomainService {
 
     @Autowired
-    private ISysDeptXService deptService;
+    private ISysDeptService deptService;
 
     @Autowired
-    private ISysRoleXService roleService;
+    private ISysRoleService roleService;
 
     @Autowired
-    private ISysUserXService userService;
+    private ISysUserService userService;
 
     public List<DeptDTO> getDeptList(DeptQuery query) {
-        List<SysDeptXEntity> list = deptService.list(query.toQueryWrapper());
+        List<SysDeptEntity> list = deptService.list(query.toQueryWrapper());
         return list.stream().map(DeptDTO::new).collect(Collectors.toList());
     }
 
     public DeptDTO getDept(Long id) {
-        SysDeptXEntity byId = deptService.getById(id);
+        SysDeptEntity byId = deptService.getById(id);
         return new DeptDTO(byId);
     }
 
     public List<Tree<Long>> getDeptTree() {
-        List<SysDeptXEntity> list = deptService.list();
+        List<SysDeptEntity> list = deptService.list();
 
         return TreeUtil.build(list, 0L, (dept, tree) -> {
             tree.setId(dept.getDeptId());
@@ -58,7 +58,7 @@ public class DeptDomainService {
 
     public TreeSelectedDTO getDeptTreeForRole(Long roleId) {
         List<Long> checkedKeys = new ArrayList<>();
-        SysRoleXEntity role = roleService.getById(roleId);
+        SysRoleEntity role = roleService.getById(roleId);
         if (role != null && StrUtil.isNotEmpty(role.getDeptIdSet())) {
             checkedKeys = StrUtil.split(role.getDeptIdSet(), ",")
                 .stream().map(Long::new).collect(Collectors.toList());
@@ -119,7 +119,7 @@ public class DeptDomainService {
     }
 
     public DeptModel getDeptModel(Long id) {
-        SysDeptXEntity byId = deptService.getById(id);
+        SysDeptEntity byId = deptService.getById(id);
 
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, id, "参数配置");

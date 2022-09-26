@@ -1,6 +1,6 @@
 package com.agileboot.domain.system.dept;
 
-import com.agileboot.orm.entity.SysDeptXEntity;
+import com.agileboot.orm.entity.SysDeptEntity;
 import com.agileboot.orm.enums.dictionary.CommonStatusEnum;
 import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class DeptDTO {
 
-    public DeptDTO(SysDeptXEntity entity) {
+    public DeptDTO(SysDeptEntity entity) {
         if (entity != null) {
             this.deptId = entity.getDeptId();
             this.parentId = entity.getParentId();

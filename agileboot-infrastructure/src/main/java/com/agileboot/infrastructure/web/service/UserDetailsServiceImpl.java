@@ -6,11 +6,11 @@ import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.domain.login.Role;
-import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.enums.UserStatusEnum;
-import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.service.ISysRoleService;
+import com.agileboot.orm.service.ISysUserService;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,15 +32,15 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private ISysUserXService userService;
+    private ISysUserService userService;
 
     @Autowired
-    private ISysRoleXService roleService;
+    private ISysRoleService roleService;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUserXEntity user = userService.getUserByUserName(username);
+        SysUserEntity user = userService.getUserByUserName(username);
         if (user == null) {
             log.info("登录用户：{} 不存在.", username);
             throw new ApiException(BusinessErrorCode.USER_NON_EXIST, username);
@@ -51,7 +51,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         Set<String> roleKeys = getRoleKeys(user.getUserId());
         Set<String> menuPermissions = getMenuPermissions(user.getUserId());
-        SysRoleXEntity roleById = roleService.getById(user.getRoleId());
+        SysRoleEntity roleById = roleService.getById(user.getRoleId());
 
         Role role = new Role();
         if(roleById != null) {

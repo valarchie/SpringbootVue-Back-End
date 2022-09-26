@@ -74,9 +74,7 @@ public class TokenService {
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Token.LOGIN_USER_KEY);
 
-                LoginUser user = redisCacheService.loginUserCache.getCachedObjectById(uuid);
-
-                return user;
+                return redisCacheService.loginUserCache.getCachedObjectById(uuid);
             } catch (Exception e) {
                 log.error("fail to get cached user from redis", e);
                 throw new ApiException(e, ErrorCode.UNKNOWN_ERROR);

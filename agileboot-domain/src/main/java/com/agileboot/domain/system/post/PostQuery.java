@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.post;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysPostXEntity;
+import com.agileboot.orm.entity.SysPostEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class PostQuery extends AbstractPageQuery {
 
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysPostXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysPostEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.eq(status != null, "status", status)
             .eq(postCode != null, "post_code", postCode)

@@ -6,31 +6,31 @@ import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.entity.SysUserEntity;
+import com.agileboot.orm.service.ISysUserService;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserModel extends SysUserXEntity {
+public class UserModel extends SysUserEntity {
 
-    public void checkUsernameIsUnique(ISysUserXService userService) {
+    public void checkUsernameIsUnique(ISysUserService userService) {
         if (userService.checkUserNameUnique(getUsername())) {
             throw new ApiException(BusinessErrorCode.USER_NAME_IS_NOT_UNIQUE);
         }
     }
 
 
-    public void checkPhoneNumberIsUnique(ISysUserXService userService) {
+    public void checkPhoneNumberIsUnique(ISysUserService userService) {
         if (StrUtil.isNotEmpty(getPhoneNumber()) && userService.checkPhoneUnique(getPhoneNumber(),
             getUserId())) {
             throw new ApiException(BusinessErrorCode.USER_PHONE_NUMBER_IS_NOT_UNIQUE);
         }
     }
 
-    public void checkEmailIsUnique(ISysUserXService userService) {
+    public void checkEmailIsUnique(ISysUserService userService) {
         if (StrUtil.isNotEmpty(getEmail()) && userService.checkEmailUnique(getEmail(), getUserId())) {
             throw new ApiException(BusinessErrorCode.USER_EMAIL_IS_NOT_UNIQUE);
         }

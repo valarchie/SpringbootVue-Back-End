@@ -78,8 +78,7 @@ public class CustomExcelUtil {
             }
         }
 
-        List read = reader.read(0, 1, clazz);
-        return read;
+        return reader.read(0, 1, clazz);
     }
 
 

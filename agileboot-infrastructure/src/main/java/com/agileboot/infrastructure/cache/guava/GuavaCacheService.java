@@ -1,9 +1,9 @@
 package com.agileboot.infrastructure.cache.guava;
 
 
-import com.agileboot.orm.entity.SysDeptXEntity;
-import com.agileboot.orm.service.ISysConfigXService;
-import com.agileboot.orm.service.ISysDeptXService;
+import com.agileboot.orm.entity.SysDeptEntity;
+import com.agileboot.orm.service.ISysConfigService;
+import com.agileboot.orm.service.ISysDeptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 public class GuavaCacheService {
 
     @Autowired
-    private ISysConfigXService configXService;
+    private ISysConfigService configXService;
 
     @Autowired
-    private ISysDeptXService deptService;
+    private ISysDeptService deptService;
 
     public GuavaCacheTemplate<String> configCache = new GuavaCacheTemplate<String>() {
         @Override
@@ -29,9 +29,9 @@ public class GuavaCacheService {
         }
     };
 
-    public GuavaCacheTemplate<SysDeptXEntity> deptCache = new GuavaCacheTemplate<SysDeptXEntity>() {
+    public GuavaCacheTemplate<SysDeptEntity> deptCache = new GuavaCacheTemplate<SysDeptEntity>() {
         @Override
-        public SysDeptXEntity getObjectFromDb(Object id) {
+        public SysDeptEntity getObjectFromDb(Object id) {
             return deptService.getById(id.toString());
         }
     };

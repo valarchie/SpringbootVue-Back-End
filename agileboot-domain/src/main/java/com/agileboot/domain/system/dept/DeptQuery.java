@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.dept;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysDeptXEntity;
+import com.agileboot.orm.entity.SysDeptEntity;
 import com.agileboot.orm.query.AbstractQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class DeptQuery extends AbstractQuery {
 
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysDeptXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.eq(status != null, "status", status)
             .eq(parentId != null, "parent_id", parentId)

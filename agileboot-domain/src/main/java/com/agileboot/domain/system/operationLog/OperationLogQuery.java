@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.operationLog;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysLoginInfoXEntity;
+import com.agileboot.orm.entity.SysLoginInfoEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class OperationLogQuery extends AbstractPageQuery {
 
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysLoginInfoEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.like(businessType!=null, "business_type", businessType)
             .eq(status != null, "status", status)

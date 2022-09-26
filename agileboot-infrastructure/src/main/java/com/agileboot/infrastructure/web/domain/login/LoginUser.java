@@ -1,6 +1,6 @@
 package com.agileboot.infrastructure.web.domain.login;
 
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.Set;
@@ -76,7 +76,7 @@ public class LoginUser implements UserDetails {
 
     private Set<String> roleKeys;
 
-    private SysUserXEntity entity;
+    private SysUserEntity entity;
 
 //  TODO  优化  这些大量的字符串 没必要都存 缓存 因为很多都是一样的
     private Role role;

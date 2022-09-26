@@ -18,10 +18,10 @@ public class AddMenuCommand {
     @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
-    @Size(min = 0, max = 200, message = "路由地址不能超过200个字符")
+    @Size(max = 200, message = "路由地址不能超过200个字符")
     private String path;
 
-    @Size(min = 0, max = 200, message = "组件路径不能超过255个字符")
+    @Size(max = 200, message = "组件路径不能超过255个字符")
     private String component;
 
     private Integer isExternal;

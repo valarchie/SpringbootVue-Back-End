@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.menu;
 
 import cn.hutool.core.util.BooleanUtil;
-import com.agileboot.orm.entity.SysMenuXEntity;
+import com.agileboot.orm.entity.SysMenuEntity;
 import com.agileboot.orm.enums.dictionary.CommonStatusEnum;
 import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
 import java.util.Date;
@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class MenuDTO {
 
-    public MenuDTO(SysMenuXEntity entity) {
+    public MenuDTO(SysMenuEntity entity) {
         if (entity != null) {
             this.menuId = entity.getMenuId();
             this.parentId = entity.getParentId();

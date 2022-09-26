@@ -24,7 +24,7 @@ import com.agileboot.infrastructure.thread.AsyncTaskFactory;
 import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.enums.LoginStatusEnum;
 import com.agileboot.orm.enums.SystemConfigEnum;
 import com.google.code.kaptcha.Producer;
@@ -241,7 +241,7 @@ public class LoginService {
      * @param userId 用户ID
      */
     public void recordLoginInfo(Long userId) {
-        SysUserXEntity entity = new SysUserXEntity();
+        SysUserEntity entity = new SysUserEntity();
         entity.setUserId(userId);
         entity.setLoginIp(ServletUtil.getClientIP(ServletHolderUtil.getRequest()));
         entity.setLoginDate(DateUtil.date());

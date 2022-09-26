@@ -1,13 +1,13 @@
 package com.agileboot.domain.system.notice;
 
-import com.agileboot.orm.entity.SysNoticeXEntity;
+import com.agileboot.orm.entity.SysNoticeEntity;
 import java.util.Date;
 import lombok.Data;
 
 @Data
 public class NoticeDTO {
 
-    public NoticeDTO(SysNoticeXEntity entity) {
+    public NoticeDTO(SysNoticeEntity entity) {
         if (entity != null) {
             this.noticeId = entity.getNoticeId() + "";
             this.noticeTitle = entity.getNoticeTitle() + "";

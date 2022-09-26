@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.notice;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysNoticeXEntity;
+import com.agileboot.orm.entity.SysNoticeEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class NoticeQuery extends AbstractPageQuery {
     @SuppressWarnings("rawtypes")
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysNoticeXEntity> sysNoticeWrapper = new QueryWrapper<>();
+        QueryWrapper<SysNoticeEntity> sysNoticeWrapper = new QueryWrapper<>();
         sysNoticeWrapper.like(StrUtil.isNotEmpty(noticeTitle), "notice_title", noticeTitle)
             .eq(noticeType != null, "notice_type", noticeType)
             .like(StrUtil.isNotEmpty(creatorName), "creator_name", creatorName);

@@ -3,8 +3,8 @@ package com.agileboot.domain.system.config;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
-import com.agileboot.orm.entity.SysConfigXEntity;
-import com.agileboot.orm.service.ISysConfigXService;
+import com.agileboot.orm.entity.SysConfigEntity;
+import com.agileboot.orm.service.ISysConfigService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,17 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConfigDomainService {
 
     @Autowired
-    private ISysConfigXService configService;
+    private ISysConfigService configService;
 
     public PageDTO getConfigList(ConfigQuery query) {
-        Page<SysConfigXEntity> page = configService.page(query.toPage(), query.toQueryWrapper());
+        Page<SysConfigEntity> page = configService.page(query.toPage(), query.toQueryWrapper());
         List<ConfigDTO> records = page.getRecords().stream().map(ConfigDTO::new).collect(Collectors.toList());
         return new PageDTO(records, page.getTotal());
     }
 
 
     public ConfigDTO getConfig(Long id) {
-        SysConfigXEntity byId = configService.getById(id);
+        SysConfigEntity byId = configService.getById(id);
         return new ConfigDTO(byId);
     }
 
@@ -40,7 +40,7 @@ public class ConfigDomainService {
     }
 
     public ConfigModel getConfigModel(Long id) {
-        SysConfigXEntity byId = configService.getById(id);
+        SysConfigEntity byId = configService.getById(id);
 
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, id, "参数配置");

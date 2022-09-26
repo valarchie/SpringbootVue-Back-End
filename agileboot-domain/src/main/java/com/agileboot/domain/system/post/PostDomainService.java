@@ -6,8 +6,8 @@ import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysPostXEntity;
-import com.agileboot.orm.service.ISysPostXService;
+import com.agileboot.orm.entity.SysPostEntity;
+import com.agileboot.orm.service.ISysPostService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,16 +21,16 @@ import org.springframework.stereotype.Service;
 public class PostDomainService {
 
     @Autowired
-    private ISysPostXService postService;
+    private ISysPostService postService;
 
     public PageDTO getPostList(PostQuery query) {
-        Page<SysPostXEntity> page = postService.page(query.toPage(), query.toQueryWrapper());
+        Page<SysPostEntity> page = postService.page(query.toPage(), query.toQueryWrapper());
         List<PostDTO> records = page.getRecords().stream().map(PostDTO::new).collect(Collectors.toList());
         return new PageDTO(records, page.getTotal());
     }
 
     public PostDTO getPost(Long postId) {
-        SysPostXEntity byId = postService.getById(postId);
+        SysPostEntity byId = postService.getById(postId);
         return new PostDTO(byId);
     }
 

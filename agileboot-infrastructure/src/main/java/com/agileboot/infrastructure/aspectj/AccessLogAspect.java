@@ -11,7 +11,7 @@ import com.agileboot.infrastructure.thread.AsyncTaskFactory;
 import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysOperationLogXEntity;
+import com.agileboot.orm.entity.SysOperationLogEntity;
 import com.agileboot.orm.enums.RequestMethodEnum;
 import com.agileboot.orm.enums.dictionary.OperationStatusEnum;
 import java.util.Collection;
@@ -67,7 +67,7 @@ public class AccessLogAspect {
             LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
             // *========数据库日志=========*//
-            SysOperationLogXEntity operationLog = new SysOperationLogXEntity();
+            SysOperationLogEntity operationLog = new SysOperationLogEntity();
             operationLog.setStatus(OperationStatusEnum.SUCCESS.getValue());
             // 请求的地址
 
@@ -111,7 +111,7 @@ public class AccessLogAspect {
      * @param operationLog 操作日志
      */
     public void getControllerMethodDescription(JoinPoint joinPoint, AccessLog log,
-        SysOperationLogXEntity operationLog, Object jsonResult)
+        SysOperationLogEntity operationLog, Object jsonResult)
         throws Exception {
         // 设置action动作
         operationLog.setBusinessType(log.businessType().ordinal());
@@ -134,9 +134,8 @@ public class AccessLogAspect {
      * 获取请求的参数，放到log中
      *
      * @param operationLog 操作日志
-     * @throws Exception 异常
      */
-    private void setRequestValue(JoinPoint joinPoint, SysOperationLogXEntity operationLog) throws Exception {
+    private void setRequestValue(JoinPoint joinPoint, SysOperationLogEntity operationLog) {
 
         int requestMethod = operationLog.getRequestMethod();
         if (1 == requestMethod || 2 == requestMethod) {
@@ -161,6 +160,7 @@ public class AccessLogAspect {
                         Object jsonObj = JSONUtil.parseObj(o);
                         params.append(jsonObj).append(" ");
                     } catch (Exception e) {
+                        log.info("参数拼接错误", e);
                     }
                 }
             }

@@ -27,7 +27,7 @@ public class MessageI18nCheckerRunner implements ApplicationRunner {
         BusinessErrorCode.values());
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         checkEveryMessage();
     }
 

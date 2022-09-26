@@ -3,7 +3,6 @@ package com.agileboot.common.core.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
 
@@ -55,11 +54,6 @@ public class BaseEntity<T> implements Serializable {
      */
     private Map<String, Object> params;
 
-    public Map<String, Object> getParams() {
-        if (params == null) {
-            params = new HashMap<>();
-        }
-        return params;
-    }
+
 
 }

@@ -3,6 +3,7 @@ package com.agileboot.infrastructure.interceptor.exception;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.dto.Rdto;
+import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.InternalErrorCode;
 import com.google.common.util.concurrent.UncheckedExecutionException;
@@ -65,9 +66,9 @@ public class GlobalExceptionHandler {
      * 捕获缓存类当中的错误
      */
     @ExceptionHandler(UncheckedExecutionException.class)
-    public Rdto handleServiceException(UncheckedExecutionException e, HttpServletRequest request) {
+    public ResponseDTO handleServiceException(UncheckedExecutionException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
-        return Rdto.error(e.getMessage());
+        return ResponseDTO.fail(e.getMessage());
     }
 
 
@@ -75,10 +76,10 @@ public class GlobalExceptionHandler {
      * 捕获DB层当中的错误
      */
 //    @ExceptionHandler(BadSqlGrammarException.class)
-    public Rdto handleServiceException(BadSqlGrammarException e, HttpServletRequest request) {
+    public ResponseDTO handleServiceException(BadSqlGrammarException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         // TODO 抛出数据库错误
-        return Rdto.error(e.getMessage());
+        return ResponseDTO.fail(e.getMessage());
     }
 
 

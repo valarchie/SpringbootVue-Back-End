@@ -56,7 +56,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         // xss过滤
         json = EscapeUtil.escapeHtml4((json));
-        ;
+
         byte[] jsonBytes = json.getBytes("utf-8");
         final ByteArrayInputStream bis = new ByteArrayInputStream(jsonBytes);
         return new ServletInputStream() {
@@ -71,7 +71,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             }
 
             @Override
-            public int available() throws IOException {
+            public int available() {
                 return jsonBytes.length;
             }
 
@@ -80,7 +80,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             }
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return bis.read();
             }
         };

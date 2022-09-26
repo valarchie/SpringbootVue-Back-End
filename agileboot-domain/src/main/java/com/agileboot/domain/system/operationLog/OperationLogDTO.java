@@ -3,7 +3,7 @@ package com.agileboot.domain.system.operationLog;
 import cn.hutool.core.bean.BeanUtil;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelSheet;
-import com.agileboot.orm.entity.SysOperationLogXEntity;
+import com.agileboot.orm.entity.SysOperationLogEntity;
 import com.agileboot.orm.enums.OperatorTypeEnum;
 import com.agileboot.orm.enums.RequestMethodEnum;
 import com.agileboot.orm.enums.dictionary.BusinessTypeEnum;
@@ -16,7 +16,7 @@ import lombok.Data;
 @ExcelSheet(name = "操作日志")
 public class OperationLogDTO {
 
-    public OperationLogDTO(SysOperationLogXEntity entity) {
+    public OperationLogDTO(SysOperationLogEntity entity) {
         if (entity != null) {
             BeanUtil.copyProperties(entity, this);
             this.requestMethod = BasicEnumUtil.getDescriptionByValue(RequestMethodEnum.class,

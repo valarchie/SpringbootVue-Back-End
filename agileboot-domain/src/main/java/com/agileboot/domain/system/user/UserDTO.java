@@ -5,8 +5,8 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelSheet;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
-import com.agileboot.orm.entity.SysDeptXEntity;
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysDeptEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.result.SearchUserDO;
 import java.util.Date;
 import lombok.Data;
@@ -15,10 +15,10 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-    public UserDTO(SysUserXEntity entity) {
+    public UserDTO(SysUserEntity entity) {
         if (entity != null) {
             BeanUtil.copyProperties(entity, this);
-            SysDeptXEntity dept = SpringUtil.getBean(GuavaCacheService.class).deptCache
+            SysDeptEntity dept = SpringUtil.getBean(GuavaCacheService.class).deptCache
                 .get(entity.getDeptId() + "");
             if (dept != null) {
                 this.deptName = dept.getDeptName();

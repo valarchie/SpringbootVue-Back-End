@@ -5,10 +5,10 @@ import cn.hutool.core.util.StrUtil;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.domain.login.Role;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.enums.DataScopeEnum;
-import com.agileboot.orm.service.ISysDeptXService;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.service.ISysDeptService;
+import com.agileboot.orm.service.ISysUserService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +23,10 @@ import org.springframework.util.CollectionUtils;
 public class PermissionService {
 
     @Autowired
-    private ISysDeptXService deptService;
+    private ISysDeptService deptService;
 
     @Autowired
-    private ISysUserXService userService;
+    private ISysUserService userService;
 
     /**
      * 所有权限标识
@@ -73,7 +73,7 @@ public class PermissionService {
         }
         Role role = loginUser.getRole();
 
-        SysUserXEntity targetUser = userService.getById(userId);
+        SysUserEntity targetUser = userService.getById(userId);
 
         if(role.getDataScope() == DataScopeEnum.ALL.getValue()) {
             return true;
@@ -109,7 +109,7 @@ public class PermissionService {
             return true;
         }
 
-        if(role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
+        if (role.getDataScope() == DataScopeEnum.CURRENT_DEPT_AND_CHILDREN_DEPT.getValue() &&
             deptService.isChildOfTargetDeptId(loginUser.getDeptId(), deptId)) {
             return true;
         }

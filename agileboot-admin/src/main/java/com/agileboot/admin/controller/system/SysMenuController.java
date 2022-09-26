@@ -13,7 +13,7 @@ import com.agileboot.domain.system.menu.UpdateMenuCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.service.ISysMenuXService;
+import com.agileboot.orm.service.ISysMenuService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysMenuController extends BaseController {
 
     @Autowired
-    private ISysMenuXService menuService;
+    private ISysMenuService menuService;
 
     @Autowired
     MenuDomainService menuDomainService;

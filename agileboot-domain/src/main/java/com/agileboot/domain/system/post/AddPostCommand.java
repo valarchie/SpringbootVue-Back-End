@@ -11,7 +11,7 @@ import lombok.Data;
 public class AddPostCommand {
 
     @NotBlank(message = "岗位编码不能为空")
-    @Size(min = 0, max = 64, message = "岗位编码长度不能超过64个字符")
+    @Size(max = 64, message = "岗位编码长度不能超过64个字符")
     protected String postCode;
 
     /**

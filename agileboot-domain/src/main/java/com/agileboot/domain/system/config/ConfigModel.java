@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.errors.BusinessErrorCode;
-import com.agileboot.orm.entity.SysConfigXEntity;
+import com.agileboot.orm.entity.SysConfigEntity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -14,11 +14,11 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class ConfigModel extends SysConfigXEntity {
+public class ConfigModel extends SysConfigEntity {
 
     private Set<String> configOptionSet;
 
-    public ConfigModel(SysConfigXEntity entity) {
+    public ConfigModel(SysConfigEntity entity) {
         BeanUtil.copyProperties(entity, this);
 
         List<?> options =

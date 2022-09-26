@@ -8,30 +8,46 @@ import lombok.Data;
  * @author ruoyi
  */
 @Data
-public class OnlineUser
-{
-    /** 会话编号 */
+public class OnlineUser {
+
+    /**
+     * 会话编号
+     */
     private String tokenId;
 
-    /** 部门名称 */
+    /**
+     * 部门名称
+     */
     private String deptName;
 
-    /** 用户名称 */
+    /**
+     * 用户名称
+     */
     private String userName;
 
-    /** 登录IP地址 */
+    /**
+     * 登录IP地址
+     */
     private String ipaddr;
 
-    /** 登录地址 */
+    /**
+     * 登录地址
+     */
     private String loginLocation;
 
-    /** 浏览器类型 */
+    /**
+     * 浏览器类型
+     */
     private String browser;
 
-    /** 操作系统 */
+    /**
+     * 操作系统
+     */
     private String os;
 
-    /** 登录时间 */
+    /**
+     * 登录时间
+     */
     private Long loginTime;
 
 }

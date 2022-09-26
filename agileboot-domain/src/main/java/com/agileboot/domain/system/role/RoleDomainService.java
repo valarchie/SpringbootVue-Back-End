@@ -8,11 +8,11 @@ import com.agileboot.domain.system.user.UserDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
 import com.agileboot.infrastructure.web.service.UserDetailsServiceImpl;
-import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.entity.SysUserXEntity;
-import com.agileboot.orm.service.ISysRoleMenuXService;
-import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.entity.SysRoleEntity;
+import com.agileboot.orm.entity.SysUserEntity;
+import com.agileboot.orm.service.ISysRoleMenuService;
+import com.agileboot.orm.service.ISysRoleService;
+import com.agileboot.orm.service.ISysUserService;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
@@ -24,13 +24,13 @@ import org.springframework.stereotype.Service;
 public class RoleDomainService {
 
     @Autowired
-    private ISysRoleXService roleService;
+    private ISysRoleService roleService;
 
     @Autowired
-    private ISysRoleMenuXService roleMenuService;
+    private ISysRoleMenuService roleMenuService;
 
     @Autowired
-    private ISysUserXService userService;
+    private ISysUserService userService;
 
     @Autowired
     private TokenService tokenService;
@@ -39,13 +39,13 @@ public class RoleDomainService {
     private UserDetailsServiceImpl userDetailsService;
 
     public PageDTO getRoleList(RoleQuery query) {
-        Page<SysRoleXEntity> page = roleService.page(query.toPage(), query.toQueryWrapper());
+        Page<SysRoleEntity> page = roleService.page(query.toPage(), query.toQueryWrapper());
         List<RoleDTO> records = page.getRecords().stream().map(RoleDTO::new).collect(Collectors.toList());
         return new PageDTO(records, page.getTotal());
     }
 
     public RoleDTO getRoleInfo(Long roleId) {
-        SysRoleXEntity byId = roleService.getById(roleId);
+        SysRoleEntity byId = roleService.getById(roleId);
         return new RoleDTO(byId);
     }
 
@@ -83,7 +83,7 @@ public class RoleDomainService {
 
 
     public void updateRole(UpdateRoleCommand updateCommand, LoginUser loginUser) {
-        SysRoleXEntity byId = roleService.getById(updateCommand.getRoleId());
+        SysRoleEntity byId = roleService.getById(updateCommand.getRoleId());
 
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, updateCommand.getRoleId(), "角色");
@@ -106,7 +106,7 @@ public class RoleDomainService {
 
 
     public RoleModel getRoleModel(Long roleId) {
-        SysRoleXEntity byId = roleService.getById(roleId);
+        SysRoleEntity byId = roleService.getById(roleId);
 
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, roleId, "角色");
@@ -134,13 +134,13 @@ public class RoleDomainService {
 
 
     public PageDTO getAllocatedUserList(AllocatedRoleQuery query) {
-        Page<SysUserXEntity> page = userService.selectAllocatedList(query);
+        Page<SysUserEntity> page = userService.selectAllocatedList(query);
         List<UserDTO> dtoList = page.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
         return new PageDTO(dtoList, page.getTotal());
     }
 
     public PageDTO getUnallocatedUserList(UnallocatedRoleQuery query) {
-        Page<SysUserXEntity> page = userService.selectUnallocatedList(query);
+        Page<SysUserEntity> page = userService.selectUnallocatedList(query);
         List<UserDTO> dtoList = page.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
         return new PageDTO(dtoList, page.getTotal());
     }
@@ -148,7 +148,7 @@ public class RoleDomainService {
 
 
     public void deleteRoleOfUser(Long userId) {
-        SysUserXEntity user = userService.getById(userId);
+        SysUserEntity user = userService.getById(userId);
         if (user != null) {
             user.setRoleId(null);
             user.updateById();
@@ -163,8 +163,8 @@ public class RoleDomainService {
         for (Long userId : userIds) {
 //            SysUserXEntity user = userService.getById(userId);
 
-            LambdaUpdateWrapper<SysUserXEntity> updateWrapper = new LambdaUpdateWrapper<>();
-            updateWrapper.set(SysUserXEntity::getRoleId, null).eq(SysUserXEntity::getUserId, userId);
+            LambdaUpdateWrapper<SysUserEntity> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.set(SysUserEntity::getRoleId, null).eq(SysUserEntity::getUserId, userId);
 
             userService.update(updateWrapper);
         }
@@ -176,7 +176,7 @@ public class RoleDomainService {
         }
 
         for (Long userId : userIds) {
-            SysUserXEntity user = userService.getById(userId);
+            SysUserEntity user = userService.getById(userId);
             user.setRoleId(roleId);
             user.updateById();
         }

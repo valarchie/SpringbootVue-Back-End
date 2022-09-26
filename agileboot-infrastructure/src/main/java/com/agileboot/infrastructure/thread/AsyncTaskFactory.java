@@ -5,11 +5,11 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
-import com.agileboot.orm.entity.SysLoginInfoXEntity;
-import com.agileboot.orm.entity.SysOperationLogXEntity;
+import com.agileboot.orm.entity.SysLoginInfoEntity;
+import com.agileboot.orm.entity.SysOperationLogEntity;
 import com.agileboot.orm.enums.LoginStatusEnum;
-import com.agileboot.orm.service.ISysLoginInfoXService;
-import com.agileboot.orm.service.ISysOperationLogXService;
+import com.agileboot.orm.service.ISysLoginInfoService;
+import com.agileboot.orm.service.ISysOperationLogService;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +45,7 @@ public class AsyncTaskFactory {
             loginStatusEnum, message);
         return () -> {
             // 封装对象
-            SysLoginInfoXEntity loginInfo = new SysLoginInfoXEntity();
+            SysLoginInfoEntity loginInfo = new SysLoginInfoEntity();
             loginInfo.setUsername(username);
             loginInfo.setIpAddress(ip);
             loginInfo.setLoginLocation(address);
@@ -56,7 +56,7 @@ public class AsyncTaskFactory {
             // 日志状态 TODO 替换魔法值
             loginInfo.setStatus(loginStatusEnum.getValue());
             // 插入数据
-            SpringUtil.getBean(ISysLoginInfoXService.class).save(loginInfo);
+            SpringUtil.getBean(ISysLoginInfoService.class).save(loginInfo);
         };
     }
 
@@ -66,11 +66,11 @@ public class AsyncTaskFactory {
      * @param operLog 操作日志信息
      * @return 任务task
      */
-    public static Runnable recordOperationLog(final SysOperationLogXEntity operLog) {
+    public static Runnable recordOperationLog(final SysOperationLogEntity operLog) {
         return () -> {
             // 远程查询操作地点
             operLog.setOperatorLocation(IpRegionUtil.getBriefLocationByIp(operLog.getOperatorIp()));
-            SpringUtil.getBean(ISysOperationLogXService.class).save(operLog);
+            SpringUtil.getBean(ISysOperationLogService.class).save(operLog);
         };
     }
 

@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.role;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysRoleXEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class RoleQuery extends AbstractPageQuery {
 
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysRoleXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysRoleEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.eq(status != null, "status", status)
             .eq(StrUtil.isNotEmpty(roleKey), "role_key", roleKey)

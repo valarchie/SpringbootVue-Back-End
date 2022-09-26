@@ -67,7 +67,7 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPermi('system:user:import')")
     @PostMapping("/importData")
-    public ResponseDTO importData(MultipartFile file, boolean updateSupport) throws Exception {
+    public ResponseDTO importData(MultipartFile file, boolean updateSupport) {
         List<?> commands = CustomExcelUtil.readFromResponse(AddUserCommand.class, file);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 

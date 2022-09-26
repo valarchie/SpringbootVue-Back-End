@@ -40,6 +40,7 @@ public class CodeGenerator {
      * @param args
      */
     public static void main(String[] args) {
+        // TODO 改成读取配置文件
         CodeGenerator generator = CodeGenerator.builder()
             .databaseUrl("jdbc:mysql://localhost:33066/agileboot")
             .username("root")
@@ -114,7 +115,6 @@ public class CodeGenerator {
                 .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + module
                     + "/src/main/resources/mapper/system/test"))
                 .build();
-            ;
 
         });
     }
@@ -197,7 +197,7 @@ public class CodeGenerator {
             .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
             // ID strategy AUTO, NONE, INPUT, ASSIGN_ID, ASSIGN_UUID;
             .idType(IdType.AUTO)
-            .formatFileName("%sXEntity")
+            .formatFileName("%sEntity")
             .build();
     }
 
@@ -207,7 +207,7 @@ public class CodeGenerator {
             .superClass(BaseController.class)
             .enableHyphenStyle()
             .enableRestStyle()
-            .formatFileName("%sXController")
+            .formatFileName("%sController")
             .build();
     }
 
@@ -215,8 +215,8 @@ public class CodeGenerator {
         builder.serviceBuilder()
 //                    .superServiceClass(BaseService.class)
 //                    .superServiceImplClass(BaseServiceImpl.class)
-            .formatServiceFileName("I%sXService")
-            .formatServiceImplFileName("%sXServiceImp")
+            .formatServiceFileName("I%sService")
+            .formatServiceImplFileName("%sServiceImpl")
             .build();
     }
 
@@ -227,8 +227,8 @@ public class CodeGenerator {
 //                    .enableBaseResultMap()
 //                    .enableBaseColumnList()
 //                    .cache(MyMapperCache.class)
-            .formatMapperFileName("%sXMapper")
-            .formatXmlFileName("%sXMapper")
+            .formatMapperFileName("%sMapper")
+            .formatXmlFileName("%sMapper")
             .build();
     }
 

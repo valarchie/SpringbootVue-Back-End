@@ -3,7 +3,7 @@ package com.agileboot.domain.system.config;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.json.JSONUtil;
-import com.agileboot.orm.entity.SysConfigXEntity;
+import com.agileboot.orm.entity.SysConfigEntity;
 import com.agileboot.orm.enums.dictionary.CommonAnswerEnum;
 import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
 import java.util.Date;
@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class ConfigDTO {
 
-    public ConfigDTO(SysConfigXEntity entity) {
+    public ConfigDTO(SysConfigEntity entity) {
 
         if (entity != null) {
             configId = entity.getConfigId() + "";

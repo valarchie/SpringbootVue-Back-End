@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.menu;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysMenuXEntity;
+import com.agileboot.orm.entity.SysMenuEntity;
 import com.agileboot.orm.query.AbstractQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import java.util.Arrays;
@@ -17,9 +17,9 @@ public class MenuQuery extends AbstractQuery {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public QueryWrapper<SysMenuXEntity> toQueryWrapper() {
+    public QueryWrapper<SysMenuEntity> toQueryWrapper() {
 
-        QueryWrapper<SysMenuXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysMenuEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(StrUtil.isNotEmpty(menuName), columnName("menu_name"), menuName)
             .eq(isVisible!=null, "is_visible", isVisible)
             .eq(status!=null, "status", status);

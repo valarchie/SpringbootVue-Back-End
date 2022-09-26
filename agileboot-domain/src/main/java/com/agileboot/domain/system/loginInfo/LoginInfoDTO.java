@@ -2,7 +2,7 @@ package com.agileboot.domain.system.loginInfo;
 
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelSheet;
-import com.agileboot.orm.entity.SysLoginInfoXEntity;
+import com.agileboot.orm.entity.SysLoginInfoEntity;
 import com.agileboot.orm.enums.LoginStatusEnum;
 import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
 import java.util.Date;
@@ -12,7 +12,7 @@ import lombok.Data;
 @ExcelSheet(name = "登录日志")
 public class LoginInfoDTO {
 
-    public LoginInfoDTO(SysLoginInfoXEntity entity) {
+    public LoginInfoDTO(SysLoginInfoEntity entity) {
         if (entity != null) {
             infoId = entity.getInfoId() + "";
             username = entity.getUsername();

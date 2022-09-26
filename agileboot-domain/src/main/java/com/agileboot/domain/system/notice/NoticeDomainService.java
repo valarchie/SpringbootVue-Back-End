@@ -6,8 +6,8 @@ import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysNoticeXEntity;
-import com.agileboot.orm.service.ISysNoticeXService;
+import com.agileboot.orm.entity.SysNoticeEntity;
+import com.agileboot.orm.service.ISysNoticeService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,17 +21,17 @@ import org.springframework.stereotype.Service;
 public class NoticeDomainService {
 
     @Autowired
-    private ISysNoticeXService noticeService;
+    private ISysNoticeService noticeService;
 
     public PageDTO getNoticeList(NoticeQuery query) {
-        Page<SysNoticeXEntity> page = noticeService.page(query.toPage(), query.toQueryWrapper());
+        Page<SysNoticeEntity> page = noticeService.page(query.toPage(), query.toQueryWrapper());
         List<NoticeDTO> records = page.getRecords().stream().map(NoticeDTO::new).collect(Collectors.toList());
         return new PageDTO(records, page.getTotal());
     }
 
 
     public NoticeDTO getNotice(Long id) {
-        SysNoticeXEntity byId = noticeService.getById(id);
+        SysNoticeEntity byId = noticeService.getById(id);
         return new NoticeDTO(byId);
     }
 
@@ -49,7 +49,7 @@ public class NoticeDomainService {
 
 
     public void updateNotice(NoticeUpdateCommand updateCommand) {
-        SysNoticeXEntity byId = noticeService.getById(updateCommand.getNoticeId());
+        SysNoticeEntity byId = noticeService.getById(updateCommand.getNoticeId());
 
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, updateCommand.getNoticeId(), "通知公告");

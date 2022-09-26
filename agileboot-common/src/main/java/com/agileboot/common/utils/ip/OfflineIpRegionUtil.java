@@ -37,8 +37,7 @@ public class OfflineIpRegionUtil {
             String rawRegion = searcher.search(ip);
             if (StrUtil.isNotEmpty(rawRegion)) {
                 String[] split = rawRegion.split("\\|");
-                IpRegion region =  new IpRegion(split[0], split[1], split[2], split[3], split[4]);
-                return region;
+                return new IpRegion(split[0], split[1], split[2], split[3], split[4]);
             }
 
             return null;

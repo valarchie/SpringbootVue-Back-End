@@ -10,8 +10,8 @@ import com.agileboot.common.exception.errors.BusinessErrorCode;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.entity.SysMenuXEntity;
-import com.agileboot.orm.service.ISysMenuXService;
+import com.agileboot.orm.entity.SysMenuEntity;
+import com.agileboot.orm.service.ISysMenuService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,21 +25,21 @@ import org.springframework.stereotype.Service;
 public class MenuDomainService {
 
     @Autowired
-    private ISysMenuXService menuService;
+    private ISysMenuService menuService;
 
 
     public List<MenuDTO> getMenuList(MenuQuery query) {
-        List<SysMenuXEntity> list = menuService.list(query.toQueryWrapper());
+        List<SysMenuEntity> list = menuService.list(query.toQueryWrapper());
         return list.stream().map(MenuDTO::new).collect(Collectors.toList());
     }
 
     public MenuDTO getMenu(Long menuId) {
-        SysMenuXEntity byId = menuService.getById(menuId);
+        SysMenuEntity byId = menuService.getById(menuId);
         return new MenuDTO(byId);
     }
 
     public List<Tree<Long>> getDropdownList(LoginUser loginUser) {
-        List<SysMenuXEntity> menuEntityList =
+        List<SysMenuEntity> menuEntityList =
             loginUser.isAdmin() ? menuService.list() : menuService.selectMenuListByUserId(loginUser.getUserId());
 
         return buildMenuTreeSelect(menuEntityList);
@@ -47,7 +47,7 @@ public class MenuDomainService {
 
 
     public TreeSelectedDTO getRoleDropdownList(LoginUser loginUser, Long roleId) {
-        List<SysMenuXEntity> menus = loginUser.isAdmin() ?
+        List<SysMenuEntity> menus = loginUser.isAdmin() ?
             menuService.list() : menuService.selectMenuListByUserId(loginUser.getUserId());
 
         TreeSelectedDTO tree = new TreeSelectedDTO();
@@ -92,7 +92,7 @@ public class MenuDomainService {
 
 
     public MenuModel getMenuModel(Long menuId) {
-        SysMenuXEntity byId = menuService.getById(menuId);
+        SysMenuEntity byId = menuService.getById(menuId);
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, menuId, "菜单");
         }
@@ -107,7 +107,7 @@ public class MenuDomainService {
      * @param menus 菜单列表
      * @return 树结构列表
      */
-    public List<Tree<Long>> buildMenuTreeSelect(List<SysMenuXEntity> menus) {
+    public List<Tree<Long>> buildMenuTreeSelect(List<SysMenuEntity> menus) {
         TreeNodeConfig config = new TreeNodeConfig();
         //默认为id可以不设置
         config.setIdKey("menuId");
@@ -122,7 +122,7 @@ public class MenuDomainService {
 
     public List<Tree<Long>> buildMenuEntityTree(Long userId) {
 
-        List<SysMenuXEntity> menus = null;
+        List<SysMenuEntity> menus = null;
         if (AuthenticationUtils.isAdmin(userId)) {
             menus = menuService.listMenuListWithoutButton();
         } else {

@@ -2,7 +2,7 @@ package com.agileboot.domain.system.role;
 
 import com.agileboot.common.annotation.ExcelColumn;
 import com.agileboot.common.annotation.ExcelSheet;
-import com.agileboot.orm.entity.SysRoleXEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
 import java.util.Date;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
 @ExcelSheet(name = "角色列表")
 public class RoleDTO {
 
-    public RoleDTO(SysRoleXEntity entity) {
+    public RoleDTO(SysRoleEntity entity) {
         if (entity != null) {
             this.roleId = entity.getRoleId();
             this.roleName = entity.getRoleName() + "";

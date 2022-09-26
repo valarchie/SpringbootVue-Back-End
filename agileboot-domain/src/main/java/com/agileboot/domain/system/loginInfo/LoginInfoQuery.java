@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.loginInfo;
 
 import cn.hutool.core.util.StrUtil;
-import com.agileboot.orm.entity.SysLoginInfoXEntity;
+import com.agileboot.orm.entity.SysLoginInfoEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class LoginInfoQuery extends AbstractPageQuery {
 
     @Override
     public QueryWrapper toQueryWrapper() {
-        QueryWrapper<SysLoginInfoXEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysLoginInfoEntity> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.like(StrUtil.isNotEmpty(ipaddr), "ip_address", ipaddr)
             .eq(StrUtil.isNotEmpty(status), "status", status)

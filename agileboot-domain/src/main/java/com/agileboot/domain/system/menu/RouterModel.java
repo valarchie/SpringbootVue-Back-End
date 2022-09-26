@@ -5,13 +5,13 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.agileboot.common.constant.Constants;
-import com.agileboot.orm.entity.SysMenuXEntity;
+import com.agileboot.orm.entity.SysMenuEntity;
 import com.agileboot.orm.enums.MenuComponentEnum;
 import com.agileboot.orm.enums.MenuTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouterModel extends SysMenuXEntity {
+public class RouterModel extends SysMenuEntity {
 
 
     public RouterVo produceDirectoryRouterVO(List<RouterVo> children) {

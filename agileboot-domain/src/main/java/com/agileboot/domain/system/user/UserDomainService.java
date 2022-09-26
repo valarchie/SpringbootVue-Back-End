@@ -20,14 +20,14 @@ import com.agileboot.domain.system.user.command.UpdateUserCommand;
 import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
-import com.agileboot.orm.entity.SysRoleXEntity;
-import com.agileboot.orm.entity.SysUserXEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.result.SearchUserDO;
-import com.agileboot.orm.service.ISysConfigXService;
-import com.agileboot.orm.service.ISysDeptXService;
-import com.agileboot.orm.service.ISysPostXService;
-import com.agileboot.orm.service.ISysRoleXService;
-import com.agileboot.orm.service.ISysUserXService;
+import com.agileboot.orm.service.ISysConfigService;
+import com.agileboot.orm.service.ISysDeptService;
+import com.agileboot.orm.service.ISysPostService;
+import com.agileboot.orm.service.ISysRoleService;
+import com.agileboot.orm.service.ISysUserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,20 +39,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDomainService {
 
     @Autowired
-    private ISysUserXService userService;
+    private ISysUserService userService;
 
     @Autowired
-    private ISysRoleXService roleService;
+    private ISysRoleService roleService;
 
     @Autowired
-    private ISysDeptXService deptService;
+    private ISysDeptService deptService;
 
 
     @Autowired
-    private ISysPostXService postService;
+    private ISysPostService postService;
 
     @Autowired
-    private ISysConfigXService configService;
+    private ISysConfigService configService;
 
     @Autowired
     private TokenService tokenService;
@@ -67,7 +67,7 @@ public class UserDomainService {
 
     public UserProfileDTO getUserProfile(Long userId) {
 
-        SysUserXEntity userXEntity = userService.getById(userId);
+        SysUserEntity userXEntity = userService.getById(userId);
         // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
 
         UserProfileDTOBuilder profileDTO = UserProfileDTO.builder().user(new UserDTO(userXEntity))
@@ -89,7 +89,7 @@ public class UserDomainService {
     }
 
     public UserDetailDTO getUserDetailInfo(Long userId) {
-        SysUserXEntity userEntity = userService.getById(userId);
+        SysUserEntity userEntity = userService.getById(userId);
         UserDetailDTO detailDTO = new UserDetailDTO();
 
         List<RoleDTO> roleDTOs = roleService.list().stream().map(RoleDTO::new).collect(Collectors.toList());
@@ -178,7 +178,7 @@ public class UserDomainService {
         UserModel userModel = getUserModel(userId);
         UserDTO userDTO = new UserDTO(userModel);
 
-        SysRoleXEntity roleEntity = roleService.getById(userModel.getRoleId());
+        SysRoleEntity roleEntity = roleService.getById(userModel.getRoleId());
         RoleDTO roleDTO = new RoleDTO(roleEntity);
 
         UserInfoDTO userInfoDTO = new UserInfoDTO();
@@ -188,7 +188,7 @@ public class UserDomainService {
     }
 
     public UserModel getUserModel(Long userId) {
-        SysUserXEntity byId = userService.getById(userId);
+        SysUserEntity byId = userService.getById(userId);
         if (byId == null) {
             throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, userId, "用户");
         }
@@ -199,7 +199,7 @@ public class UserDomainService {
     }
 
 
-    public String importUser(List<SysUserXEntity> userList, Boolean isUpdateSupport, String operName) {
+    public String importUser(List<SysUserEntity> userList, Boolean isUpdateSupport, String operName) {
 
         if (1 == 1) {
             return "jackson";
