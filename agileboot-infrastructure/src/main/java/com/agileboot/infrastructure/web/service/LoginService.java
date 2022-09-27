@@ -13,9 +13,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants.Captcha;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
-import com.agileboot.common.exception.errors.ErrorCode;
-import com.agileboot.common.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
@@ -99,10 +97,10 @@ public class LoginService {
             if (e instanceof BadCredentialsException) {
                 ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
                     MessageUtils.message("user.password.not.match")));
-                throw new ApiException(BusinessErrorCode.LOGIN_WRONG_USER_PASSWORD);
+                throw new ApiException(ErrorCode.Business.LOGIN_WRONG_USER_PASSWORD);
             } else {
                 ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL, e.getMessage()));
-                throw new ApiException(e.getCause(), BusinessErrorCode.LOGIN_ERROR, e.getMessage());
+                throw new ApiException(e.getCause(), ErrorCode.Business.LOGIN_ERROR, e.getMessage());
             }
         }
         ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_SUCCESS,
@@ -143,7 +141,7 @@ public class LoginService {
             }
 
             if (image == null) {
-                throw new ApiException(InternalErrorCode.LOGIN_CAPTCHA_GENERATE_FAIL);
+                throw new ApiException(ErrorCode.Internal.LOGIN_CAPTCHA_GENERATE_FAIL);
             }
 
             // 保存验证码信息
@@ -225,13 +223,13 @@ public class LoginService {
         redisCacheService.captchaCache.delete(uuid);
         if (captcha == null) {
             ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
-                BusinessErrorCode.CAPTCHA_CODE_EXPIRE.message()));
-            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_EXPIRE);
+                ErrorCode.Business.CAPTCHA_CODE_EXPIRE.message()));
+            throw new ApiException(ErrorCode.Business.CAPTCHA_CODE_EXPIRE);
         }
         if (!code.equalsIgnoreCase(captcha)) {
             ThreadPoolManager.execute(AsyncTaskFactory.loginInfoTask(username, LoginStatusEnum.LOGIN_FAIL,
-                BusinessErrorCode.CAPTCHA_CODE_WRONG.message()));
-            throw new ApiException(BusinessErrorCode.CAPTCHA_CODE_WRONG);
+                ErrorCode.Business.CAPTCHA_CODE_WRONG.message()));
+            throw new ApiException(ErrorCode.Business.CAPTCHA_CODE_WRONG);
         }
     }
 

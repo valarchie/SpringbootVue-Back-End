@@ -2,7 +2,7 @@ package com.agileboot.domain.system.user;
 
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -18,7 +18,7 @@ public class UserModel extends SysUserEntity {
 
     public void checkUsernameIsUnique(ISysUserService userService) {
         if (userService.checkUserNameUnique(getUsername())) {
-            throw new ApiException(BusinessErrorCode.USER_NAME_IS_NOT_UNIQUE);
+            throw new ApiException(ErrorCode.Business.USER_NAME_IS_NOT_UNIQUE);
         }
     }
 
@@ -26,30 +26,30 @@ public class UserModel extends SysUserEntity {
     public void checkPhoneNumberIsUnique(ISysUserService userService) {
         if (StrUtil.isNotEmpty(getPhoneNumber()) && userService.checkPhoneUnique(getPhoneNumber(),
             getUserId())) {
-            throw new ApiException(BusinessErrorCode.USER_PHONE_NUMBER_IS_NOT_UNIQUE);
+            throw new ApiException(ErrorCode.Business.USER_PHONE_NUMBER_IS_NOT_UNIQUE);
         }
     }
 
     public void checkEmailIsUnique(ISysUserService userService) {
         if (StrUtil.isNotEmpty(getEmail()) && userService.checkEmailUnique(getEmail(), getUserId())) {
-            throw new ApiException(BusinessErrorCode.USER_EMAIL_IS_NOT_UNIQUE);
+            throw new ApiException(ErrorCode.Business.USER_EMAIL_IS_NOT_UNIQUE);
         }
     }
 
     public void checkCanBeDelete(LoginUser loginUser) {
         if (Objects.equals(getUserId(), loginUser.getUserId())) {
-            throw new ApiException(BusinessErrorCode.USER_CURRENT_USER_CAN_NOT_BE_DELETE);
+            throw new ApiException(ErrorCode.Business.USER_CURRENT_USER_CAN_NOT_BE_DELETE);
         }
     }
 
 
     public void modifyPassword(UpdateUserPasswordCommand command) {
         if (!AuthenticationUtils.matchesPassword(command.getOldPassword(), getPassword())) {
-            throw new ApiException(BusinessErrorCode.USER_PASSWORD_IS_NOT_CORRECT);
+            throw new ApiException(ErrorCode.Business.USER_PASSWORD_IS_NOT_CORRECT);
         }
 
         if (AuthenticationUtils.matchesPassword(command.getNewPassword(), getPassword())) {
-            throw new ApiException(BusinessErrorCode.USER_NEW_PASSWORD_IS_THE_SAME_AS_OLD);
+            throw new ApiException(ErrorCode.Business.USER_NEW_PASSWORD_IS_THE_SAME_AS_OLD);
         }
         setPassword(AuthenticationUtils.encryptPassword(command.getNewPassword()));
     }

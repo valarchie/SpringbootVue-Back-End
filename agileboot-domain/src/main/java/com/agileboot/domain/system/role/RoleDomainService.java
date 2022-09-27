@@ -3,7 +3,7 @@ package com.agileboot.domain.system.role;
 import cn.hutool.core.collection.CollUtil;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.user.UserDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
@@ -86,7 +86,7 @@ public class RoleDomainService {
         SysRoleEntity byId = roleService.getById(updateCommand.getRoleId());
 
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, updateCommand.getRoleId(), "角色");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, updateCommand.getRoleId(), "角色");
         }
 
         RoleModel roleModel = updateCommand.toModel();
@@ -109,7 +109,7 @@ public class RoleDomainService {
         SysRoleEntity byId = roleService.getById(roleId);
 
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, roleId, "角色");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, roleId, "角色");
         }
 
         return new RoleModel(byId);

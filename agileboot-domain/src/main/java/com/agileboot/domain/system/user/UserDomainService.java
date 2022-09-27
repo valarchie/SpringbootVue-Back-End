@@ -5,7 +5,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
 import com.agileboot.domain.system.post.PostDTO;
@@ -190,7 +190,7 @@ public class UserDomainService {
     public UserModel getUserModel(Long userId) {
         SysUserEntity byId = userService.getById(userId);
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, userId, "用户");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, userId, "用户");
         }
 
         UserModel userModel = new UserModel();
@@ -206,7 +206,7 @@ public class UserDomainService {
         }
 
         if (userList == null || userList.size() == 0) {
-            throw new ApiException(BusinessErrorCode.USER_IMPORT_DATA_IS_NULL);
+            throw new ApiException(ErrorCode.Business.USER_IMPORT_DATA_IS_NULL);
         }
         int successNum = 0;
         int failureNum = 0;

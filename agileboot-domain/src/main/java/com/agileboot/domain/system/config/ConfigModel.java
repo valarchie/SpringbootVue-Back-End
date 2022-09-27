@@ -5,7 +5,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.orm.entity.SysConfigEntity;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +30,11 @@ public class ConfigModel extends SysConfigEntity {
 
     public void editConfigValue(String value) {
         if (StrUtil.isBlank(value)) {
-            throw new ApiException(BusinessErrorCode.CONFIG_VALUE_IS_NOT_ALLOW_TO_EMPTY);
+            throw new ApiException(ErrorCode.Business.CONFIG_VALUE_IS_NOT_ALLOW_TO_EMPTY);
         }
 
         if(!configOptionSet.isEmpty()&& !configOptionSet.contains(value)) {
-            throw new ApiException(BusinessErrorCode.CONFIG_VALUE_IS_NOT_IN_OPTIONS);
+            throw new ApiException(ErrorCode.Business.CONFIG_VALUE_IS_NOT_IN_OPTIONS);
         }
 
         if(!Objects.equals(value, getConfigValue())) {

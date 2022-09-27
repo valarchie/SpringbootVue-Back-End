@@ -1,7 +1,7 @@
 package com.agileboot.infrastructure.aspectj;
 
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -33,7 +33,7 @@ public class DBExceptionAspect {
 //                joinPoint.getSignature().toShortString(),
 //                joinPoint.getArgs(),
 //                e.getMessage());
-            throw new ApiException(e, InternalErrorCode.DB_INTERNAL_ERROR, e.getMessage());
+            throw new ApiException(e, ErrorCode.Internal.DB_INTERNAL_ERROR, e.getMessage());
         }
         return proceed;
     }

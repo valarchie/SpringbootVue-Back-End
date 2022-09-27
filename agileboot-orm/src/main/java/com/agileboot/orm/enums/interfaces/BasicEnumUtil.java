@@ -2,7 +2,7 @@ package com.agileboot.orm.enums.interfaces;
 
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import java.util.Objects;
 
 public class BasicEnumUtil {
@@ -33,7 +33,7 @@ public class BasicEnumUtil {
         }
 
         if (target == null) {
-            throw new ApiException(InternalErrorCode.GET_ENUM_FAILED, enumClass.getSimpleName());
+            throw new ApiException(ErrorCode.Internal.GET_ENUM_FAILED, enumClass.getSimpleName());
         }
 
         return target;

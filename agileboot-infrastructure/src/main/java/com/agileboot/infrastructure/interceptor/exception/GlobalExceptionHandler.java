@@ -5,7 +5,7 @@ import cn.hutool.http.HttpStatus;
 import com.agileboot.common.core.dto.Rdto;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ApiException.class)
     public Rdto handleServiceException(ApiException e, HttpServletRequest request) {
-        if (e.getCode() == InternalErrorCode.DB_INTERNAL_ERROR.code()) {
+        if (e.getCode() == ErrorCode.Internal.DB_INTERNAL_ERROR.code()) {
             String sensitiveInfoBegin = "### The error may exist";
             String nonSensitiveMsg = StrUtil.subBefore(e.getMessage(), sensitiveInfoBegin, false);
             return Rdto.error(e.getCode(), nonSensitiveMsg);

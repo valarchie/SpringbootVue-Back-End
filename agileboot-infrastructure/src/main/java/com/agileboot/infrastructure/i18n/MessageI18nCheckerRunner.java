@@ -1,11 +1,8 @@
 package com.agileboot.infrastructure.i18n;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
-import com.agileboot.common.exception.errors.ClientErrorCode;
-import com.agileboot.common.exception.errors.ErrorCodeInterface;
-import com.agileboot.common.exception.errors.ExternalErrorCode;
-import com.agileboot.common.exception.errors.InternalErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
+import com.agileboot.common.exception.error.ErrorCodeInterface;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -21,10 +18,10 @@ import org.springframework.stereotype.Component;
 public class MessageI18nCheckerRunner implements ApplicationRunner {
 
     public static Object[] allErrorCodes = ArrayUtil.addAll(
-        InternalErrorCode.values(),
-        ExternalErrorCode.values(),
-        ClientErrorCode.values(),
-        BusinessErrorCode.values());
+        ErrorCode.Internal.values(),
+        ErrorCode.External.values(),
+        ErrorCode.Client.values(),
+        ErrorCode.Business.values());
 
     @Override
     public void run(ApplicationArguments args) {

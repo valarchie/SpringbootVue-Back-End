@@ -2,7 +2,7 @@ package com.agileboot.admin.controller.tool;
 
 import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -57,7 +57,7 @@ public class SwaggerTemplateController extends BaseController {
         if (!USER_ENTITY_MAP.isEmpty() && USER_ENTITY_MAP.containsKey(userId)) {
             return ResponseDTO.ok(USER_ENTITY_MAP.get(userId));
         } else {
-            return ResponseDTO.fail(BusinessErrorCode.USER_NON_EXIST);
+            return ResponseDTO.fail(ErrorCode.Business.USER_NON_EXIST);
         }
     }
 

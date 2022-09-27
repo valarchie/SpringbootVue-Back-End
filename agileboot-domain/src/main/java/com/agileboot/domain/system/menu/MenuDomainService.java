@@ -6,7 +6,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -94,7 +94,7 @@ public class MenuDomainService {
     public MenuModel getMenuModel(Long menuId) {
         SysMenuEntity byId = menuService.getById(menuId);
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, menuId, "菜单");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, menuId, "菜单");
         }
         return new MenuModel(byId);
     }

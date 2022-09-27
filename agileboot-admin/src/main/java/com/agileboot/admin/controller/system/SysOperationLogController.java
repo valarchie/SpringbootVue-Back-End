@@ -4,7 +4,7 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.domain.system.operationLog.OperationLogDTO;
@@ -61,6 +61,6 @@ public class SysOperationLogController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/clean")
     public ResponseDTO clean() {
-        return ResponseDTO.fail(BusinessErrorCode.UNSUPPORTED_OPERATION);
+        return ResponseDTO.fail(ErrorCode.Business.UNSUPPORTED_OPERATION);
     }
 }

@@ -1,7 +1,7 @@
 package com.agileboot.common.core.dto;
 
-import com.agileboot.common.exception.errors.ErrorCode;
-import com.agileboot.common.exception.errors.ErrorCodeInterface;
+import com.agileboot.common.exception.error.ErrorCode;
+import com.agileboot.common.exception.error.ErrorCodeInterface;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

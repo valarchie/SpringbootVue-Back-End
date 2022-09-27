@@ -4,7 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -76,7 +76,7 @@ public class DeptDomainService {
     public void addDept(AddDeptCommand addCommand) {
         DeptModel deptModel = addCommand.toModel();
         if (deptService.checkDeptNameUnique(deptModel.getDeptName(), null, deptModel.getParentId())) {
-            throw new ApiException(BusinessErrorCode.DEPT_NAME_IS_NOT_UNIQUE, deptModel.getDeptName());
+            throw new ApiException(ErrorCode.Business.DEPT_NAME_IS_NOT_UNIQUE, deptModel.getDeptName());
         }
 
         deptModel.generateAncestors(deptService);
@@ -94,7 +94,7 @@ public class DeptDomainService {
 
         DeptModel deptModel = updateCommand.toModel();
         if (deptService.checkDeptNameUnique(deptModel.getDeptName(), deptModel.getDeptId(), deptModel.getParentId())) {
-            throw new ApiException(BusinessErrorCode.DEPT_NAME_IS_NOT_UNIQUE, deptModel.getDeptName());
+            throw new ApiException(ErrorCode.Business.DEPT_NAME_IS_NOT_UNIQUE, deptModel.getDeptName());
         }
 
         deptModel.checkParentId();
@@ -122,7 +122,7 @@ public class DeptDomainService {
         SysDeptEntity byId = deptService.getById(id);
 
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, id, "参数配置");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, id, "参数配置");
         }
 
         return new DeptModel(byId);

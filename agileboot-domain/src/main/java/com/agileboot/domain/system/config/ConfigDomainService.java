@@ -2,7 +2,7 @@ package com.agileboot.domain.system.config;
 
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.orm.entity.SysConfigEntity;
 import com.agileboot.orm.service.ISysConfigService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -43,7 +43,7 @@ public class ConfigDomainService {
         SysConfigEntity byId = configService.getById(id);
 
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, id, "参数配置");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, id, "参数配置");
         }
 
         return new ConfigModel(byId);

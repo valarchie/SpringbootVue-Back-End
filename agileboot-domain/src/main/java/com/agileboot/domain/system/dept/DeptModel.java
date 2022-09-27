@@ -2,7 +2,7 @@ package com.agileboot.domain.system.dept;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.orm.entity.SysDeptEntity;
 import com.agileboot.orm.enums.dictionary.CommonStatusEnum;
 import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
@@ -23,20 +23,20 @@ public class DeptModel extends SysDeptEntity {
 
     public void checkParentId() {
         if (Objects.equals(getParentId(), getDeptId())) {
-            throw new ApiException(BusinessErrorCode.DEPT_PARENT_ID_IS_NOT_ALLOWED_SELF);
+            throw new ApiException(ErrorCode.Business.DEPT_PARENT_ID_IS_NOT_ALLOWED_SELF);
         }
     }
 
 
     public void checkExistChildDept(ISysDeptService deptService) {
         if (deptService.hasChildDeptById(getDeptId())) {
-            throw new ApiException(BusinessErrorCode.DEPT_EXIST_CHILD_DEPT_NOT_ALLOW_DELETE);
+            throw new ApiException(ErrorCode.Business.DEPT_EXIST_CHILD_DEPT_NOT_ALLOW_DELETE);
         }
     }
 
     public void checkExistLinkedUsers(ISysUserService userService) {
         if (userService.checkDeptExistUser(getDeptId())) {
-            throw new ApiException(BusinessErrorCode.DEPT_EXIST_LINK_USER_NOT_ALLOW_DELETE);
+            throw new ApiException(ErrorCode.Business.DEPT_EXIST_LINK_USER_NOT_ALLOW_DELETE);
         }
     }
 
@@ -45,7 +45,7 @@ public class DeptModel extends SysDeptEntity {
 
         if (parentDept == null || CommonStatusEnum.DISABLE.equals(
             BasicEnumUtil.fromValue(CommonStatusEnum.class, parentDept.getStatus()))) {
-            throw new ApiException(BusinessErrorCode.DEPT_PARENT_DEPT_NO_EXIST_OR_DISABLED);
+            throw new ApiException(ErrorCode.Business.DEPT_PARENT_DEPT_NO_EXIST_OR_DISABLED);
         }
 
         setAncestors(parentDept.getAncestors() + "," + getParentId());
@@ -59,7 +59,7 @@ public class DeptModel extends SysDeptEntity {
     public void checkStatusAllowChange(ISysDeptService deptService) {
         if (CommonStatusEnum.DISABLE.getValue().equals(getStatus()) &&
             deptService.existChildrenDeptById(getDeptId(), true)) {
-            throw new ApiException(BusinessErrorCode.DEPT_STATUS_ID_IS_NOT_ALLOWED_CHANGE);
+            throw new ApiException(ErrorCode.Business.DEPT_STATUS_ID_IS_NOT_ALLOWED_CHANGE);
         }
 
     }

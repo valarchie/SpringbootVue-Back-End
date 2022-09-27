@@ -3,7 +3,7 @@ package com.agileboot.infrastructure.aspectj;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.enums.LimitType;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.ClientErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.annotations.RateLimiter;
 import java.lang.reflect.Method;
@@ -54,7 +54,7 @@ public class RateLimiterAspect {
         try {
             Long number = redisTemplate.execute(limitScript, keys, count, time);
             if (number == null || number.intValue() > count) {
-                throw new ApiException(ClientErrorCode.COMMON_REQUEST_TO_OFTEN);
+                throw new ApiException(ErrorCode.Client.COMMON_REQUEST_TO_OFTEN);
             }
             log.info("限制请求'{}',当前请求'{}',缓存key'{}'", count, number.intValue(), key);
         } catch (Exception e) {

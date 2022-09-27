@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.ErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
 import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;

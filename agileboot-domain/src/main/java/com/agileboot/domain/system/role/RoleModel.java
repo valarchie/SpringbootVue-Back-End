@@ -3,7 +3,7 @@ package com.agileboot.domain.system.role;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.entity.SysRoleMenuEntity;
 import com.agileboot.orm.service.ISysRoleMenuService;
@@ -33,19 +33,19 @@ public class RoleModel extends SysRoleEntity {
 
     public void checkRoleNameUnique(ISysRoleService roleService) {
         if (roleService.checkRoleNameUnique(getRoleId(), getRoleName())) {
-            throw new ApiException(BusinessErrorCode.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
+            throw new ApiException(ErrorCode.Business.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
         }
     }
 
     public void checkRoleCanBeDelete(ISysUserService userService) {
         if (userService.checkExistUserLinkToRole(getRoleId())) {
-            throw new ApiException(BusinessErrorCode.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
+            throw new ApiException(ErrorCode.Business.ROLE_NAME_IS_NOT_UNIQUE, getRoleName());
         }
     }
 
     public void checkRoleKeyUnique(ISysRoleService roleService) {
         if (roleService.checkRoleKeyUnique(getRoleId(), getRoleKey())) {
-            throw new ApiException(BusinessErrorCode.ROLE_KEY_IS_NOT_UNIQUE, getRoleKey());
+            throw new ApiException(ErrorCode.Business.ROLE_KEY_IS_NOT_UNIQUE, getRoleKey());
         }
     }
 
@@ -55,7 +55,7 @@ public class RoleModel extends SysRoleEntity {
         }
 
         if (deptIds.size() > new HashSet<>(deptIds).size()) {
-            throw new ApiException(BusinessErrorCode.ROLE_DATA_SCOPE_DUPLICATED_DEPT);
+            throw new ApiException(ErrorCode.Business.ROLE_DATA_SCOPE_DUPLICATED_DEPT);
         }
 
         String deptIdSet = StrUtil.join(",", deptIds);

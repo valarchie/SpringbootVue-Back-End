@@ -8,7 +8,7 @@ import com.agileboot.admin.response.UploadDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.infrastructure.config.ServerConfig;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseDTO<UploadDTO> uploadFile(MultipartFile file) throws IOException {
         if (file == null) {
-            throw new ApiException(BusinessErrorCode.UPLOAD_FILE_IS_EMPTY);
+            throw new ApiException(ErrorCode.Business.UPLOAD_FILE_IS_EMPTY);
         }
 
         // 上传文件路径
@@ -97,7 +97,7 @@ public class FileController {
     @PostMapping("/uploads")
     public ResponseDTO<List<UploadDTO>> uploadFiles(List<MultipartFile> files) throws Exception {
         if (CollUtil.isEmpty(files)) {
-            throw new ApiException(BusinessErrorCode.UPLOAD_FILE_IS_EMPTY);
+            throw new ApiException(ErrorCode.Business.UPLOAD_FILE_IS_EMPTY);
         }
 
         // 上传文件路径

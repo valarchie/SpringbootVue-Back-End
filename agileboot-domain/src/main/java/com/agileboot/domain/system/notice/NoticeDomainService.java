@@ -2,7 +2,7 @@ package com.agileboot.domain.system.notice;
 
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -52,7 +52,7 @@ public class NoticeDomainService {
         SysNoticeEntity byId = noticeService.getById(updateCommand.getNoticeId());
 
         if (byId == null) {
-            throw new ApiException(BusinessErrorCode.OBJECT_NOT_FOUND, updateCommand.getNoticeId(), "通知公告");
+            throw new ApiException(ErrorCode.Business.OBJECT_NOT_FOUND, updateCommand.getNoticeId(), "通知公告");
         }
 
         NoticeModel noticeModel = updateCommand.toModel();

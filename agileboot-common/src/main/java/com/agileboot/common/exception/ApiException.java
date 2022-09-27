@@ -1,6 +1,6 @@
 package com.agileboot.common.exception;
 
-import com.agileboot.common.exception.errors.ErrorCodeInterface;
+import com.agileboot.common.exception.error.ErrorCodeInterface;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,7 +64,5 @@ public class ApiException extends RuntimeException{
     public String getLocalizedMessage() {
         return i18nFormattedMessage;
     }
-
-
 
 }

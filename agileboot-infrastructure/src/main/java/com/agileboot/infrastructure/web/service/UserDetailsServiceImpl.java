@@ -3,7 +3,7 @@ package com.agileboot.infrastructure.web.service;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.domain.login.Role;
 import com.agileboot.orm.entity.SysRoleEntity;
@@ -43,11 +43,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysUserEntity user = userService.getUserByUserName(username);
         if (user == null) {
             log.info("登录用户：{} 不存在.", username);
-            throw new ApiException(BusinessErrorCode.USER_NON_EXIST, username);
+            throw new ApiException(ErrorCode.Business.USER_NON_EXIST, username);
         }
         if (!Objects.equals(UserStatusEnum.NORMAL.getValue(), user.getStatus())) {
             log.info("登录用户：{} 已被停用.", username);
-            throw new ApiException(BusinessErrorCode.USER_IS_DISABLE, username);
+            throw new ApiException(ErrorCode.Business.USER_IS_DISABLE, username);
         }
         Set<String> roleKeys = getRoleKeys(user.getUserId());
         Set<String> menuPermissions = getMenuPermissions(user.getUserId());

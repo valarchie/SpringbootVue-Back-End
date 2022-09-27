@@ -10,7 +10,7 @@ import cn.hutool.core.util.URLUtil;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -92,7 +92,7 @@ public class FileUploadUtils {
 
         int fileNameLength = Objects.requireNonNull(file.getOriginalFilename()).length();
         if (fileNameLength > FileUploadUtils.MAX_FILE_NAME_LENGTH) {
-            throw new ApiException(BusinessErrorCode.UPLOAD_FILE_NAME_EXCEED_MAX_LENGTH, MAX_FILE_NAME_LENGTH);
+            throw new ApiException(ErrorCode.Business.UPLOAD_FILE_NAME_EXCEED_MAX_LENGTH, MAX_FILE_NAME_LENGTH);
         }
 
         assertAllowed(file, allowedExtension);
@@ -135,12 +135,12 @@ public class FileUploadUtils {
     public static void assertAllowed(MultipartFile file, String[] allowedExtension) {
         long size = file.getSize();
         if (size > MAX_FILE_SIZE) {
-            throw new ApiException(BusinessErrorCode.UPLOAD_FILE_SIZE_EXCEED_MAX_SIZE, MAX_FILE_SIZE / Constants.MB);
+            throw new ApiException(ErrorCode.Business.UPLOAD_FILE_SIZE_EXCEED_MAX_SIZE, MAX_FILE_SIZE / Constants.MB);
         }
 
         String extension = getExtension(file);
         if (allowedExtension != null && !isAllowedExtension(extension, allowedExtension)) {
-            throw new ApiException(BusinessErrorCode.UPLOAD_FILE_TYPE_NOT_ALLOWED,
+            throw new ApiException(ErrorCode.Business.UPLOAD_FILE_TYPE_NOT_ALLOWED,
                 StrUtil.join(",", (Object[]) allowedExtension));
         }
 

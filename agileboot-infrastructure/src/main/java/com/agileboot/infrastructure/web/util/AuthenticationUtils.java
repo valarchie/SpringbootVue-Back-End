@@ -2,7 +2,7 @@ package com.agileboot.infrastructure.web.util;
 
 
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +22,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getUserId();
         } catch (Exception e) {
-            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_USER_ID);
+            throw new ApiException(ErrorCode.Business.USER_FAIL_TO_GET_USER_ID);
         }
     }
 
@@ -33,7 +33,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getDeptId();
         } catch (Exception e) {
-            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_DEPT_ID);
+            throw new ApiException(ErrorCode.Business.USER_FAIL_TO_GET_DEPT_ID);
         }
     }
 
@@ -44,7 +44,7 @@ public class AuthenticationUtils {
         try {
             return getLoginUser().getUsername();
         } catch (Exception e) {
-            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_ACCOUNT);
+            throw new ApiException(ErrorCode.Business.USER_FAIL_TO_GET_ACCOUNT);
         }
     }
 
@@ -55,7 +55,7 @@ public class AuthenticationUtils {
         try {
             return (LoginUser) getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new ApiException(BusinessErrorCode.USER_FAIL_TO_GET_USER_INFO);
+            throw new ApiException(ErrorCode.Business.USER_FAIL_TO_GET_USER_INFO);
         }
     }
 

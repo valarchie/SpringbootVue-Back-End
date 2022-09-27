@@ -2,7 +2,7 @@ package com.agileboot.domain.system.post;
 
 import com.agileboot.common.core.dto.PageDTO;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.common.BulkDeleteCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -39,11 +39,11 @@ public class PostDomainService {
 
         // check这种全局唯一性的判断 不适合放在 model领域类当中， 所以放在db service中  比较合适
         if (postService.checkPostNameUnique(null, postModel.getPostName())) {
-            throw new ApiException(BusinessErrorCode.POST_NAME_IS_NOT_UNIQUE, postModel.getPostName());
+            throw new ApiException(ErrorCode.Business.POST_NAME_IS_NOT_UNIQUE, postModel.getPostName());
         }
 
         if (postService.checkPostCodeUnique(null, postModel.getPostCode())) {
-            throw new ApiException(BusinessErrorCode.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
+            throw new ApiException(ErrorCode.Business.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
         }
 
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
@@ -59,11 +59,11 @@ public class PostDomainService {
 
         // check这种全局唯一性的判断 不适合放在 model领域类当中， 所以放在db service中  比较合适
         if (postService.checkPostNameUnique(postModel.getPostId(), postModel.getPostName())) {
-            throw new ApiException(BusinessErrorCode.POST_NAME_IS_NOT_UNIQUE, postModel.getPostName());
+            throw new ApiException(ErrorCode.Business.POST_NAME_IS_NOT_UNIQUE, postModel.getPostName());
         }
 
         if (postService.checkPostCodeUnique(postModel.getPostId(), postModel.getPostCode())) {
-            throw new ApiException(BusinessErrorCode.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
+            throw new ApiException(ErrorCode.Business.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
         }
 
         LoginUser loginUser = AuthenticationUtils.getLoginUser();

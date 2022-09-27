@@ -5,7 +5,7 @@ import com.agileboot.common.core.controller.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.exception.ApiException;
-import com.agileboot.common.exception.errors.BusinessErrorCode;
+import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.file.FileUploadUtils;
 import com.agileboot.domain.common.UploadFileDTO;
 import com.agileboot.domain.system.user.UserDomainService;
@@ -80,7 +80,7 @@ public class SysProfileController extends BaseController {
     @PostMapping("/avatar")
     public ResponseDTO avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            throw new ApiException(BusinessErrorCode.USER_UPLOAD_FILE_FAILED);
+            throw new ApiException(ErrorCode.Business.USER_UPLOAD_FILE_FAILED);
         }
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         String avatar = FileUploadUtils.upload(AgileBootConfig.getAvatarPath(), file);
