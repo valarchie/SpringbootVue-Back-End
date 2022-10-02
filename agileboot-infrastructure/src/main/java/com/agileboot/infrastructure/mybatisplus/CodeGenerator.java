@@ -1,6 +1,7 @@
 package com.agileboot.infrastructure.mybatisplus;
 
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
+import com.agileboot.common.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -8,6 +9,7 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig.Builder;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
+import com.baomidou.mybatisplus.generator.config.builder.Entity;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
@@ -33,6 +35,7 @@ public class CodeGenerator {
     private String username;
     private String password;
     private String parentPackage;
+    private Boolean isExtendsFromBaseEntity;
 
     /**
      * 避免覆盖掉原有生成的类  生成的类 放在orm子模块下的/target/generated-code目录底下
@@ -40,7 +43,7 @@ public class CodeGenerator {
      * @param args
      */
     public static void main(String[] args) {
-        // TODO 改成读取配置文件
+
         CodeGenerator generator = CodeGenerator.builder()
             .databaseUrl("jdbc:mysql://localhost:33066/agileboot")
             .username("root")
@@ -48,7 +51,10 @@ public class CodeGenerator {
             .author("valarchie")
             .module("/agileboot-orm/target/generated-code")
             .parentPackage("com.agileboot")
-            .tableName("sys_user").build();
+            .tableName("sys_user")
+            // 决定是否继承基类
+            .isExtendsFromBaseEntity(true)
+            .build();
 
         generator.generateCode();
     }
@@ -173,7 +179,9 @@ public class CodeGenerator {
 
 
     private void entityConfig(StrategyConfig.Builder builder) {
-        builder.entityBuilder()
+        Entity.Builder entityBuilder = builder.entityBuilder();
+
+        entityBuilder
 //                    .superClass(BaseEntity.class)
 //                    .disableSerialVersionUID()
 //                    .enableChainModel()
@@ -190,15 +198,25 @@ public class CodeGenerator {
 //                    .logicDeletePropertyName("deleteFlag")
             .naming(NamingStrategy.underline_to_camel)
             .columnNaming(NamingStrategy.underline_to_camel)
-//                    .addSuperEntityColumns("id", "created_by", "created_time", "updated_by", "updated_time")
+            // 如果不需要BaseEntity  请注释掉以下两行
+//            .superClass(BaseEntity.class)
+//            .addSuperEntityColumns("creator_id", "create_time", "creator_name", "updater_id", "update_time", "updater_name", "deleted")
 //                    .addIgnoreColumns("age")
             // 两种配置方式
             .addTableFills(new Column("create_time", FieldFill.INSERT))
             .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
             // ID strategy AUTO, NONE, INPUT, ASSIGN_ID, ASSIGN_UUID;
             .idType(IdType.AUTO)
-            .formatFileName("%sEntity")
-            .build();
+            .formatFileName("%sEntity");
+
+        if (isExtendsFromBaseEntity) {
+            entityBuilder
+                .superClass(BaseEntity.class)
+                .addSuperEntityColumns("creator_id", "create_time", "creator_name", "updater_id", "update_time",
+                    "updater_name", "deleted");
+        }
+
+        entityBuilder.build();
     }
 
 

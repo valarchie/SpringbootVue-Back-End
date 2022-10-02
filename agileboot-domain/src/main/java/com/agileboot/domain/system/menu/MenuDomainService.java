@@ -33,7 +33,7 @@ public class MenuDomainService {
         return list.stream().map(MenuDTO::new).collect(Collectors.toList());
     }
 
-    public MenuDTO getMenu(Long menuId) {
+    public MenuDTO getMenuInfo(Long menuId) {
         SysMenuEntity byId = menuService.getById(menuId);
         return new MenuDTO(byId);
     }
@@ -64,8 +64,8 @@ public class MenuDomainService {
         model.checkMenuNameUnique(menuService);
         model.checkExternalLink();
 
-        model.setCreatorId(loginUser.getUserId());
-        model.setCreatorName(loginUser.getUsername());
+        model.logCreator(loginUser.getUserId(), loginUser.getUsername());
+
         model.insert();
     }
 
@@ -75,8 +75,8 @@ public class MenuDomainService {
         model.checkExternalLink();
         model.checkParentId();
 
-        model.setUpdaterId(loginUser.getUserId());
-        model.setUpdateName(loginUser.getUsername());
+        model.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         model.updateById();
     }
 

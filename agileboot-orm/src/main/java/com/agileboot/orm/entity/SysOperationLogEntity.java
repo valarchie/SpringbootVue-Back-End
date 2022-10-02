@@ -19,12 +19,12 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-02
+ * @since 2022-10-02
  */
 @Getter
 @Setter
 @TableName("sys_operation_log")
-@ApiModel(value = "SysOperationLogXEntity对象", description = "操作日志记录")
+@ApiModel(value = "SysOperationLogEntity对象", description = "操作日志记录")
 public class SysOperationLogEntity extends Model<SysOperationLogEntity> {
 
     private static final long serialVersionUID = 1L;

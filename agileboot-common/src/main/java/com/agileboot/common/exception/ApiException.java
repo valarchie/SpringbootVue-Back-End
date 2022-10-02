@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ApiException extends RuntimeException{
 
+
     protected ErrorCodeInterface errorCode;
 
     protected String message;
@@ -53,7 +54,13 @@ public class ApiException extends RuntimeException{
     }
 
 
-    public int getCode() { return errorCode.code(); }
+    public ErrorCodeInterface getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(ErrorCodeInterface errorCode) {
+        this.errorCode = errorCode;
+    }
 
     @Override
     public String getMessage() {

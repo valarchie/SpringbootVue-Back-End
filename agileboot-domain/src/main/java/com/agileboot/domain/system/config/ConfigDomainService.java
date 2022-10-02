@@ -1,8 +1,9 @@
 package com.agileboot.domain.system.config;
 
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.orm.entity.SysConfigEntity;
 import com.agileboot.orm.service.ISysConfigService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,15 +29,20 @@ public class ConfigDomainService {
     }
 
 
-    public ConfigDTO getConfig(Long id) {
+    public ConfigDTO getConfigInfo(Long id) {
         SysConfigEntity byId = configService.getById(id);
         return new ConfigDTO(byId);
     }
 
     @Transactional
-    public void updateConfig(ConfigUpdateCommand updateCommand) {
+    public void updateConfig(ConfigUpdateCommand updateCommand, LoginUser loginUser) {
         ConfigModel configModel = getConfigModel(updateCommand.getConfigId());
-        configModel.editConfigValue(updateCommand.getConfigValue());
+
+        configModel.setConfigValue(updateCommand.getConfigValue());
+        configModel.checkCanBeEdit();
+
+        configModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        configModel.updateById();
     }
 
     public ConfigModel getConfigModel(Long id) {

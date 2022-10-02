@@ -1,11 +1,15 @@
 package com.agileboot.common.exception.error;
 
+/**
+ * 系统内的模块
+ */
 public enum Module {
 
     /**
      * 普通模块
      */
     COMMON(0),
+
     /**
      * 权限模块
      */
@@ -15,19 +19,20 @@ public enum Module {
 
     DB(3),
 
-    DATA_SECURITY(1),
+    UPLOAD(4),
 
-    UPLOAD(3),
+    USER(5),
 
-    USER(4),
+    CONFIG(6),
 
-    CONFIG(5),
+    POST(7),
 
-    POST(6),
+    DEPT(8),
 
-    DEPT(7),
+    MENU(9),
 
-    SYSTEM(8),
+    ROLE(10),
+
 
     ;
 

@@ -7,7 +7,6 @@ import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysDeptEntity;
 import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.service.ISysDeptService;
@@ -41,7 +40,7 @@ public class DeptDomainService {
         return list.stream().map(DeptDTO::new).collect(Collectors.toList());
     }
 
-    public DeptDTO getDept(Long id) {
+    public DeptDTO getDeptInfo(Long id) {
         SysDeptEntity byId = deptService.getById(id);
         return new DeptDTO(byId);
     }
@@ -73,22 +72,20 @@ public class DeptDomainService {
 
 
     @Transactional
-    public void addDept(AddDeptCommand addCommand) {
+    public void addDept(AddDeptCommand addCommand, LoginUser loginUser) {
         DeptModel deptModel = addCommand.toModel();
         if (deptService.checkDeptNameUnique(deptModel.getDeptName(), null, deptModel.getParentId())) {
             throw new ApiException(ErrorCode.Business.DEPT_NAME_IS_NOT_UNIQUE, deptModel.getDeptName());
         }
 
         deptModel.generateAncestors(deptService);
+        deptModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
 
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        deptModel.setCreatorId(loginUser.getUserId());
-        deptModel.setCreatorName(loginUser.getUsername());
         deptModel.insert();
     }
 
     @Transactional
-    public void updateDept(UpdateDeptCommand updateCommand) {
+    public void updateDept(UpdateDeptCommand updateCommand, LoginUser loginUser) {
         // TODO 需要再调整一下
         getDeptModel(updateCommand.getDeptId());
 
@@ -101,9 +98,8 @@ public class DeptDomainService {
         deptModel.checkStatusAllowChange(deptService);
         deptModel.generateAncestors(deptService);
 
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        deptModel.setUpdaterId(loginUser.getUserId());
-        deptModel.setUpdaterName(loginUser.getUsername());
+        deptModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
 
         deptModel.updateById();
     }

@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.system;
 
 import com.agileboot.common.config.AgileBootConfig;
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.exception.ApiException;
@@ -57,7 +57,7 @@ public class SysProfileController extends BaseController {
     public ResponseDTO updateProfile(@RequestBody UpdateProfileCommand command) {
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         command.setUserId(loginUser.getUserId());
-        userDomainService.updateUserProfile(command);
+        userDomainService.updateUserProfile(command, loginUser);
         return ResponseDTO.ok();
     }
 

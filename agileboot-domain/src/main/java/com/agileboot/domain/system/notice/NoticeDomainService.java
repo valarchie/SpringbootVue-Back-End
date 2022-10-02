@@ -1,11 +1,10 @@
 package com.agileboot.domain.system.notice;
 
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysNoticeEntity;
 import com.agileboot.orm.service.ISysNoticeService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,25 +29,24 @@ public class NoticeDomainService {
     }
 
 
-    public NoticeDTO getNotice(Long id) {
+    public NoticeDTO getNoticeInfo(Long id) {
         SysNoticeEntity byId = noticeService.getById(id);
         return new NoticeDTO(byId);
     }
 
 
-    public void addNotice(NoticeAddCommand addCommand) {
+    public void addNotice(NoticeAddCommand addCommand, LoginUser loginUser) {
         NoticeModel noticeModel = addCommand.toModel();
 
         noticeModel.checkFields();
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        noticeModel.setCreatorId(loginUser.getUserId());
-        noticeModel.setCreatorName(loginUser.getUsername());
+
+        noticeModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
 
         noticeModel.insert();
     }
 
 
-    public void updateNotice(NoticeUpdateCommand updateCommand) {
+    public void updateNotice(NoticeUpdateCommand updateCommand, LoginUser loginUser) {
         SysNoticeEntity byId = noticeService.getById(updateCommand.getNoticeId());
 
         if (byId == null) {
@@ -58,13 +56,13 @@ public class NoticeDomainService {
         NoticeModel noticeModel = updateCommand.toModel();
 
         noticeModel.checkFields();
-        LoginUser loginUser = AuthenticationUtils.getLoginUser();
-        noticeModel.setUpdaterId(loginUser.getUserId());
-        noticeModel.setUpdaterName(loginUser.getUsername());
+
+        noticeModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         noticeModel.updateById();
     }
 
-    public void deleteNotice(BulkDeleteCommand<Long> deleteCommand) {
+    public void deleteNotice(BulkOperationCommand<Long> deleteCommand) {
         noticeService.removeBatchByIds(deleteCommand.getIds());
     }
 

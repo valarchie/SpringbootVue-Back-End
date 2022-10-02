@@ -1,6 +1,6 @@
 package com.agileboot.api.controller;
 
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

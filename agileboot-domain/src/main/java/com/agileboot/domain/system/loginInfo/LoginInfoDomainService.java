@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.loginInfo;
 
-import com.agileboot.common.core.dto.PageDTO;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.common.core.page.PageDTO;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.orm.entity.SysLoginInfoEntity;
 import com.agileboot.orm.service.ISysLoginInfoService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,7 +26,7 @@ public class LoginInfoDomainService {
         return new PageDTO(records, page.getTotal());
     }
 
-    public void deleteLoginInfo(BulkDeleteCommand<Long> deleteCommand) {
+    public void deleteLoginInfo(BulkOperationCommand<Long> deleteCommand) {
         QueryWrapper<SysLoginInfoEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("info_id", deleteCommand.getIds());
         loginInfoService.remove(queryWrapper);

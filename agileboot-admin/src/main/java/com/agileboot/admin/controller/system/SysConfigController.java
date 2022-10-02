@@ -1,8 +1,8 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.config.ConfigDTO;
 import com.agileboot.domain.system.config.ConfigDomainService;
@@ -11,6 +11,7 @@ import com.agileboot.domain.system.config.ConfigUpdateCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.map.MapCache;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.result.DictionaryData;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -68,7 +69,7 @@ public class SysConfigController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:config:query')")
     @GetMapping(value = "/{configId}")
     public ResponseDTO<ConfigDTO> getInfo(@NotNull @Positive @PathVariable Long configId) {
-        ConfigDTO config = configDomainService.getConfig(configId);
+        ConfigDTO config = configDomainService.getConfigInfo(configId);
         return ResponseDTO.ok(config);
     }
 
@@ -80,7 +81,7 @@ public class SysConfigController extends BaseController {
     @AccessLog(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody ConfigUpdateCommand config) {
-        configDomainService.updateConfig(config);
+        configDomainService.updateConfig(config, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 

@@ -1,12 +1,12 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.collection.ListUtil;
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
 import com.agileboot.domain.system.user.UserDTO;
 import com.agileboot.domain.system.user.UserDetailDTO;
@@ -127,7 +127,7 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public ResponseDTO remove(@PathVariable List<Long> userIds) {
-        BulkDeleteCommand<Long> bulkDeleteCommand = new BulkDeleteCommand(userIds);
+        BulkOperationCommand<Long> bulkDeleteCommand = new BulkOperationCommand(userIds);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         userDomainService.deleteUsers(loginUser, bulkDeleteCommand);
         return ResponseDTO.ok();

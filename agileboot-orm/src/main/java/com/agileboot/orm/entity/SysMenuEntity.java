@@ -1,16 +1,13 @@
 package com.agileboot.orm.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.agileboot.common.core.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,13 +17,13 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-02
+ * @since 2022-10-02
  */
 @Getter
 @Setter
 @TableName("sys_menu")
-@ApiModel(value = "SysMenuXEntity对象", description = "菜单权限表")
-public class SysMenuEntity extends Model<SysMenuEntity> {
+@ApiModel(value = "SysMenuEntity对象", description = "菜单权限表")
+public class SysMenuEntity extends BaseEntity<SysMenuEntity> {
 
     private static final long serialVersionUID = 1L;
 
@@ -86,38 +83,9 @@ public class SysMenuEntity extends Model<SysMenuEntity> {
     @TableField("icon")
     private String icon;
 
-    @ApiModelProperty("创建者ID")
-    @TableField("creator_id")
-    private Long creatorId;
-
-    @ApiModelProperty("创建者")
-    @TableField("creator_name")
-    private String creatorName;
-
-    @ApiModelProperty("创建时间")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
-
-    @ApiModelProperty("更新者ID")
-    @TableField("updater_id")
-    private Long updaterId;
-
-    @ApiModelProperty("更新者")
-    @TableField("update_name")
-    private String updateName;
-
-    @ApiModelProperty("更新时间")
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
     @ApiModelProperty("备注")
     @TableField("remark")
     private String remark;
-
-    @ApiModelProperty("逻辑删除")
-    @TableField("deleted")
-    @TableLogic
-    private Boolean deleted;
 
 
     @Override

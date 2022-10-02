@@ -1,12 +1,12 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.operationLog.OperationLogDTO;
 import com.agileboot.domain.system.operationLog.OperationLogDomainService;
 import com.agileboot.domain.system.operationLog.OperationLogQuery;
@@ -53,7 +53,7 @@ public class SysOperationLogController extends BaseController {
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/{operationIds}")
     public ResponseDTO remove(@PathVariable List<Long> operationIds) {
-        operationLogDomainService.deleteOperationLog(new BulkDeleteCommand<>(operationIds));
+        operationLogDomainService.deleteOperationLog(new BulkOperationCommand<>(operationIds));
         return ResponseDTO.ok();
     }
 

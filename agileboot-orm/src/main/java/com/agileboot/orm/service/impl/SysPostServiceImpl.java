@@ -1,11 +1,13 @@
 package com.agileboot.orm.service.impl;
 
 import com.agileboot.orm.entity.SysPostEntity;
+import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.mapper.SysPostMapper;
+import com.agileboot.orm.mapper.SysUserMapper;
 import com.agileboot.orm.service.ISysPostService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity> implements ISysPostService {
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 校验岗位名称是否唯一
@@ -41,9 +46,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
         return baseMapper.exists(queryWrapper);
     }
 
+
     @Override
-    public List<Long> selectPostListByUserId(Long userId) {
-        return baseMapper.selectPostListByUserId(userId);
+    public boolean isAssignedToUser(Long postId) {
+        QueryWrapper<SysUserEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("post_id", postId);
+        return userMapper.exists(queryWrapper);
     }
 
 

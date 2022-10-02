@@ -1,7 +1,7 @@
 package com.agileboot.domain.system.role;
 
 import cn.hutool.core.collection.CollUtil;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.user.UserDTO;
@@ -56,8 +56,7 @@ public class RoleDomainService {
         roleModel.checkRoleNameUnique(roleService);
         roleModel.checkRoleKeyUnique(roleService);
 
-        roleModel.setCreatorId(loginUser.getUserId());
-        roleModel.setCreatorName(loginUser.getUsername());
+        roleModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
 
         roleModel.insert(roleMenuService);
     }
@@ -75,8 +74,7 @@ public class RoleDomainService {
 
         roleModel.checkRoleNameUnique(roleService);
 
-        roleModel.setUpdaterId(loginUser.getUserId());
-        roleModel.setUpdaterName(loginUser.getUsername());
+        roleModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
 
         roleModel.deleteById(roleMenuService);
     }
@@ -93,8 +91,7 @@ public class RoleDomainService {
         roleModel.checkRoleKeyUnique(roleService);
         roleModel.checkRoleNameUnique(roleService);
 
-        roleModel.setUpdaterId(loginUser.getUserId());
-        roleModel.setUpdaterName(loginUser.getUsername());
+        roleModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
 
         roleModel.updateById(roleMenuService);
 

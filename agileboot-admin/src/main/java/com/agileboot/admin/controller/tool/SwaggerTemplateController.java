@@ -1,6 +1,6 @@
 package com.agileboot.admin.controller.tool;
 
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.exception.error.ErrorCode;
 import io.swagger.annotations.Api;

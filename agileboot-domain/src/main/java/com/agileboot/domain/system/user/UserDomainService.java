@@ -3,10 +3,10 @@ package com.agileboot.domain.system.user;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
 import com.agileboot.domain.system.post.PostDTO;
 import com.agileboot.domain.system.role.RoleDTO;
@@ -78,12 +78,13 @@ public class UserDomainService {
     }
 
 
-    public void updateUserProfile(UpdateProfileCommand command) {
+    public void updateUserProfile(UpdateProfileCommand command, LoginUser loginUser) {
         UserModel userModel = getUserModel(command.getUserId());
         command.updateModel(userModel);
 
         userModel.checkPhoneNumberIsUnique(userService);
         userModel.checkEmailIsUnique(userService);
+        userModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
 
         userModel.updateById();
     }
@@ -112,8 +113,7 @@ public class UserDomainService {
         model.checkPhoneNumberIsUnique(userService);
         model.checkEmailIsUnique(userService);
 
-        model.setCreatorId(loginUser.getUserId());
-        model.setCreatorName(loginUser.getUsername());
+        model.logCreator(loginUser.getUserId(), loginUser.getUsername());
 
         model.insert();
     }
@@ -125,14 +125,13 @@ public class UserDomainService {
         model.checkPhoneNumberIsUnique(userService);
         model.checkEmailIsUnique(userService);
 
-        model.setUpdaterId(loginUser.getUserId());
-        model.setUpdaterName(loginUser.getUsername());
+        model.logUpdater(loginUser.getUserId(), loginUser.getUsername());
 
         model.updateById();
     }
 
     @Transactional
-    public void deleteUsers(LoginUser loginUser, BulkDeleteCommand<Long> command) {
+    public void deleteUsers(LoginUser loginUser, BulkOperationCommand<Long> command) {
         for (Long id : command.getIds()) {
             UserModel userModel = getUserModel(id);
             userModel.checkCanBeDelete(loginUser);
@@ -146,6 +145,9 @@ public class UserDomainService {
         userModel.updateById();
 
         loginUser.setPassword(userModel.getPassword());
+
+        userModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         tokenService.setLoginUser(loginUser);
     }
 
@@ -153,8 +155,8 @@ public class UserDomainService {
         UserModel userModel = getUserModel(command.getUserId());
         userModel.setPassword(command.getPassword());
 
-        userModel.setUpdaterId(loginUser.getUserId());
-        userModel.setUpdaterName(loginUser.getUsername());
+        userModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         userModel.updateById();
     }
 
@@ -162,14 +164,17 @@ public class UserDomainService {
         UserModel userModel = getUserModel(command.getUserId());
         userModel.setStatus(Convert.toInt(command.getStatus()));
 
-        userModel.setUpdaterId(loginUser.getUserId());
-        userModel.setUpdaterName(loginUser.getUsername());
+        userModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         userModel.updateById();
     }
 
     public void updateUserAvatar(LoginUser loginUser, UpdateUserAvatarCommand command) {
         UserModel userModel = getUserModel(command.getUserId());
         userModel.setAvatar(command.getAvatar());
+
+        userModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+
         userModel.updateById();
         tokenService.setLoginUser(loginUser);
     }

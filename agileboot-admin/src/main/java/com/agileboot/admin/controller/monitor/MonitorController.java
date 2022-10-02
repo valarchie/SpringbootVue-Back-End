@@ -1,8 +1,8 @@
 package com.agileboot.admin.controller.monitor;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.monitor.MonitorDomainService;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;

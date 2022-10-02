@@ -9,7 +9,6 @@ import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.orm.entity.SysConfigEntity;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import lombok.Data;
 
@@ -28,19 +27,15 @@ public class ConfigModel extends SysConfigEntity {
         this.configOptionSet = new HashSet(options);
     }
 
-    public void editConfigValue(String value) {
-        if (StrUtil.isBlank(value)) {
+    public void checkCanBeEdit() {
+        if (StrUtil.isBlank(getConfigValue())) {
             throw new ApiException(ErrorCode.Business.CONFIG_VALUE_IS_NOT_ALLOW_TO_EMPTY);
         }
 
-        if(!configOptionSet.isEmpty()&& !configOptionSet.contains(value)) {
+        if(!configOptionSet.isEmpty()&& !configOptionSet.contains(getConfigValue())) {
             throw new ApiException(ErrorCode.Business.CONFIG_VALUE_IS_NOT_IN_OPTIONS);
         }
 
-        if(!Objects.equals(value, getConfigValue())) {
-            this.setConfigValue(value);
-            this.updateById();
-        }
     }
 
 

@@ -1,17 +1,18 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.post.AddPostCommand;
 import com.agileboot.domain.system.post.PostDTO;
 import com.agileboot.domain.system.post.PostDomainService;
 import com.agileboot.domain.system.post.PostQuery;
 import com.agileboot.domain.system.post.UpdatePostCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:post:query')")
     @GetMapping(value = "/{postId}")
     public ResponseDTO getInfo(@PathVariable Long postId) {
-        PostDTO post = postDomainService.getPost(postId);
+        PostDTO post = postDomainService.getPostInfo(postId);
         return ResponseDTO.ok(post);
     }
 
@@ -74,7 +75,7 @@ public class SysPostController extends BaseController {
     @AccessLog(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody AddPostCommand addCommand) {
-        postDomainService.addPost(addCommand);
+        postDomainService.addPost(addCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 
@@ -85,7 +86,7 @@ public class SysPostController extends BaseController {
     @AccessLog(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody UpdatePostCommand updateCommand) {
-        postDomainService.updatePost(updateCommand);
+        postDomainService.updatePost(updateCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 
@@ -96,7 +97,7 @@ public class SysPostController extends BaseController {
     @AccessLog(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
     public ResponseDTO remove(@PathVariable List<Long> postIds) {
-        postDomainService.deletePost(new BulkDeleteCommand<>(postIds));
+        postDomainService.deletePost(new BulkOperationCommand<>(postIds));
         return ResponseDTO.ok();
     }
 

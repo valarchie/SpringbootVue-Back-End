@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.TreeSelectedDTO;
@@ -11,6 +11,7 @@ import com.agileboot.domain.system.dept.DeptDomainService;
 import com.agileboot.domain.system.dept.DeptQuery;
 import com.agileboot.domain.system.dept.UpdateDeptCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:query')")
     @GetMapping(value = "/{deptId}")
     public ResponseDTO<DeptDTO> getInfo(@PathVariable Long deptId) {
-        DeptDTO dept = deptDomainService.getDept(deptId);
+        DeptDTO dept = deptDomainService.getDeptInfo(deptId);
         return ResponseDTO.ok(dept);
     }
 
@@ -97,7 +98,7 @@ public class SysDeptController extends BaseController {
     @AccessLog(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody AddDeptCommand addCommand) {
-        deptDomainService.addDept(addCommand);
+        deptDomainService.addDept(addCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 
@@ -108,7 +109,7 @@ public class SysDeptController extends BaseController {
     @AccessLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody UpdateDeptCommand updateCommand) {
-        deptDomainService.updateDept(updateCommand);
+        deptDomainService.updateDept(updateCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 

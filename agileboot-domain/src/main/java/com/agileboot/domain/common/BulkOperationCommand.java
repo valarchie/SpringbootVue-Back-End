@@ -7,9 +7,9 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class BulkDeleteCommand<T> {
+public class BulkOperationCommand<T> {
 
-    public BulkDeleteCommand(List<T> idList) {
+    public BulkOperationCommand(List<T> idList) {
         if (CollUtil.isEmpty(idList)) {
             throw new ApiException(ErrorCode.Business.BULK_DELETE_IDS_IS_INVALID);
         }

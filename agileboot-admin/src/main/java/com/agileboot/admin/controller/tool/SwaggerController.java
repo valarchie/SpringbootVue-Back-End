@@ -1,6 +1,6 @@
 package com.agileboot.admin.controller.tool;
 
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

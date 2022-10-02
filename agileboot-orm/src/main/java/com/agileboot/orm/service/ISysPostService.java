@@ -2,7 +2,6 @@ package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysPostEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import java.util.List;
 
 /**
  * <p>
@@ -26,12 +25,12 @@ public interface ISysPostService extends IService<SysPostEntity> {
      */
     boolean checkPostCodeUnique(Long postId, String postCode);
 
+
     /**
-     * 根据用户ID获取岗位选择框列表
-     * TODO 移到UserService会不会更好
-     * @param userId 用户ID
-     * @return 选中岗位ID列表
+     * 检测职位是否分配给用户
+     * @param postId 职位id
+     * @return
      */
-    List<Long> selectPostListByUserId(Long userId);
+    boolean isAssignedToUser(Long postId);
 
 }

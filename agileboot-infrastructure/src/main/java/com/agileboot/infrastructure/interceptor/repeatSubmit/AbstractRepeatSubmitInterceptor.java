@@ -1,7 +1,8 @@
 package com.agileboot.infrastructure.interceptor.repeatSubmit;
 
 import cn.hutool.json.JSONUtil;
-import com.agileboot.common.core.dto.Rdto;
+import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.exception.error.ErrorCode.Client;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.annotations.RepeatSubmit;
 import java.lang.reflect.Method;
@@ -27,8 +28,8 @@ public abstract class AbstractRepeatSubmitInterceptor implements HandlerIntercep
             RepeatSubmit annotation = method.getAnnotation(RepeatSubmit.class);
             if (annotation != null) {
                 if (this.isRepeatSubmit(request, annotation)) {
-                    Rdto rdto = Rdto.error(annotation.message());
-                    ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(rdto));
+                    ResponseDTO<Object> responseDTO = ResponseDTO.fail(Client.COMMON_REQUEST_TO_OFTEN);
+                    ServletHolderUtil.renderString(response, JSONUtil.toJsonStr(responseDTO));
                     return false;
                 }
             }

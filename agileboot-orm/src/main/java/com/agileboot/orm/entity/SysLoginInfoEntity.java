@@ -19,12 +19,12 @@ import lombok.Setter;
  * </p>
  *
  * @author valarchie
- * @since 2022-07-02
+ * @since 2022-10-02
  */
 @Getter
 @Setter
 @TableName("sys_login_info")
-@ApiModel(value = "SysLoginInfoXEntity对象", description = "系统访问记录")
+@ApiModel(value = "SysLoginInfoEntity对象", description = "系统访问记录")
 public class SysLoginInfoEntity extends Model<SysLoginInfoEntity> {
 
     private static final long serialVersionUID = 1L;
@@ -53,7 +53,7 @@ public class SysLoginInfoEntity extends Model<SysLoginInfoEntity> {
     @TableField("operation_system")
     private String operationSystem;
 
-    @ApiModelProperty("登录状态（0成功 1失败）")
+    @ApiModelProperty("登录状态（1成功 0失败）")
     @TableField("`status`")
     private Integer status;
 

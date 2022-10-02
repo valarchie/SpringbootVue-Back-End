@@ -1,4 +1,4 @@
-package com.agileboot.common.core.controller;
+package com.agileboot.common.core.base;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;

@@ -1,16 +1,17 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
-import com.agileboot.domain.common.BulkDeleteCommand;
+import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.notice.NoticeAddCommand;
 import com.agileboot.domain.system.notice.NoticeDTO;
 import com.agileboot.domain.system.notice.NoticeDomainService;
 import com.agileboot.domain.system.notice.NoticeQuery;
 import com.agileboot.domain.system.notice.NoticeUpdateCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -55,7 +56,7 @@ public class SysNoticeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
     public ResponseDTO<NoticeDTO> getInfo(@PathVariable @NotNull @Positive Long noticeId) {
-        return ResponseDTO.ok(noticeDomainService.getNotice(noticeId));
+        return ResponseDTO.ok(noticeDomainService.getNoticeInfo(noticeId));
     }
 
     /**
@@ -65,7 +66,7 @@ public class SysNoticeController extends BaseController {
     @AccessLog(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody NoticeAddCommand addCommand) {
-        noticeDomainService.addNotice(addCommand);
+        noticeDomainService.addNotice(addCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 
@@ -76,7 +77,7 @@ public class SysNoticeController extends BaseController {
     @AccessLog(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody NoticeUpdateCommand updateCommand) {
-        noticeDomainService.updateNotice(updateCommand);
+        noticeDomainService.updateNotice(updateCommand, AuthenticationUtils.getLoginUser());
         return ResponseDTO.ok();
     }
 
@@ -87,7 +88,7 @@ public class SysNoticeController extends BaseController {
     @AccessLog(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
     public ResponseDTO remove(@PathVariable List<Long> noticeIds) {
-        noticeDomainService.deleteNotice(new BulkDeleteCommand<Long>(noticeIds));
+        noticeDomainService.deleteNotice(new BulkOperationCommand<>(noticeIds));
         return ResponseDTO.ok();
     }
 

@@ -1,8 +1,8 @@
 package com.agileboot.admin.controller.system;
 
-import com.agileboot.common.core.controller.BaseController;
-import com.agileboot.common.core.dto.PageDTO;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.system.role.AddRoleCommand;

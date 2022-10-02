@@ -1,7 +1,7 @@
 package com.agileboot.admin.controller.system;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.agileboot.common.core.controller.BaseController;
+import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.TreeSelectedDTO;
@@ -13,7 +13,6 @@ import com.agileboot.domain.system.menu.UpdateMenuCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
-import com.agileboot.orm.service.ISysMenuService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -40,9 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysMenuController extends BaseController {
 
     @Autowired
-    private ISysMenuService menuService;
-
-    @Autowired
     MenuDomainService menuDomainService;
 
     /**
@@ -61,7 +57,7 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @GetMapping(value = "/{menuId}")
     public ResponseDTO<MenuDTO> getInfo(@PathVariable @NotNull @PositiveOrZero Long menuId) {
-        MenuDTO menu = menuDomainService.getMenu(menuId);
+        MenuDTO menu = menuDomainService.getMenuInfo(menuId);
         return ResponseDTO.ok(menu);
     }
 
