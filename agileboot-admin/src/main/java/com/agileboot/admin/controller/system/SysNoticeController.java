@@ -3,7 +3,6 @@ package com.agileboot.admin.controller.system;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.PageDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.notice.NoticeAddCommand;
 import com.agileboot.domain.system.notice.NoticeDTO;
@@ -12,6 +11,7 @@ import com.agileboot.domain.system.notice.NoticeQuery;
 import com.agileboot.domain.system.notice.NoticeUpdateCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
+import com.agileboot.orm.enums.BusinessType;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -43,7 +43,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 获取通知公告列表
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:list')")
+    @PreAuthorize("@ss.hasPerm('system:notice:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(NoticeQuery query) {
         PageDTO pageDTO = noticeDomainService.getNoticeList(query);
@@ -53,7 +53,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 根据通知公告编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:query')")
+    @PreAuthorize("@ss.hasPerm('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
     public ResponseDTO<NoticeDTO> getInfo(@PathVariable @NotNull @Positive Long noticeId) {
         return ResponseDTO.ok(noticeDomainService.getNoticeInfo(noticeId));
@@ -62,7 +62,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 新增通知公告
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:add')")
+    @PreAuthorize("@ss.hasPerm('system:notice:add')")
     @AccessLog(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody NoticeAddCommand addCommand) {
@@ -73,7 +73,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 修改通知公告
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:edit')")
+    @PreAuthorize("@ss.hasPerm('system:notice:edit')")
     @AccessLog(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody NoticeUpdateCommand updateCommand) {
@@ -84,7 +84,7 @@ public class SysNoticeController extends BaseController {
     /**
      * 删除通知公告
      */
-    @PreAuthorize("@ss.hasPermi('system:notice:remove')")
+    @PreAuthorize("@ss.hasPerm('system:notice:remove')")
     @AccessLog(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
     public ResponseDTO remove(@PathVariable List<Long> noticeIds) {

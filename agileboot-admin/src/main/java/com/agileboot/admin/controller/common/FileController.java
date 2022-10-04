@@ -9,14 +9,13 @@ import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
+import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.file.FileUploadUtils;
-import com.agileboot.infrastructure.config.ServerConfig;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,8 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class FileController {
 
-    @Autowired
-    private ServerConfig serverConfig;
 
     /**
      * 通用下载请求
@@ -80,7 +77,7 @@ public class FileController {
         // 上传并返回新文件名称
         String fileName = FileUploadUtils.upload(filePath, file);
 
-        String url = serverConfig.getUrl() + fileName;
+        String url = ServletHolderUtil.getContextUrl() + fileName;
 
         UploadDTO uploadDTO = UploadDTO.builder()
             .url(url)
@@ -109,7 +106,7 @@ public class FileController {
             if (file != null) {
                 // 上传并返回新文件名称
                 String fileName = FileUploadUtils.upload(filePath, file);
-                String url = serverConfig.getUrl() + fileName;
+                String url = ServletHolderUtil.getContextUrl() + fileName;
                 UploadDTO uploadDTO = UploadDTO.builder()
                     .url(url)
                     .fileName(fileName)

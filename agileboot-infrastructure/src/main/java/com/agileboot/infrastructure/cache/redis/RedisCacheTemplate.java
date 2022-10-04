@@ -21,7 +21,7 @@ public class RedisCacheTemplate<T> {
         // 基于容量回收。缓存的最大数量。超过就取MAXIMUM_CAPACITY = 1 << 30。依靠LRU队列recencyQueue来进行容量淘汰
         .maximumSize(1024)
         .softValues()
-        // 没写访问下，超过5秒会失效(非自动失效，需有任意putget方法才会扫描过期失效数据。
+        // 没写访问下，超过5秒会失效(非自动失效，需有任意put get方法才会扫描过期失效数据。
         // 但区别是会开一个异步线程进行刷新，刷新过程中访问返回旧数据)
         .refreshAfterWrite(30L, TimeUnit.MINUTES)
         // 并行等级。决定segment数量的参数，concurrencyLevel与maxWeight共同决定

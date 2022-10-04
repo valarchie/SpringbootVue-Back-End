@@ -3,6 +3,7 @@ package com.agileboot.domain.system.user;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
+import com.agileboot.common.exception.error.ErrorCode.Business;
 import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
@@ -39,6 +40,12 @@ public class UserModel extends SysUserEntity {
     public void checkCanBeDelete(LoginUser loginUser) {
         if (Objects.equals(getUserId(), loginUser.getUserId())) {
             throw new ApiException(ErrorCode.Business.USER_CURRENT_USER_CAN_NOT_BE_DELETE);
+        }
+    }
+
+    public void checkCanBeModify(LoginUser loginUser) {
+        if (LoginUser.isAdmin(this.getUserId()) && !loginUser.isAdmin()) {
+            throw new ApiException(Business.UNSUPPORTED_OPERATION);
         }
     }
 

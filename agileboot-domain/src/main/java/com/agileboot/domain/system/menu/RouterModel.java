@@ -10,21 +10,16 @@ import com.agileboot.orm.enums.MenuComponentEnum;
 import com.agileboot.orm.enums.MenuTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RouterModel extends SysMenuEntity {
 
 
     public RouterVo produceDirectoryRouterVO(List<RouterVo> children) {
 
-        RouterVo router = new RouterVo();
-        router.setHidden(!getIsVisible());
-        router.setName(getRouteName());
-        router.setPath(getRouterPath());
-        router.setComponent(getComponentTypeForFrontEnd());
-        router.setQuery(getQuery());
-        router.setMeta(new MetaVo(getMenuName(), getIcon(), !getIsCache(), getPath()));
+        RouterVo router = produceDefaultRouterVO();
 
-        if (CollUtil.isNotEmpty(children) && MenuTypeEnum.DIRECTORY.getValue() == getMenuType()) {
+        if (CollUtil.isNotEmpty(children) && Objects.equals(MenuTypeEnum.DIRECTORY.getValue(), getMenuType())) {
             router.setAlwaysShow(true);
             router.setRedirect("noRedirect");
             router.setChildren(children);
@@ -85,8 +80,6 @@ public class RouterModel extends SysMenuEntity {
 
     /**
      * 获取路由名称
-     *
-     * @param menu 菜单信息
      * @return 路由名称
      */
     public String getRouteName() {
@@ -123,8 +116,6 @@ public class RouterModel extends SysMenuEntity {
 
     /**
      * 获取路由地址
-     *
-     * @param menu 菜单信息
      * @return 路由地址
      */
     public String getRouterPath() {
@@ -134,7 +125,7 @@ public class RouterModel extends SysMenuEntity {
             routerPath = trimHttpPrefixForInnerLink(routerPath);
         }
         // 非外链并且是一级目录（类型为目录）
-        if (0L == getParentId() && MenuTypeEnum.DIRECTORY.getValue() == getMenuType() && !getIsExternal()) {
+        if (0L == getParentId() && Objects.equals(MenuTypeEnum.DIRECTORY.getValue(), getMenuType()) && !getIsExternal()) {
             routerPath = "/" + getPath();
         // 非外链并且是一级目录（类型为菜单）
         } else if (isSingleLevelMenu()) {

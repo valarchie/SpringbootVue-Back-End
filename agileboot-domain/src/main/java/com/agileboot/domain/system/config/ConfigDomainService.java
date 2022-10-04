@@ -41,7 +41,7 @@ public class ConfigDomainService {
         configModel.setConfigValue(updateCommand.getConfigValue());
         configModel.checkCanBeEdit();
 
-        configModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        configModel.logUpdater(loginUser);
         configModel.updateById();
     }
 

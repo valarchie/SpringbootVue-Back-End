@@ -8,6 +8,7 @@ import lombok.Data;
 public class UserPermissionDTO {
 
     private UserDTO user;
+    // TODO 改成单个role
     private Set<String> roles;
     private Set<String> permissions;
 

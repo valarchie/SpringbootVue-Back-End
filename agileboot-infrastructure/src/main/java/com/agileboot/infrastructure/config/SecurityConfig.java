@@ -23,6 +23,7 @@ import org.springframework.web.filter.CorsFilter;
  *
  * @author ruoyi
  */
+// TODO 这个需要换成哪个
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

@@ -3,7 +3,6 @@ package com.agileboot.admin.controller.system;
 import cn.hutool.core.lang.tree.Tree;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.TreeSelectedDTO;
 import com.agileboot.domain.system.menu.AddMenuCommand;
 import com.agileboot.domain.system.menu.MenuDTO;
@@ -13,6 +12,7 @@ import com.agileboot.domain.system.menu.UpdateMenuCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
+import com.agileboot.orm.enums.BusinessType;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -44,7 +44,7 @@ public class SysMenuController extends BaseController {
     /**
      * 获取菜单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:menu:list')")
+    @PreAuthorize("@ss.hasPerm('system:menu:list')")
     @GetMapping("/list")
     public ResponseDTO<List> list(MenuQuery query) {
         List<MenuDTO> menuList = menuDomainService.getMenuList(query);
@@ -54,7 +54,7 @@ public class SysMenuController extends BaseController {
     /**
      * 根据菜单编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:menu:query')")
+    @PreAuthorize("@ss.hasPerm('system:menu:query')")
     @GetMapping(value = "/{menuId}")
     public ResponseDTO<MenuDTO> getInfo(@PathVariable @NotNull @PositiveOrZero Long menuId) {
         MenuDTO menu = menuDomainService.getMenuInfo(menuId);
@@ -84,7 +84,7 @@ public class SysMenuController extends BaseController {
     /**
      * 新增菜单
      */
-    @PreAuthorize("@ss.hasPermi('system:menu:add')")
+    @PreAuthorize("@ss.hasPerm('system:menu:add')")
     @AccessLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody AddMenuCommand addCommand) {
@@ -96,7 +96,7 @@ public class SysMenuController extends BaseController {
     /**
      * 修改菜单
      */
-    @PreAuthorize("@ss.hasPermi('system:menu:edit')")
+    @PreAuthorize("@ss.hasPerm('system:menu:edit')")
     @AccessLog(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody UpdateMenuCommand updateCommand) {
@@ -108,7 +108,7 @@ public class SysMenuController extends BaseController {
     /**
      * 删除菜单
      */
-    @PreAuthorize("@ss.hasPermi('system:menu:remove')")
+    @PreAuthorize("@ss.hasPerm('system:menu:remove')")
     @AccessLog(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
     public ResponseDTO remove(@PathVariable("menuId") Long menuId) {

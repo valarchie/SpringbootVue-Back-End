@@ -3,7 +3,6 @@ package com.agileboot.admin.controller.system;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.PageDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.domain.system.config.ConfigDTO;
 import com.agileboot.domain.system.config.ConfigDomainService;
 import com.agileboot.domain.system.config.ConfigQuery;
@@ -12,6 +11,7 @@ import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
+import com.agileboot.orm.enums.BusinessType;
 import com.agileboot.orm.result.DictionaryData;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -45,7 +45,7 @@ public class SysConfigController extends BaseController {
     /**
      * 获取参数配置列表
      */
-    @PreAuthorize("@ss.hasPermi('system:config:list')")
+    @PreAuthorize("@ss.hasPerm('system:config:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(ConfigQuery query) {
         PageDTO page = configDomainService.getConfigList(query);
@@ -66,7 +66,7 @@ public class SysConfigController extends BaseController {
     /**
      * 根据参数编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:config:query')")
+    @PreAuthorize("@ss.hasPerm('system:config:query')")
     @GetMapping(value = "/{configId}")
     public ResponseDTO<ConfigDTO> getInfo(@NotNull @Positive @PathVariable Long configId) {
         ConfigDTO config = configDomainService.getConfigInfo(configId);
@@ -77,7 +77,7 @@ public class SysConfigController extends BaseController {
     /**
      * 修改参数配置
      */
-    @PreAuthorize("@ss.hasPermi('system:config:edit')")
+    @PreAuthorize("@ss.hasPerm('system:config:edit')")
     @AccessLog(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody ConfigUpdateCommand config) {
@@ -88,7 +88,7 @@ public class SysConfigController extends BaseController {
     /**
      * 刷新参数缓存
      */
-    @PreAuthorize("@ss.hasPermi('system:config:remove')")
+    @PreAuthorize("@ss.hasPerm('system:config:remove')")
     @AccessLog(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping("/refreshCache")
     public ResponseDTO<?> refreshCache() {

@@ -35,7 +35,7 @@ public abstract class GuavaCacheTemplate<T> {
 //        .expireAfterAccess(5L, TimeUnit.MINUTES)
         // -- 没写访问下，超过5秒会失效(非自动失效，需有任意put get方法才会扫描过期失效数据)
 //        .expireAfterWrite(5L, TimeUnit.MINUTES)
-        // 没写访问下，超过5秒会失效(非自动失效，需有任意putget方法才会扫描过期失效数据。但区别是会开一个异步线程进行刷新，刷新过程中访问返回旧数据)
+        // 没写访问下，超过5秒会失效(非自动失效，需有任意put get方法才会扫描过期失效数据。但区别是会开一个异步线程进行刷新，刷新过程中访问返回旧数据)
         .refreshAfterWrite(5L, TimeUnit.MINUTES)
         // 移除监听事件
         .removalListener(removal -> {

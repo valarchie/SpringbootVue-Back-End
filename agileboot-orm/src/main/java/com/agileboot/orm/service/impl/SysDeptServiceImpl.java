@@ -30,19 +30,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
         return one != null;
     }
 
-    @Override
-    public boolean checkDeptDataScope(Long deptId) {
-        // TODO 防止越权
-//        if (!SysUser.isAdmin(AuthenticationUtils.getUserId())) {
-//            SysDept dept = new SysDept();
-//            dept.setDeptId(deptId);
-//            List<SysDept> depts = ((SysDeptServiceImpl) AopContext.currentProxy()).selectDeptList(dept);
-//            if (CollUtil.isEmpty(depts)) {
-//                throw new ServiceException("没有权限访问部门数据！");
-//            }
-//        }
-        return false;
-    }
 
     @Override
     public boolean existChildrenDeptById(Long deptId, Boolean enabled) {

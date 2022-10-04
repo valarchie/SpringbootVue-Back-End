@@ -1,5 +1,6 @@
 package com.agileboot.common.utils;
 
+import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,21 @@ public class ServletHolderUtil {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取仅含有项目根路径的url
+     * 比如 localhost:8080/agileboot/user/list
+     * 返回 localhost:8080/agileboot
+     * @return
+     */
+    public static String getContextUrl() {
+        HttpServletRequest request = getRequest();
+        StringBuffer url = request.getRequestURL();
+        String contextPath = request.getServletContext().getContextPath();
+        String strip = StrUtil.strip(url, null, request.getRequestURI());
+        return strip + contextPath;
+    }
+
 
 
 }

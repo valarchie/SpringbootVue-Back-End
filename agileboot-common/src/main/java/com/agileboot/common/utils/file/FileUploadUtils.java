@@ -39,6 +39,18 @@ public class FileUploadUtils {
      */
     public static final int MAX_FILE_NAME_LENGTH = 100;
 
+    public static final String[] ALLOWED_DOWNLOAD_EXTENSIONS = {
+        // 图片
+        "bmp", "gif", "jpg", "jpeg", "png",
+        // word excel powerpoint
+        "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt",
+        // 压缩文件
+        "rar", "zip", "gz", "bz2",
+        // 视频格式
+        "mp4", "avi", "rmvb",
+        // pdf
+        "pdf"};
+
     /**
      * 默认上传的地址
      */
@@ -57,7 +69,7 @@ public class FileUploadUtils {
      */
     public static String upload(MultipartFile file) throws IOException {
         try {
-            return upload(getDefaultBaseDir(), file, FileTypesConstant.ALLOWED_DOWNLOAD_EXTENSIONS);
+            return upload(getDefaultBaseDir(), file, ALLOWED_DOWNLOAD_EXTENSIONS);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
@@ -72,7 +84,7 @@ public class FileUploadUtils {
      */
     public static String upload(String baseDir, MultipartFile file) throws IOException {
         try {
-            return upload(baseDir, file, FileTypesConstant.ALLOWED_DOWNLOAD_EXTENSIONS);
+            return upload(baseDir, file, ALLOWED_DOWNLOAD_EXTENSIONS);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
@@ -179,8 +191,7 @@ public class FileUploadUtils {
         // 禁止目录上跳级别
         return !StrUtil.contains(resource, "..") &&
             // 检查允许下载的文件规则
-            StrUtil.containsAnyIgnoreCase(FileNameUtil.getSuffix(resource),
-                FileTypesConstant.ALLOWED_DOWNLOAD_EXTENSIONS);
+            StrUtil.containsAnyIgnoreCase(FileNameUtil.getSuffix(resource), ALLOWED_DOWNLOAD_EXTENSIONS);
     }
 
 

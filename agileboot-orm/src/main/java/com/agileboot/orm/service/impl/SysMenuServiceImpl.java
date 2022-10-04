@@ -10,6 +10,7 @@ import com.agileboot.orm.service.ISysMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,7 +82,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuEntity
         }
 
         return sysMenuList.stream()
-            .filter(menu -> menu.getMenuType() != MenuTypeEnum.BUTTON.getValue())
+            .filter(menu -> !Objects.equals(menu.getMenuType(), MenuTypeEnum.BUTTON.getValue()))
             .collect(Collectors.toList());
     }
 

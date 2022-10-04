@@ -45,14 +45,18 @@ public class BaseEntity<T extends Model<?>> extends Model<T> {
     @TableLogic
     private Boolean deleted;
 
-    public void logCreator(Long creatorId, String creatorName) {
-        this.creatorId = creatorId;
-        this.creatorName = creatorName;
+    public void logCreator(BaseUser user) {
+        if (user != null) {
+            this.creatorId = user.getUserId();
+            this.creatorName = user.getUsername();
+        }
     }
 
-    public void logUpdater(Long updaterId, String updaterName) {
-        this.updaterId = updaterId;
-        this.updaterName = updaterName;
+    public void logUpdater(BaseUser user) {
+        if (user != null) {
+            this.updaterId = user.getUserId();
+            this.updaterName = user.getUsername();
+        }
     }
 
 }

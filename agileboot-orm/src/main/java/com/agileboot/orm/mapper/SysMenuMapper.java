@@ -46,20 +46,4 @@ public interface SysMenuMapper extends BaseMapper<SysMenuEntity> {
         + "ORDER BY m.parent_id, m.order_num")
     List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId);
 
-//    /**
-//     * 根据用户ID查询菜单, 排除掉按钮类型  menuType=3
-//     *
-//     * @param userId 用户ID
-//     * @return 菜单列表
-//     */
-//    @Select("SELECT DISTINCT m.* "
-//        + "FROM sys_menu m "
-//        + " LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id "
-//        + " LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id "
-//        + "WHERE ur.user_id = #{userId} "
-//        + " AND m.menu_type IN (1, 2) "
-//        + " AND m.status = 1 "
-//        + " AND m.deleted = 0 "
-//        + "ORDER BY m.parent_id, m.order_num")
-//    List<SysMenuXEntity> selectMenuTreeByUserId(@Param("userId")Long userId);
 }

@@ -15,7 +15,6 @@ public class MenuQuery extends AbstractQuery {
     private Integer status;
 
 
-    @SuppressWarnings("rawtypes")
     @Override
     public QueryWrapper<SysMenuEntity> toQueryWrapper() {
 

@@ -79,7 +79,7 @@ public class DeptDomainService {
         }
 
         deptModel.generateAncestors(deptService);
-        deptModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
+        deptModel.logCreator(loginUser);
 
         deptModel.insert();
     }
@@ -98,8 +98,7 @@ public class DeptDomainService {
         deptModel.checkStatusAllowChange(deptService);
         deptModel.generateAncestors(deptService);
 
-        deptModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
-
+        deptModel.logUpdater(loginUser);
 
         deptModel.updateById();
     }

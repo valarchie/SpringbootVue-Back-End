@@ -32,7 +32,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
     /**
      * 根据用户ID查询用户所属角色组
      *
-     * @param userName 用户名
+     * @param userId
      * @return 结果
      */
     String selectUserRoleGroup(Long userId);
@@ -40,7 +40,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
     /**
      * 根据用户ID查询用户所属岗位组
      *
-     * @param userName 用户名
+     * @param userId
      * @return 结果
      */
     String selectUserPostGroup(Long userId);
@@ -55,7 +55,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
      * 校验email是否唯一
      * @return 结果
      */
-    boolean checkEmailUnique(String Email, Long userId);
+    boolean checkEmailUnique(String email, Long userId);
 
     /**
      * 根据用户ID查询角色权限
@@ -86,7 +86,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param user 用户信息
+     * @param query 查询参数
      * @return 用户信息集合信息
      */
     Page<SysUserEntity>  selectUnallocatedList(AbstractPageQuery query);
@@ -94,22 +94,10 @@ public interface ISysUserService extends IService<SysUserEntity> {
     /**
      * 根据条件分页查询用户列表
      *
-     * @param user 用户信息
+     * @param query 查询参数
      * @return 用户信息集合信息
      */
     Page<SearchUserDO> selectUserList(AbstractPageQuery query);
-
-    /**
-     * 校验用户是否允许操作
-     */
-    void checkUserAllowed(Long userId);
-
-    /**
-     * 校验用户是否有数据权限
-     *
-     * @param userId 用户id
-     */
-    void checkUserDataScope(Long userId);
 
 
 

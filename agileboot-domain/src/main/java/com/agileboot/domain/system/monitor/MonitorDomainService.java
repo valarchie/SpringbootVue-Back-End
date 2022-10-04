@@ -1,14 +1,17 @@
 package com.agileboot.domain.system.monitor;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO;
 import com.agileboot.domain.system.monitor.dto.RedisCacheInfoDTO.CommonStatusDTO;
 import com.agileboot.infrastructure.cache.RedisUtil;
+import com.agileboot.infrastructure.cache.guava.GuavaCacheService;
 import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.web.domain.OnlineUser;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.domain.server.ServerInfo;
+import com.agileboot.orm.entity.SysDeptEntity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,13 +105,20 @@ public class MonitorDomainService {
         OnlineUser onlineUser = new OnlineUser();
         onlineUser.setTokenId(user.getToken());
         onlineUser.setUserName(user.getUsername());
-        onlineUser.setIpaddr(user.getIpaddr());
-        onlineUser.setLoginLocation(user.getLoginLocation());
-        onlineUser.setBrowser(user.getBrowser());
-        onlineUser.setOs(user.getOs());
+        onlineUser.setIpaddr(user.getLoginInfo().getIpAddress());
+        onlineUser.setLoginLocation(user.getLoginInfo().getLocation());
+        onlineUser.setBrowser(user.getLoginInfo().getBrowser());
+        onlineUser.setOs(user.getLoginInfo().getOperationSystem());
         onlineUser.setLoginTime(user.getLoginTime());
-        // TODO 利用缓存类   获取deptName
-        onlineUser.setDeptName("depart 1");
+
+        GuavaCacheService cacheService = SpringUtil.getBean(GuavaCacheService.class);
+
+        SysDeptEntity deptEntity = cacheService.deptCache.get(user.getDeptId() + "");
+
+        if (deptEntity != null) {
+            onlineUser.setDeptName(deptEntity.getDeptName());
+        }
+
         return onlineUser;
     }
 }

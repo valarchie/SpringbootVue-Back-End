@@ -8,6 +8,7 @@ import com.agileboot.admin.response.UserPermissionDTO;
 import com.agileboot.common.config.AgileBootConfig;
 import com.agileboot.common.constant.Constants.Token;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.exception.error.ErrorCode.Business;
 import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.RouterVo;
 import com.agileboot.domain.system.user.UserDTO;
@@ -111,8 +112,7 @@ public class LoginController {
 
     @PostMapping("/register")
     public ResponseDTO register(@RequestBody RegisterDTO user) {
-        loginService.register(null);
-        return ResponseDTO.ok();
+        return ResponseDTO.fail(Business.UNSUPPORTED_OPERATION);
     }
 
 }

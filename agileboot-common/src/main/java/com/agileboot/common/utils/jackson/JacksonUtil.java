@@ -1,6 +1,7 @@
 package com.agileboot.common.utils.jackson;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -118,7 +119,7 @@ public class JacksonUtil {
             .addDeserializer(LocalDateTime.class,
                 new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
         objectMapper.registerModule(javaTimeModule);
-        //  if use guava, we can add this line of code: objectMapper.registerModule(new GuavaModule())
+        //  if we use guava, we can add this line of code: objectMapper.registerModule(new GuavaModule())
         return objectMapper;
     }
 
@@ -479,11 +480,7 @@ public class JacksonUtil {
             } else {
                 if (jsonNode.isTextual()) {
                     String textValue = jsonNode.textValue();
-                    if ("1".equals(textValue)) {
-                        return true;
-                    } else {
-                        return BooleanUtils.toBoolean(textValue);
-                    }
+                    return Convert.toBool(textValue);
                 } else {//number
                     return BooleanUtils.toBoolean(jsonNode.intValue());
                 }

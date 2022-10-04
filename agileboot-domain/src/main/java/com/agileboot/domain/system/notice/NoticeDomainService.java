@@ -40,7 +40,7 @@ public class NoticeDomainService {
 
         noticeModel.checkFields();
 
-        noticeModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
+        noticeModel.logCreator(loginUser);
 
         noticeModel.insert();
     }
@@ -57,7 +57,7 @@ public class NoticeDomainService {
 
         noticeModel.checkFields();
 
-        noticeModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        noticeModel.logUpdater(loginUser);
 
         noticeModel.updateById();
     }

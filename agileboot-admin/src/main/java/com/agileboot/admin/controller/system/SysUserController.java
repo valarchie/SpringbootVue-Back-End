@@ -4,7 +4,6 @@ import cn.hutool.core.collection.ListUtil;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.PageDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
@@ -19,6 +18,7 @@ import com.agileboot.domain.system.user.command.UpdateUserCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
+import com.agileboot.orm.enums.BusinessType;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class SysUserController extends BaseController {
     /**
      * 获取用户列表
      */
-    @PreAuthorize("@ss.hasPermi('system:user:list')")
+    @PreAuthorize("@ss.hasPerm('system:user:list') AND @ss.checkDataScopeWithDeptId(#query.deptId)")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(SearchUserQuery query) {
         PageDTO page = userDomainService.getUserList(query);
@@ -57,7 +57,7 @@ public class SysUserController extends BaseController {
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.EXPORT)
-    @PreAuthorize("@ss.hasPermi('system:user:export')")
+    @PreAuthorize("@ss.hasPerm('system:user:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, SearchUserQuery query) {
         PageDTO userList = userDomainService.getUserList(query);
@@ -65,7 +65,7 @@ public class SysUserController extends BaseController {
     }
 
     @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
-    @PreAuthorize("@ss.hasPermi('system:user:import')")
+    @PreAuthorize("@ss.hasPerm('system:user:import')")
     @PostMapping("/importData")
     public ResponseDTO importData(MultipartFile file, boolean updateSupport) {
         List<?> commands = CustomExcelUtil.readFromResponse(AddUserCommand.class, file);
@@ -86,10 +86,9 @@ public class SysUserController extends BaseController {
     /**
      * 根据用户编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @PreAuthorize("@ss.hasPerm('system:user:query')")
     @GetMapping(value = {"/", "/{userId}"})
     public ResponseDTO<UserDetailDTO> getUserDetailInfo(@PathVariable(value = "userId", required = false) Long userId) {
-//      TODO  userService.checkUserDataScope(userId);
         UserDetailDTO userDetailInfo = userDomainService.getUserDetailInfo(userId);
         return ResponseDTO.ok(userDetailInfo);
     }
@@ -97,7 +96,7 @@ public class SysUserController extends BaseController {
     /**
      * 新增用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:add') AND @ss.checkDataScopeWithUserId(#command.deptId)")
+    @PreAuthorize("@ss.hasPerm('system:user:add') AND @ss.checkDataScopeWithUserId(#command.deptId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody AddUserCommand command) {
@@ -109,12 +108,10 @@ public class SysUserController extends BaseController {
     /**
      * 修改用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @PreAuthorize("@ss.hasPerm('system:user:edit') AND @ss.checkDataScopeWithUserId(#command.userId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@Validated @RequestBody UpdateUserCommand command) {
-//       TODO userService.checkUserAllowed(user.getUserId());
-//        userService.checkUserDataScope(user.getUserId());
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         userDomainService.updateUser(loginUser, command);
         return ResponseDTO.ok();
@@ -123,7 +120,7 @@ public class SysUserController extends BaseController {
     /**
      * 删除用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:remove')")
+    @PreAuthorize("@ss.hasPerm('system:user:remove') AND @ss.checkDataScopeWithUserIds(#userIds)")
     @AccessLog(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public ResponseDTO remove(@PathVariable List<Long> userIds) {
@@ -136,12 +133,10 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
-    @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
+    @PreAuthorize("@ss.hasPerm('system:user:resetPwd') AND @ss.checkDataScopeWithUserId(#userId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/password/reset")
     public ResponseDTO resetPassword(@PathVariable Long userId, @RequestBody ResetPasswordCommand command) {
-//      TODO  userService.checkUserAllowed(user.getUserId());
-//        userService.checkUserDataScope(user.getUserId());
         command.setUserId(userId);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         userDomainService.resetUserPassword(loginUser, command);
@@ -151,12 +146,10 @@ public class SysUserController extends BaseController {
     /**
      * 状态修改
      */
-    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @PreAuthorize("@ss.hasPerm('system:user:edit') AND @ss.checkDataScopeWithUserId(#command.userId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/{userId}/status")
     public ResponseDTO changeStatus(@PathVariable Long userId, @RequestBody ChangeStatusCommand command) {
-//        TODO userService.checkUserAllowed(user.getUserId());
-//        userService.checkUserDataScope(user.getUserId());
         command.setUserId(userId);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
         userDomainService.changeUserStatus(loginUser, command);
@@ -166,7 +159,7 @@ public class SysUserController extends BaseController {
     /**
      * 根据用户编号获取授权角色
      */
-    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @PreAuthorize("@ss.hasPerm('system:user:query')")
     @GetMapping("/{userId}/role")
     public ResponseDTO<UserInfoDTO> getRoleOfUser(@PathVariable("userId") Long userId) {
         UserInfoDTO userWithRole = userDomainService.getUserWithRole(userId);

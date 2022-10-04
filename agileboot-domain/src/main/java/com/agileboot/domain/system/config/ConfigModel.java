@@ -20,11 +20,11 @@ public class ConfigModel extends SysConfigEntity {
     public ConfigModel(SysConfigEntity entity) {
         BeanUtil.copyProperties(entity, this);
 
-        List<?> options =
+        List<String> options =
             JSONUtil.isTypeJSONArray(entity.getConfigOptions()) ? JSONUtil.toList(entity.getConfigOptions(),
                 String.class) : ListUtil.empty();
 
-        this.configOptionSet = new HashSet(options);
+        this.configOptionSet = new HashSet<>(options);
     }
 
     public void checkCanBeEdit() {

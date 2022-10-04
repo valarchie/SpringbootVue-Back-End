@@ -64,7 +64,7 @@ public class MenuDomainService {
         model.checkMenuNameUnique(menuService);
         model.checkExternalLink();
 
-        model.logCreator(loginUser.getUserId(), loginUser.getUsername());
+        model.logCreator(loginUser);
 
         model.insert();
     }
@@ -75,7 +75,7 @@ public class MenuDomainService {
         model.checkExternalLink();
         model.checkParentId();
 
-        model.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        model.logUpdater(loginUser);
 
         model.updateById();
     }

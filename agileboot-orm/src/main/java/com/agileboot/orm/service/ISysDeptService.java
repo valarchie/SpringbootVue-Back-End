@@ -15,14 +15,13 @@ public interface ISysDeptService extends IService<SysDeptEntity> {
 
 
     /**
-     * 校验部门名称是否唯一
-     *
-     * @param dept 部门信息
-     * @return 结果
+     * 检测部门名称是否一致
+     * @param deptName
+     * @param deptId
+     * @param parentId
+     * @return
      */
     boolean checkDeptNameUnique(String deptName, Long deptId, Long parentId);
-
-    boolean checkDeptDataScope(Long deptId);
 
     /**
      * 检测部门底下是否还有正在使用中的子部门

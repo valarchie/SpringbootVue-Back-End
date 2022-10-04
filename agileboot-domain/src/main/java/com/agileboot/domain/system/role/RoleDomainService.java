@@ -56,7 +56,7 @@ public class RoleDomainService {
         roleModel.checkRoleNameUnique(roleService);
         roleModel.checkRoleKeyUnique(roleService);
 
-        roleModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
+        roleModel.logCreator(loginUser);
 
         roleModel.insert(roleMenuService);
     }
@@ -74,7 +74,7 @@ public class RoleDomainService {
 
         roleModel.checkRoleNameUnique(roleService);
 
-        roleModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        roleModel.logUpdater(loginUser);
 
         roleModel.deleteById(roleMenuService);
     }
@@ -91,7 +91,7 @@ public class RoleDomainService {
         roleModel.checkRoleKeyUnique(roleService);
         roleModel.checkRoleNameUnique(roleService);
 
-        roleModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        roleModel.logUpdater(loginUser);
 
         roleModel.updateById(roleMenuService);
 
@@ -158,8 +158,6 @@ public class RoleDomainService {
         }
 
         for (Long userId : userIds) {
-//            SysUserXEntity user = userService.getById(userId);
-
             LambdaUpdateWrapper<SysUserEntity> updateWrapper = new LambdaUpdateWrapper<>();
             updateWrapper.set(SysUserEntity::getRoleId, null).eq(SysUserEntity::getUserId, userId);
 

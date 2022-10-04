@@ -1,20 +1,14 @@
 package com.agileboot.infrastructure.web.service;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
-import com.agileboot.infrastructure.web.domain.login.Role;
-import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.enums.UserStatusEnum;
-import com.agileboot.orm.service.ISysRoleService;
 import com.agileboot.orm.service.ISysUserService;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,44 +28,32 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private ISysUserService userService;
 
-    @Autowired
-    private ISysRoleService roleService;
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUserEntity user = userService.getUserByUserName(username);
-        if (user == null) {
+        SysUserEntity userEntity = userService.getUserByUserName(username);
+        if (userEntity == null) {
             log.info("登录用户：{} 不存在.", username);
             throw new ApiException(ErrorCode.Business.USER_NON_EXIST, username);
         }
-        if (!Objects.equals(UserStatusEnum.NORMAL.getValue(), user.getStatus())) {
+        if (!Objects.equals(UserStatusEnum.NORMAL.getValue(), userEntity.getStatus())) {
             log.info("登录用户：{} 已被停用.", username);
             throw new ApiException(ErrorCode.Business.USER_IS_DISABLE, username);
         }
-        Set<String> roleKeys = getRoleKeys(user.getUserId());
-        Set<String> menuPermissions = getMenuPermissions(user.getUserId());
-        SysRoleEntity roleById = roleService.getById(user.getRoleId());
+        Set<String> roleKeys = getRoleKeys(userEntity.getUserId());
+        Set<String> menuPermissions = getMenuPermissions(userEntity.getUserId());
+//        SysRoleEntity roleById = roleService.getById(userEntity.getRoleId());
+//
+//        Role role = new Role();
+//        if(roleById != null) {
+//            role = new Role(roleById);
+//        }
 
-        Role role = new Role();
-        if(roleById != null) {
-            Set<Long> deptIdSet = StrUtil.split(roleById.getDeptIdSet(), ",").stream().map(Convert::toLong)
-                .collect(Collectors.toSet());
-
-            role = new Role(roleById.getRoleId(), roleById.getDataScope(), deptIdSet);
-        }
-
-        LoginUser loginUser = new LoginUser(user.getUserId(), user.getUsername(), user.getDeptId(), roleKeys,
-            menuPermissions, user.getPassword(), role);
-
-        loginUser.setEntity(user);
-
-        return loginUser;
+        return new LoginUser(userEntity, roleKeys, menuPermissions);
     }
 
     /**
      * 获取角色数据权限
-     * TODO  可以放在领域类  loginUser里
      * @param userId 用户信息
      * @return 角色权限信息
      */

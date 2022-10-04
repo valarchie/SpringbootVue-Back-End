@@ -8,7 +8,6 @@ import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.mapper.SysUserMapper;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.agileboot.orm.result.SearchUserDO;
-import com.agileboot.orm.service.ISysConfigService;
 import com.agileboot.orm.service.ISysUserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.validation.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,12 +29,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity> implements ISysUserService {
-
-    @Autowired
-    private ISysConfigService configService;
-
-    @Autowired
-    protected Validator validator;
 
 
     @Override
@@ -150,30 +141,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         page.setRecords(searchUserDOS);
         return page;
     }
-
-
-
-    @Override
-    public void checkUserAllowed(Long userId) {
-        // 后面再实现
-//        if (user.getUserId() != null && user.isAdmin()) {
-//            throw new ServiceException("不允许操作超级管理员用户");
-//        }
-    }
-
-    @Override
-    public void checkUserDataScope(Long userId) {
-        // TODO 后面再实现
-//        if (!SysUser.isAdmin(AuthenticationUtils.getUserId())) {
-//            SysUser user = new SysUser();
-//            user.setUserId(userId);
-//            List<SysUser> users = ((SysUserXServiceImp) AopContext.currentProxy()).selectUserList(user);
-//            if (CollUtil.isEmpty(users)) {
-//                throw new ServiceException("没有权限访问用户数据！");
-//            }
-//        }
-    }
-
 
 
 }

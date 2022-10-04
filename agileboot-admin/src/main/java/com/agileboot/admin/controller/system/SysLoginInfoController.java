@@ -4,7 +4,6 @@ package com.agileboot.admin.controller.system;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.PageDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.common.BulkOperationCommand;
@@ -12,6 +11,7 @@ import com.agileboot.domain.system.loginInfo.LoginInfoDTO;
 import com.agileboot.domain.system.loginInfo.LoginInfoDomainService;
 import com.agileboot.domain.system.loginInfo.LoginInfoQuery;
 import com.agileboot.infrastructure.annotations.AccessLog;
+import com.agileboot.orm.enums.BusinessType;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
@@ -39,7 +39,7 @@ public class SysLoginInfoController extends BaseController {
     @Autowired
     private LoginInfoDomainService loginInfoDomainService;
 
-    @PreAuthorize("@ss.hasPermi('monitor:logininfor:list')")
+    @PreAuthorize("@ss.hasPerm('monitor:logininfor:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(LoginInfoQuery query) {
         PageDTO pageDTO = loginInfoDomainService.getLoginInfoList(query);
@@ -47,14 +47,14 @@ public class SysLoginInfoController extends BaseController {
     }
 
     @AccessLog(title = "登录日志", businessType = BusinessType.EXPORT)
-    @PreAuthorize("@ss.hasPermi('monitor:logininfor:export')")
+    @PreAuthorize("@ss.hasPerm('monitor:logininfor:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, LoginInfoQuery query) {
         PageDTO pageDTO = loginInfoDomainService.getLoginInfoList(query);
         CustomExcelUtil.writeToResponse(pageDTO.getRows(), LoginInfoDTO.class, response);
     }
 
-    @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
+    @PreAuthorize("@ss.hasPerm('monitor:logininfor:remove')")
     @AccessLog(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
     public ResponseDTO remove(@PathVariable @NotNull @NotEmpty List<Long> infoIds) {
@@ -62,7 +62,7 @@ public class SysLoginInfoController extends BaseController {
         return ResponseDTO.ok();
     }
 
-    @PreAuthorize("@ss.hasPermi('monitor:logininfor:remove')")
+    @PreAuthorize("@ss.hasPerm('monitor:logininfor:remove')")
     @AccessLog(title = "登录日志", businessType = BusinessType.CLEAN)
     @DeleteMapping("/clean")
     public ResponseDTO clean() {

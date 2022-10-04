@@ -46,7 +46,7 @@ public class PostDomainService {
             throw new ApiException(ErrorCode.Business.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
         }
 
-        postModel.logCreator(loginUser.getUserId(), loginUser.getUsername());
+        postModel.logCreator(loginUser);
 
         postModel.insert();
     }
@@ -63,7 +63,7 @@ public class PostDomainService {
             throw new ApiException(ErrorCode.Business.POST_CODE_IS_NOT_UNIQUE, postModel.getPostCode());
         }
 
-        postModel.logUpdater(loginUser.getUserId(), loginUser.getUsername());
+        postModel.logUpdater(loginUser);
 
         postModel.updateById();
     }

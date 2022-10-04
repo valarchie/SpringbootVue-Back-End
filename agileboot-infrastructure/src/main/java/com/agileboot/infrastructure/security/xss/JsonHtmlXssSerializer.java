@@ -17,8 +17,6 @@ public class JsonHtmlXssSerializer extends JsonDeserializer<String> {
         String value = p.getValueAsString();
         if( value != null) {
             return HtmlUtil.cleanHtmlTag(value);
-//            return HtmlUtil.escape(value);
-
         }
         return null;
     }

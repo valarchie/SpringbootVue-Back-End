@@ -10,6 +10,7 @@ import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
 import com.agileboot.infrastructure.cache.redis.CacheKeyEnum;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
+import com.agileboot.infrastructure.web.domain.login.LoginInfo;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
@@ -141,9 +142,7 @@ public class TokenService {
             .toMillis(CacheKeyEnum.LOGIN_USER_KEY.expiration()));
         // 根据uuid将loginUser缓存
         redisCacheService.loginUserCache.set(loginUser.getToken(), loginUser);
-//      TODO clean
-//      String userKey = getTokenKey(loginUser.getToken());
-//      redisUtil.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
+
     }
 
     /**
@@ -154,10 +153,13 @@ public class TokenService {
     public void setUserAgent(LoginUser loginUser) {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletHolderUtil.getRequest().getHeader("User-Agent"));
         String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
-        loginUser.setIpaddr(ip);
-        loginUser.setLoginLocation(IpRegionUtil.getBriefLocationByIp(ip));
-        loginUser.setBrowser(userAgent.getBrowser().getName());
-        loginUser.setOs(userAgent.getOperatingSystem().getName());
+        if (loginUser.getLoginInfo() == null) {
+            loginUser.setLoginInfo(new LoginInfo());
+        }
+        loginUser.getLoginInfo().setIpAddress(ip);
+        loginUser.getLoginInfo().setLocation(IpRegionUtil.getBriefLocationByIp(ip));
+        loginUser.getLoginInfo().setBrowser(userAgent.getBrowser().getName());
+        loginUser.getLoginInfo().setOperationSystem(userAgent.getOperatingSystem().getName());
     }
 
     /**
@@ -209,7 +211,4 @@ public class TokenService {
         return token;
     }
 
-//  TODO clean  private String getTokenKey(String uuid) {
-//        return Constants.LOGIN_TOKEN_KEY + uuid;
-//    }
 }

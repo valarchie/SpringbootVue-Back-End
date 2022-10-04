@@ -6,17 +6,6 @@ package com.agileboot.orm.enums.interfaces;
  */
 public interface DictionaryEnum<T> extends BasicEnum {
 
-//    /**
-//     * @return 获取枚举的值
-//     */
-//    T getValue();
-//
-//    /**
-//     *
-//     * @return 获取枚举的描述
-//     */
-//    String description();
-
     /**
      *
      * @return 获取css标签

@@ -1,6 +1,6 @@
 package com.agileboot.infrastructure.annotations;
 
-import com.agileboot.common.enums.BusinessType;
+import com.agileboot.orm.enums.BusinessType;
 import com.agileboot.orm.enums.OperatorTypeEnum;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -2,7 +2,6 @@ package com.agileboot.orm.service;
 
 import com.agileboot.orm.entity.SysRoleEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
-import java.util.List;
 
 /**
  * <p>
@@ -14,12 +13,6 @@ import java.util.List;
  */
 public interface ISysRoleService extends IService<SysRoleEntity> {
 
-    /**
-     * 校验角色是否有数据权限
-     *
-     * @param roleId 角色id
-     */
-    boolean checkRoleDataScope(Long roleId);
 
     /**
      * 校验角色名称是否唯一
@@ -34,20 +27,4 @@ public interface ISysRoleService extends IService<SysRoleEntity> {
     boolean checkRoleKeyUnique(Long roleId, String roleKey);
 
 
-    /**
-     * 校验角色是否允许操作
-     *
-     * @param role 角色信息
-     */
-    void checkRoleAllowed(Long roleId);
-
-
-    /**
-     * 根据用户ID查询角色列表
-     *
-     * @param userId 用户ID
-     * @return 角色列表
-     */
-    @Deprecated
-    List<SysRoleEntity> selectRolesByUserId(Long userId);
 }

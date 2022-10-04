@@ -3,7 +3,7 @@ package com.agileboot.common.enums;
 /**
  * 限流类型
  *
- * @author ruoyi TODO
+ * @author ruoyi
  */
 
 public enum LimitType {

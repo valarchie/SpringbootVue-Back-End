@@ -161,56 +161,6 @@ public class LoginService {
     }
 
 
-    //    /**
-//     * 注册 TODO 可以放在loginUser 类当中    Register方法可以放在UserDomainService里
-    // 参数需要另外起一个 TODO
-//     */
-    public String register(LoginUser registerBody) {
-
-        if (!(Convert.toBool(guavaCacheService.configCache.get(SystemConfigEnum.REGISTER.getValue())))) {
-//            return error("当前系统没有开启注册功能！");
-            throw new ApiException(ErrorCode.UNKNOWN_ERROR);
-        }
-
-//        String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword();
-//
-//        boolean captchaOnOff = configService.isCaptchaOn();
-//        // 验证码开关
-//        if (captchaOnOff) {
-//            validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
-//        }
-//
-//        if (StrUtil.isEmpty(username)) {
-//            msg = "用户名不能为空";
-//        } else if (StrUtil.isEmpty(password)) {
-//            msg = "用户密码不能为空";
-//        } else if (username.length() < UserConstants.USERNAME_MIN_LENGTH
-//            || username.length() > UserConstants.USERNAME_MAX_LENGTH) {
-//            msg = "账户长度必须在2到20个字符之间";
-//        } else if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
-//            || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {
-//            msg = "密码长度必须在5到20个字符之间";
-//        } else if (userService.checkUserNameUnique(username)) {
-//            msg = "保存用户'" + username + "'失败，注册账号已存在";
-//        } else {
-//            SysUserXEntity entity = new SysUserXEntity();
-//
-//            entity.setUsername(username);
-//            entity.setPassword(AuthenticationUtils.encryptPassword(registerBody.getPassword()));
-//
-//            boolean regFlag = entity.insert();
-//            if (!regFlag) {
-//                msg = "注册失败,请联系系统管理人员";
-//            } else {
-//                AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.REGISTER,
-//                    MessageUtils.message("user.register.success")));
-//            }
-//        }
-        return "unknown";
-    }
-
-
-
     /**
      * 校验验证码
      *

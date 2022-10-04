@@ -12,7 +12,7 @@ public class PageDTO {
     /**
      * 总记录数
      */
-    private long total;
+    private Long total;
 
     /**
      * 列表数据
@@ -21,7 +21,7 @@ public class PageDTO {
 
     public PageDTO(List<?> list) {
         this.rows = list;
-        this.total = list.size();
+        this.total = (long) list.size();
     }
 
     public PageDTO(Page page) {

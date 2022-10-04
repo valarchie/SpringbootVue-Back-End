@@ -53,7 +53,6 @@ public class AsyncTaskFactory {
             loginInfo.setOperationSystem(os);
             loginInfo.setMsg(message);
             loginInfo.setLoginTime(DateUtil.date());
-            // 日志状态 TODO 替换魔法值
             loginInfo.setStatus(loginStatusEnum.getValue());
             // 插入数据
             SpringUtil.getBean(ISysLoginInfoService.class).save(loginInfo);
@@ -63,14 +62,14 @@ public class AsyncTaskFactory {
     /**
      * 操作日志记录
      *
-     * @param operLog 操作日志信息
+     * @param operationLog 操作日志信息
      * @return 任务task
      */
-    public static Runnable recordOperationLog(final SysOperationLogEntity operLog) {
+    public static Runnable recordOperationLog(final SysOperationLogEntity operationLog) {
         return () -> {
             // 远程查询操作地点
-            operLog.setOperatorLocation(IpRegionUtil.getBriefLocationByIp(operLog.getOperatorIp()));
-            SpringUtil.getBean(ISysOperationLogService.class).save(operLog);
+            operationLog.setOperatorLocation(IpRegionUtil.getBriefLocationByIp(operationLog.getOperatorIp()));
+            SpringUtil.getBean(ISysOperationLogService.class).save(operationLog);
         };
     }
 

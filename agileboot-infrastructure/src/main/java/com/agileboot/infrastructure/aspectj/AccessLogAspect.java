@@ -14,6 +14,7 @@ import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import com.agileboot.orm.entity.SysOperationLogEntity;
 import com.agileboot.orm.enums.RequestMethodEnum;
 import com.agileboot.orm.enums.dictionary.OperationStatusEnum;
+import com.agileboot.orm.enums.interfaces.BasicEnumUtil;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -137,8 +138,10 @@ public class AccessLogAspect {
      */
     private void setRequestValue(JoinPoint joinPoint, SysOperationLogEntity operationLog) {
 
-        int requestMethod = operationLog.getRequestMethod();
-        if (1 == requestMethod || 2 == requestMethod) {
+        RequestMethodEnum requestMethodEnum = BasicEnumUtil.fromValue(RequestMethodEnum.class,
+            operationLog.getRequestMethod());
+
+        if (requestMethodEnum == RequestMethodEnum.GET || requestMethodEnum == RequestMethodEnum.POST) {
             String params = argsArrayToString(joinPoint.getArgs());
             operationLog.setOperationParam(StrUtil.sub(params, 0, 2000));
         } else {
@@ -195,21 +198,5 @@ public class AccessLogAspect {
             || o instanceof BindingResult;
     }
 
-
-    private int getHttpMethodIntValue(String httpMethod) {
-
-        int intValue = 0;
-
-        switch (httpMethod) {
-
-            case "GET" : intValue = 1; break;
-            case "POST": intValue = 2; break;
-            case "PUT":  intValue = 3; break;
-            default: intValue = -1;
-            break;
-
-        }
-        return intValue;
-    }
 
 }

@@ -3,7 +3,6 @@ package com.agileboot.admin.controller.system;
 import com.agileboot.common.core.base.BaseController;
 import com.agileboot.common.core.dto.ResponseDTO;
 import com.agileboot.common.core.page.PageDTO;
-import com.agileboot.common.enums.BusinessType;
 import com.agileboot.common.utils.poi.CustomExcelUtil;
 import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.post.AddPostCommand;
@@ -13,6 +12,7 @@ import com.agileboot.domain.system.post.PostQuery;
 import com.agileboot.domain.system.post.UpdatePostCommand;
 import com.agileboot.infrastructure.annotations.AccessLog;
 import com.agileboot.infrastructure.web.util.AuthenticationUtils;
+import com.agileboot.orm.enums.BusinessType;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class SysPostController extends BaseController {
     /**
      * 获取岗位列表
      */
-    @PreAuthorize("@ss.hasPermi('system:post:list')")
+    @PreAuthorize("@ss.hasPerm('system:post:list')")
     @GetMapping("/list")
     public ResponseDTO<PageDTO> list(PostQuery query) {
         PageDTO pageDTO = postDomainService.getPostList(query);
@@ -51,7 +51,7 @@ public class SysPostController extends BaseController {
     }
 
     @AccessLog(title = "岗位管理", businessType = BusinessType.EXPORT)
-    @PreAuthorize("@ss.hasPermi('system:post:export')")
+    @PreAuthorize("@ss.hasPerm('system:post:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, PostQuery query) {
         PageDTO pageDTO = postDomainService.getPostList(query);
@@ -61,7 +61,7 @@ public class SysPostController extends BaseController {
     /**
      * 根据岗位编号获取详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:post:query')")
+    @PreAuthorize("@ss.hasPerm('system:post:query')")
     @GetMapping(value = "/{postId}")
     public ResponseDTO getInfo(@PathVariable Long postId) {
         PostDTO post = postDomainService.getPostInfo(postId);
@@ -71,7 +71,7 @@ public class SysPostController extends BaseController {
     /**
      * 新增岗位
      */
-    @PreAuthorize("@ss.hasPermi('system:post:add')")
+    @PreAuthorize("@ss.hasPerm('system:post:add')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@RequestBody AddPostCommand addCommand) {
@@ -82,7 +82,7 @@ public class SysPostController extends BaseController {
     /**
      * 修改岗位
      */
-    @PreAuthorize("@ss.hasPermi('system:post:edit')")
+    @PreAuthorize("@ss.hasPerm('system:post:edit')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public ResponseDTO edit(@RequestBody UpdatePostCommand updateCommand) {
@@ -93,7 +93,7 @@ public class SysPostController extends BaseController {
     /**
      * 删除岗位
      */
-    @PreAuthorize("@ss.hasPermi('system:post:remove')")
+    @PreAuthorize("@ss.hasPerm('system:post:remove')")
     @AccessLog(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
     public ResponseDTO remove(@PathVariable List<Long> postIds) {

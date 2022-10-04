@@ -3,7 +3,6 @@ package com.agileboot.orm.enums;
 import com.agileboot.orm.enums.interfaces.BasicEnum;
 
 /**
- * TODO 命名需要改下  以表名为前缀
  * 系统配置
  * @author valarchie
  * 对应 sys_config表的config_key字段
