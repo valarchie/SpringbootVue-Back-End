@@ -43,7 +43,7 @@ public class LoginUser extends BaseUser implements UserDetails {
      */
     private Set<String> menuPermissions;
 
-    private Set<String> roleKeys;
+    private String roleKey;
 
     private SysUserEntity entity;
 
@@ -52,14 +52,13 @@ public class LoginUser extends BaseUser implements UserDetails {
         this.menuPermissions = permissions;
     }
 
-    public LoginUser(SysUserEntity entity, Set<String> roleKeys, Set<String> permissions) {
+    public LoginUser(SysUserEntity entity, String roleKey, Set<String> permissions) {
         setUsername(entity.getUsername());
         setUserId(entity.getUserId());
         setDeptId(entity.getDeptId());
         setRoleId(entity.getRoleId());
         this.menuPermissions = permissions;
-        // TODO 这个字段改下
-        this.roleKeys = roleKeys;
+        this.roleKey = roleKey;
         this.entity = entity;
     }
 

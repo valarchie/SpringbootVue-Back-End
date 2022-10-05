@@ -11,8 +11,14 @@ public class UserDetailDTO {
 
     private UserDTO user;
 
+    /**
+     * 返回所有role
+     */
     private List<RoleDTO> roles;
 
+    /**
+     * 返回所有posts
+     */
     private List<PostDTO> posts;
 
     private Long postId;

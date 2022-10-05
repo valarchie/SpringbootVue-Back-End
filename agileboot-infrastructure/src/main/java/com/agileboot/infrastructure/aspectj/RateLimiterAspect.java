@@ -6,6 +6,8 @@ import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.infrastructure.annotations.RateLimiter;
+import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.infrastructure.web.util.AuthenticationUtils;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -63,15 +65,20 @@ public class RateLimiterAspect {
     }
 
     public String getCombineKey(RateLimiter rateLimiter, JoinPoint point) {
-        StringBuffer stringBuffer = new StringBuffer(rateLimiter.key());
+        StringBuilder stringBuilder = new StringBuilder(rateLimiter.key());
         if (rateLimiter.limitType() == LimitType.IP) {
-            // TODO 换成从user拿Ip
-            stringBuffer.append(ServletUtil.getClientIP(ServletHolderUtil.getRequest())).append("-");
+            LoginUser loginUser = AuthenticationUtils.getLoginUser();
+
+            if (loginUser != null) {
+                stringBuilder.append(loginUser.getLoginInfo().getIpAddress()).append("-");
+            } else {
+                stringBuilder.append(ServletUtil.getClientIP(ServletHolderUtil.getRequest())).append("-");
+            }
         }
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         Class<?> targetClass = method.getDeclaringClass();
-        stringBuffer.append(targetClass.getName()).append("-").append(method.getName());
-        return stringBuffer.toString();
+        stringBuilder.append(targetClass.getName()).append("-").append(method.getName());
+        return stringBuilder.toString();
     }
 }

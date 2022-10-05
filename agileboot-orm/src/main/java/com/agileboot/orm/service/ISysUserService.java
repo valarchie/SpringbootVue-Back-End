@@ -1,5 +1,7 @@
 package com.agileboot.orm.service;
 
+import com.agileboot.orm.entity.SysPostEntity;
+import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.query.AbstractPageQuery;
 import com.agileboot.orm.result.SearchUserDO;
@@ -35,7 +37,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
      * @param userId
      * @return 结果
      */
-    String selectUserRoleGroup(Long userId);
+    SysRoleEntity getRoleOfUser(Long userId);
 
     /**
      * 根据用户ID查询用户所属岗位组
@@ -43,7 +45,7 @@ public interface ISysUserService extends IService<SysUserEntity> {
      * @param userId
      * @return 结果
      */
-    String selectUserPostGroup(Long userId);
+    SysPostEntity getPostOfUser(Long userId);
 
     /**
      * 校验手机号码是否唯一
@@ -56,14 +58,6 @@ public interface ISysUserService extends IService<SysUserEntity> {
      * @return 结果
      */
     boolean checkEmailUnique(String email, Long userId);
-
-    /**
-     * 根据用户ID查询角色权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    Set<String> selectRolePermissionByUserId(Long userId);
 
     /**
      * 根据用户ID查询权限

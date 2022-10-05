@@ -3,6 +3,7 @@ package com.agileboot.infrastructure.web.service;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
+import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.enums.UserStatusEnum;
 import com.agileboot.orm.service.ISysUserService;
@@ -40,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.info("登录用户：{} 已被停用.", username);
             throw new ApiException(ErrorCode.Business.USER_IS_DISABLE, username);
         }
-        Set<String> roleKeys = getRoleKeys(userEntity.getUserId());
+        String roleKey = getRoleKey(userEntity.getUserId());
         Set<String> menuPermissions = getMenuPermissions(userEntity.getUserId());
 //        SysRoleEntity roleById = roleService.getById(userEntity.getRoleId());
 //
@@ -49,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //            role = new Role(roleById);
 //        }
 
-        return new LoginUser(userEntity, roleKeys, menuPermissions);
+        return new LoginUser(userEntity, roleKey, menuPermissions);
     }
 
     /**
@@ -57,15 +58,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @param userId 用户信息
      * @return 角色权限信息
      */
-    public Set<String> getRoleKeys(Long userId) {
-        Set<String> roles = new HashSet<String>();
+    public String getRoleKey(Long userId) {
         // 管理员拥有所有权限
         if (LoginUser.isAdmin(userId)) {
-            roles.add("admin");
-        } else {
-            roles.addAll(userService.selectRolePermissionByUserId(userId));
+            return "admin";
         }
-        return roles;
+
+        SysRoleEntity roleEntity = userService.getRoleOfUser(userId);
+        return roleEntity == null ? "" : roleEntity.getRoleKey();
     }
 
     /**

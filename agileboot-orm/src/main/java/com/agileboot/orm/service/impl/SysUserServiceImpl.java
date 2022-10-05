@@ -1,6 +1,5 @@
 package com.agileboot.orm.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agileboot.orm.entity.SysPostEntity;
 import com.agileboot.orm.entity.SysRoleEntity;
@@ -16,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,21 +52,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
 
 
     @Override
-    public String selectUserRoleGroup(Long userId) {
+    public SysRoleEntity getRoleOfUser(Long userId) {
         List<SysRoleEntity> list = baseMapper.selectRolesByUserId(userId);
-        if (CollUtil.isEmpty(list)) {
-            return StrUtil.EMPTY;
-        }
-        return list.stream().map(SysRoleEntity::getRoleName).collect(Collectors.joining(","));
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public String selectUserPostGroup(Long userId) {
+    public SysPostEntity getPostOfUser(Long userId) {
         List<SysPostEntity> list = baseMapper.selectPostsByUserId(userId);
-        if (CollUtil.isEmpty(list)) {
-            return StrUtil.EMPTY;
-        }
-        return list.stream().map(SysPostEntity::getPostName).collect(Collectors.joining(","));
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
@@ -87,17 +79,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         return baseMapper.exists(queryWrapper);
     }
 
-    @Override
-    public Set<String> selectRolePermissionByUserId(Long userId) {
-        List<SysRoleEntity> perms = baseMapper.selectRolesByUserId(userId);
-        Set<String> permsSet = new HashSet<>();
-        for (SysRoleEntity perm : perms) {
-            if (perm != null) {
-                permsSet.addAll(Arrays.asList(perm.getRoleKey().trim().split(",")));
-            }
-        }
-        return permsSet;
-    }
 
     @Override
     public Set<String> selectMenuPermsByUserId(Long userId) {

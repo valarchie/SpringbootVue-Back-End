@@ -91,7 +91,7 @@ public class LoginController {
 
         UserPermissionDTO permissionDTO = new UserPermissionDTO();
         permissionDTO.setUser(new UserDTO(loginUser.getEntity()));
-        permissionDTO.setRoles(loginUser.getRoleKeys());
+        permissionDTO.setRoleKey(loginUser.getRoleKey());
         permissionDTO.setPermissions(loginUser.getMenuPermissions());
 
         return ResponseDTO.ok(permissionDTO);

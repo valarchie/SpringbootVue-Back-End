@@ -1,7 +1,6 @@
 package com.agileboot.domain.system.user;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
@@ -10,7 +9,6 @@ import com.agileboot.domain.common.BulkOperationCommand;
 import com.agileboot.domain.system.loginInfo.SearchUserQuery;
 import com.agileboot.domain.system.post.PostDTO;
 import com.agileboot.domain.system.role.RoleDTO;
-import com.agileboot.domain.system.user.UserProfileDTO.UserProfileDTOBuilder;
 import com.agileboot.domain.system.user.command.AddUserCommand;
 import com.agileboot.domain.system.user.command.ChangeStatusCommand;
 import com.agileboot.domain.system.user.command.ResetPasswordCommand;
@@ -21,6 +19,7 @@ import com.agileboot.domain.system.user.command.UpdateUserPasswordCommand;
 import com.agileboot.infrastructure.cache.redis.RedisCacheService;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
+import com.agileboot.orm.entity.SysPostEntity;
 import com.agileboot.orm.entity.SysRoleEntity;
 import com.agileboot.orm.entity.SysUserEntity;
 import com.agileboot.orm.result.SearchUserDO;
@@ -63,13 +62,10 @@ public class UserDomainService {
     public UserProfileDTO getUserProfile(Long userId) {
 
         SysUserEntity userEntity = userService.getById(userId);
-        // TODO应该由前端处理  后端应该只返回规范的数据 而不是字符串
+        SysPostEntity postEntity = userService.getPostOfUser(userId);
+        SysRoleEntity roleEntity = userService.getRoleOfUser(userId);
 
-        UserProfileDTOBuilder profileDTO = UserProfileDTO.builder().user(new UserDTO(userEntity))
-            .postGroup(userService.selectUserPostGroup(userId))
-            .roleGroup(userService.selectUserRoleGroup(userId));
-
-        return profileDTO.build();
+        return new UserProfileDTO(userEntity, postEntity, roleEntity);
     }
 
 
@@ -193,7 +189,7 @@ public class UserDomainService {
 
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setUser(userDTO);
-        userInfoDTO.setRoles(ListUtil.of(roleDTO));
+        userInfoDTO.setRole(roleDTO);
         return userInfoDTO;
     }
 
