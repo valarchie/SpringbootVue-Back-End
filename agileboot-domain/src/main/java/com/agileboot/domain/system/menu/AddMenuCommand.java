@@ -34,6 +34,8 @@ public class AddMenuCommand {
 
     private Integer status;
 
+    private String query;
+
     @Size(min = 0, max = 100, message = "权限标识长度不能超过100个字符")
     private String perms;
 

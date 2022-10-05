@@ -1,5 +1,7 @@
 package com.agileboot.common.core.dto;
 
+import cn.hutool.core.util.StrUtil;
+import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.common.exception.error.ErrorCodeInterface;
 import lombok.AllArgsConstructor;
@@ -36,6 +38,10 @@ public class ResponseDTO<T> {
         return build(null, code);
     }
 
+    public static <T> ResponseDTO<T> fail(ApiException exception) {
+        return new ResponseDTO<>(exception.getErrorCode().code(), exception.getMessage(), null);
+    }
+
     public static <T> ResponseDTO<T> fail(ErrorCodeInterface code, Object... args) {
         return build( code, args);
     }
@@ -47,11 +53,11 @@ public class ResponseDTO<T> {
     }
 
     public static <T> ResponseDTO<T> build(ErrorCodeInterface code, Object... args) {
-        return new ResponseDTO<>(code.code(), String.format(code.message(), args), null);
+        return new ResponseDTO<>(code.code(), StrUtil.format(code.message(), args), null);
     }
 
     public static <T> ResponseDTO<T> build(T data, ErrorCodeInterface code, Object... args) {
-        return new ResponseDTO<>(code.code(), String.format(code.message(), args), data);
+        return new ResponseDTO<>(code.code(), StrUtil.format(code.message(), args), data);
     }
 
 }

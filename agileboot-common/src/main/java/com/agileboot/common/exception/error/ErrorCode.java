@@ -64,7 +64,7 @@ public enum ErrorCode implements ErrorCodeInterface {
 
         LOGIN_WRONG_USER_PASSWORD(Module.LOGIN, 1, "用户密码错误，请重输"),
 
-        LOGIN_ERROR(Module.LOGIN, 2, "登录失败：%s"),
+        LOGIN_ERROR(Module.LOGIN, 2, "登录失败：{}"),
 
         CAPTCHA_CODE_WRONG(Module.LOGIN, 3, "验证码错误"),
 
@@ -141,7 +141,7 @@ public enum ErrorCode implements ErrorCodeInterface {
 
         USER_NON_EXIST(Module.USER, 1, "登录用户：%s 不存在"),
 
-        USER_IS_DISABLE(Module.USER, 2, "对不起， 您张的账号：%s 已停用"),
+        USER_IS_DISABLE(Module.USER, 2, "对不起， 您的账号：{} 已停用"),
 
         USER_CACHE_IS_EXPIRE(Module.USER, 3, "用户缓存信息已经过期"),
 

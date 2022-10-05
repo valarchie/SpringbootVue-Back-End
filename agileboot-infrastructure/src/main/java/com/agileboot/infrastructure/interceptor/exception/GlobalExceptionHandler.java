@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
             return ResponseDTO.fail(e.getErrorCode(), nonSensitiveMsg);
         }
         log.error(e.getMessage(), e);
-        return ResponseDTO.fail(e.getErrorCode());
+        return ResponseDTO.fail(e);
     }
 
     /**

@@ -150,9 +150,9 @@ public class UserDomainService {
 
     public void resetUserPassword(LoginUser loginUser, ResetPasswordCommand command) {
         UserModel userModel = getUserModel(command.getUserId());
-        userModel.setPassword(command.getPassword());
-
         userModel.checkCanBeModify(loginUser);
+        userModel.resetPassword(command.getPassword());
+
         userModel.logUpdater(loginUser);
 
         userModel.updateById();

@@ -27,6 +27,7 @@ public class MenuDTO {
             this.isExternal = BooleanUtil.toInt(entity.getIsExternal()) + "";
             this.isCache = BooleanUtil.toInt(entity.getIsCache()) + "";
             this.isVisible = BooleanUtil.toInt(entity.getIsVisible()) + "";
+            this.query = entity.getQuery();
         }
     }
 
@@ -45,5 +46,6 @@ public class MenuDTO {
     private String isExternal;
     private String isCache;
     private String isVisible;
+    private String query;
 
 }

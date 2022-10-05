@@ -5,6 +5,7 @@ import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.system.user.UserDTO;
+import com.agileboot.infrastructure.cache.CacheCenter;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.TokenService;
 import com.agileboot.infrastructure.web.service.UserDetailsServiceImpl;
@@ -127,6 +128,9 @@ public class RoleDomainService {
 
         roleModel.generateDeptIdSet();
         roleModel.updateById();
+
+        CacheCenter.guavaCache.roleCache.invalidate(command.getRoleId() + "");
+
     }
 
 
@@ -141,7 +145,6 @@ public class RoleDomainService {
         List<UserDTO> dtoList = page.getRecords().stream().map(UserDTO::new).collect(Collectors.toList());
         return new PageDTO(dtoList, page.getTotal());
     }
-
 
 
     public void deleteRoleOfUser(Long userId) {

@@ -67,7 +67,7 @@ public class SysUserController extends BaseController {
     @AccessLog(title = "用户管理", businessType = BusinessType.IMPORT)
     @PreAuthorize("@ss.hasPerm('system:user:import')")
     @PostMapping("/importData")
-    public ResponseDTO importData(MultipartFile file, boolean updateSupport) {
+    public ResponseDTO importData(MultipartFile file) {
         List<?> commands = CustomExcelUtil.readFromResponse(AddUserCommand.class, file);
         LoginUser loginUser = AuthenticationUtils.getLoginUser();
 
@@ -96,7 +96,7 @@ public class SysUserController extends BaseController {
     /**
      * 新增用户
      */
-    @PreAuthorize("@ss.hasPerm('system:user:add') AND @ss.checkDataScopeWithUserId(#command.deptId)")
+    @PreAuthorize("@ss.hasPerm('system:user:add') AND @ss.checkDataScopeWithDeptId(#command.deptId)")
     @AccessLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public ResponseDTO add(@Validated @RequestBody AddUserCommand command) {

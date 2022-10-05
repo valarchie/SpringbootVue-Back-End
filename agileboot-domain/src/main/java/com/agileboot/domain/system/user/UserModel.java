@@ -61,6 +61,10 @@ public class UserModel extends SysUserEntity {
         setPassword(AuthenticationUtils.encryptPassword(command.getNewPassword()));
     }
 
+    public void resetPassword(String newPassword) {
+        setPassword(AuthenticationUtils.encryptPassword(newPassword));
+    }
+
 
 
 }

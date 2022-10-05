@@ -1,5 +1,6 @@
 package com.agileboot.common.exception;
 
+import cn.hutool.core.util.StrUtil;
 import com.agileboot.common.exception.error.ErrorCodeInterface;
 import com.agileboot.common.utils.i18n.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class ApiException extends RuntimeException{
         this.message = errorCode.message();
         this.args = args;
 
-        this.formattedMessage = String.format(this.message, args);
+        this.formattedMessage = StrUtil.format(this.message, args);
 
         try {
             this.i18nFormattedMessage = MessageUtils.message(errorCode.i18n(), args);
