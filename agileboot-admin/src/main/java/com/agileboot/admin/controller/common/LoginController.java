@@ -12,6 +12,7 @@ import com.agileboot.common.exception.error.ErrorCode.Business;
 import com.agileboot.domain.system.menu.MenuDomainService;
 import com.agileboot.domain.system.menu.RouterVo;
 import com.agileboot.domain.system.user.UserDTO;
+import com.agileboot.infrastructure.cache.map.MapCache;
 import com.agileboot.infrastructure.web.domain.login.CaptchaDTO;
 import com.agileboot.infrastructure.web.domain.login.LoginUser;
 import com.agileboot.infrastructure.web.service.LoginService;
@@ -93,6 +94,7 @@ public class LoginController {
         permissionDTO.setUser(new UserDTO(loginUser.getEntity()));
         permissionDTO.setRoleKey(loginUser.getRoleKey());
         permissionDTO.setPermissions(loginUser.getMenuPermissions());
+        permissionDTO.setDictTypes(MapCache.dictionaryCache());
 
         return ResponseDTO.ok(permissionDTO);
     }

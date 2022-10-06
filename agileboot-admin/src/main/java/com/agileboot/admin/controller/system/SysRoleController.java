@@ -139,7 +139,7 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPerm('system:role:list')")
     @GetMapping("/{roleId}/allocated/list")
-    public ResponseDTO<PageDTO> allocatedList(@PathVariable("roleId")Long roleId, AllocatedRoleQuery query) {
+    public ResponseDTO<PageDTO> allocatedUserList(@PathVariable("roleId")Long roleId, AllocatedRoleQuery query) {
         query.setRoleId(roleId);
         PageDTO page = roleDomainService.getAllocatedUserList(query);
         return ResponseDTO.ok(page);
@@ -150,7 +150,7 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("@ss.hasPerm('system:role:list')")
     @GetMapping("/{roleId}/unallocated/list")
-    public ResponseDTO<PageDTO> unallocatedList(@PathVariable("roleId")Long roleId, UnallocatedRoleQuery query) {
+    public ResponseDTO<PageDTO> unallocatedUserList(@PathVariable("roleId")Long roleId, UnallocatedRoleQuery query) {
         query.setRoleId(roleId);
         PageDTO page = roleDomainService.getUnallocatedUserList(query);
         return ResponseDTO.ok(page);
@@ -162,7 +162,7 @@ public class SysRoleController extends BaseController {
     @PreAuthorize("@ss.hasPerm('system:role:edit')")
     @AccessLog(title = "角色管理", businessType = BusinessType.GRANT)
     @DeleteMapping("/{roleId}/user/grant")
-    public ResponseDTO cancelAuthUser(@PathVariable("roleId")Long roleId, @RequestBody Long userId) {
+    public ResponseDTO deleteRoleOfUser(@PathVariable("roleId")Long roleId, @RequestBody Long userId) {
         roleDomainService.deleteRoleOfUser(userId);
         return ResponseDTO.ok();
     }

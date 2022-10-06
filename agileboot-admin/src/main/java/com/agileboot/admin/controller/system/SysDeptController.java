@@ -50,11 +50,11 @@ public class SysDeptController extends BaseController {
     }
 
     /**
-     * 查询部门列表（排除节点）
+     * 查询部门列表（排除当前部门，比如在修改部门的上级部门的时候，需要排除自身当前的部门，因为上级部门不能选自己）
      */
     @PreAuthorize("@ss.hasPerm('system:dept:list')")
     @GetMapping("/list/exclude/{deptId}")
-    public ResponseDTO excludeCurrentDept(@PathVariable(value = "deptId", required = false) Long deptId) {
+    public ResponseDTO excludeCurrentDeptItself(@PathVariable(value = "deptId", required = false) Long deptId) {
         DeptQuery query = new DeptQuery();
         query.setDeptId(deptId);
         query.setExcludeCurrentDept(true);
